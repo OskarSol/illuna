@@ -86,13 +86,17 @@ It explores how modern apps can move from static user experience to dynamic, con
 
 At its core, Illuna connects four ideas:
 
-### 1. Chat-first interaction
+### 1. Adaptive interaction, not chat-only
 
-Users should be able to express intent naturally.
+Developers should only need to provide the base application.
 
-Instead of navigating complex flows, users can describe what they want, what feels wrong, or how the app should behave.
+From there, Illuna should automatically tailor the user experience for each person — without requiring the developer to manually implement every variation.
 
-Chat becomes more than support. It becomes an interface layer.
+This includes automatic adaptation of language, interface behavior, and accessibility preferences (for example larger text or clearer visual contrast).
+
+Chat is one possible interface layer, but not the only one.
+
+Depending on context and user preference, the experience can appear as chat-first, traditional UI-first, or a hybrid of both.
 
 ### 2. Intent understanding
 
@@ -202,7 +206,7 @@ It is not a generic AI assistant embedded into an app.
 
 Illuna is about making the application itself adaptive.
 
-The chat layer is only the beginning.
+If chat is present, it is only the beginning — the deeper value is system-level adaptation across the whole product experience.
 
 The real value comes from translating user intent into product behavior.
 
