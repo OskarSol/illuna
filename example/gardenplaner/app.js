@@ -8,10 +8,12 @@ const gardenForm = document.getElementById('garden-form');
 const plantForm = document.getElementById('plant-form');
 const reminderForm = document.getElementById('reminder-form');
 
-const gardenSummary = document.getElementById('garden-summary');
+const gardenHeaderWidget = document.getElementById('garden-header-widget');
 const plantList = document.getElementById('plant-list');
 const planner = document.getElementById('planner');
 const weatherWidget = document.getElementById('weather-widget');
+const openGardenMenuButton = document.getElementById('open-garden-menu');
+const gardenMenuDialog = document.getElementById('garden-menu-dialog');
 const openSettingsButton = document.getElementById('open-settings');
 const settingsDialog = document.getElementById('settings-dialog');
 const settingsForm = document.getElementById('settings-form');
@@ -199,12 +201,10 @@ let settings = createInitialSettings();
 function renderSummary() {
   const data = state.garden;
 
-  gardenSummary.innerHTML = `
-    <strong>${data.icon || '🌿'} ${data.title || 'Unnamed Garden'}</strong><br>
-    Location: ${data.location || '-'}<br>
-    Soil: ${data.soil}<br>
-    Lawn: ${data.lawn}<br>
-    Description: ${data.description || '-'}
+  gardenHeaderWidget.innerHTML = `
+    <strong>${data.icon || '🌿'} ${data.title || 'Unnamed Garden'}</strong>
+    <p>${data.location || 'Ort nicht gesetzt'}</p>
+    <p>Boden: ${data.soil} • Rasen: ${data.lawn}</p>
   `;
 }
 
@@ -341,6 +341,13 @@ planner.addEventListener('click', (event) => {
   monthTasks[taskIndex].done = !monthTasks[taskIndex].done;
   saveState();
   renderPlanner();
+openGardenMenuButton.addEventListener('click', () => {
+  fillGardenForm();
+  gardenMenuDialog.showModal();
+});
+
+document.getElementById('close-garden-menu').addEventListener('click', () => {
+  gardenMenuDialog.close();
 });
 
 gardenForm.addEventListener('submit', (event) => {
@@ -358,6 +365,7 @@ gardenForm.addEventListener('submit', (event) => {
   saveState();
   renderSummary();
   fetchAndRenderLocalWeather();
+  gardenMenuDialog.close();
 });
 
 plantForm.addEventListener('submit', (event) => {

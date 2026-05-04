@@ -8,10 +8,14 @@
   </head>
   <body>
     <header class="app-header">
+      <aside id="garden-header-widget" class="garden-header-widget" aria-live="polite"></aside>
       <div class="header-main">
         <h1>🌿 GardenPlaner</h1>
         <p>Simple garden manager with plant lists & monthly planner</p>
-        <button id="open-settings" type="button" class="settings-button">⚙️ Einstellungen</button>
+        <div class="header-actions">
+          <button id="open-garden-menu" type="button" class="settings-button">🌿 Gartenmenü</button>
+          <button id="open-settings" type="button" class="settings-button">⚙️ Einstellungen</button>
+        </div>
       </div>
       <aside id="weather-widget" class="weather-widget" aria-live="polite">
         <strong>Lokales Wetter</strong>
@@ -20,46 +24,7 @@
     </header>
 
     <main class="layout">
-      <section class="card">
-        <h2>General Garden Details</h2>
-        <form id="garden-form" class="form-grid">
-          <label>
-            Title
-            <input id="garden-title" type="text" placeholder="e.g. South Backyard" />
-          </label>
-          <label>
-            Icon
-            <input id="garden-icon" type="text" placeholder="🌱" maxlength="3" />
-          </label>
-          <label>
-            Location
-            <input id="garden-location" type="text" placeholder="e.g. Cologne, south side" />
-          </label>
-          <label>
-            Soil Type
-            <select id="garden-soil">
-              <option value="Loamy">Loamy</option>
-              <option value="Sandy">Sandy</option>
-              <option value="Humus-rich">Humus-rich</option>
-              <option value="Gravelly">Gravelly</option>
-              <option value="Mixed soil">Mixed soil</option>
-            </select>
-          </label>
-          <label>
-            Lawn area available?
-            <select id="garden-lawn">
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
-            </select>
-          </label>
-          <label class="full-width">
-            Short Description
-            <textarea id="garden-description" rows="3" placeholder="Important garden notes..."></textarea>
-          </label>
-          <button type="submit">Save Garden Details</button>
-        </form>
-        <div id="garden-summary" class="summary"></div>
-      </section>
+      
 
       <section class="card">
         <h2>Add Plant</h2>
@@ -146,6 +111,51 @@
         </form>
       </section>
     </main>
+
+
+
+    <dialog id="garden-menu-dialog" class="settings-dialog">
+      <form id="garden-form" class="form-grid" method="dialog">
+        <h2 class="full-width">Allgemeine Gartendaten</h2>
+        <label>
+          Title
+          <input id="garden-title" type="text" placeholder="e.g. South Backyard" />
+        </label>
+        <label>
+          Icon
+          <input id="garden-icon" type="text" placeholder="🌱" maxlength="3" />
+        </label>
+        <label>
+          Location
+          <input id="garden-location" type="text" placeholder="e.g. Cologne, south side" />
+        </label>
+        <label>
+          Soil Type
+          <select id="garden-soil">
+            <option value="Loamy">Loamy</option>
+            <option value="Sandy">Sandy</option>
+            <option value="Humus-rich">Humus-rich</option>
+            <option value="Gravelly">Gravelly</option>
+            <option value="Mixed soil">Mixed soil</option>
+          </select>
+        </label>
+        <label>
+          Lawn area available?
+          <select id="garden-lawn">
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
+          </select>
+        </label>
+        <label class="full-width">
+          Short Description
+          <textarea id="garden-description" rows="3" placeholder="Important garden notes..."></textarea>
+        </label>
+        <div class="dialog-actions full-width">
+          <button id="close-garden-menu" type="button" class="secondary">Schließen</button>
+          <button type="submit">Speichern</button>
+        </div>
+      </form>
+    </dialog>
 
     <dialog id="settings-dialog" class="settings-dialog">
       <form id="settings-form" class="form-grid" method="dialog">
