@@ -1,6 +1,5 @@
-# 03-reference-architecture.md
+# 03 · Reference Architecture
 
-# Reference Architecture
 
 ## Overview
 
