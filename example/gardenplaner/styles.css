@@ -1,3 +1,4 @@
+
 :root {
   --bg: #f4f6f8;
   --card: #ffffff;
@@ -5,6 +6,7 @@
   --accent: #2f7a51;
   --accent-soft: rgba(52, 199, 89, 0.08);
   --text: #1f2a1f;
+  --glass-tint: rgba(255, 255, 255, 0.5);
 }
 
 * {
@@ -17,6 +19,46 @@ body {
   background: radial-gradient(circle at top left, #ffffff 0%, var(--bg) 56%, #edf2f5 100%);
   color: var(--text);
   overflow-x: hidden;
+}
+
+/* LIQUID GLASS (adapted essentials) */
+.app-header,
+.card,
+.garden-header-widget,
+.weather-widget,
+button,
+.task-toggle,
+.chat-messages {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+.app-header::before,
+.card::before,
+.garden-header-widget::before,
+.weather-widget::before,
+button::before,
+.task-toggle::before,
+.chat-messages::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--glass-tint);
+  pointer-events: none;
+}
+
+.app-header > *,
+.card > *,
+.garden-header-widget > *,
+.weather-widget > *,
+button > *,
+.task-toggle > *,
+.chat-messages > * {
+  position: relative;
+  z-index: 1;
 }
 
 .app-header {
@@ -124,22 +166,25 @@ button {
 }
 
 button {
-  background: linear-gradient(165deg, #4ca371 0%, var(--accent) 100%);
+  background: linear-gradient(165deg, rgba(76, 163, 113, 0.82) 0%, rgba(47, 122, 81, 0.88) 100%);
   color: #17251e;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.55);
   cursor: pointer;
+  box-shadow: 0 6px 6px rgba(0, 0, 0, 0.18), 0 0 20px rgba(0, 0, 0, 0.08), inset 2px 2px 1px 0 rgba(255, 255, 255, 0.45), inset -1px -1px 1px 1px rgba(255, 255, 255, 0.38);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
 }
 
 button:hover {
-  background: linear-gradient(165deg, #418f63 0%, #2b6747 100%);
+  background: linear-gradient(165deg, rgba(65, 143, 99, 0.9) 0%, rgba(43, 103, 71, 0.95) 100%);
+  transform: translateY(-1px);
 }
 
 button.secondary {
-  background: #607d61;
+  background: rgba(96, 125, 97, 0.78);
 }
 
 button.secondary:hover {
-  background: #4a644c;
+  background: rgba(74, 100, 76, 0.9);
 }
 
 .settings-dialog {
