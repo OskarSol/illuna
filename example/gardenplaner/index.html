@@ -11,6 +11,7 @@
       <div class="header-main">
         <h1>🌿 GardenPlaner</h1>
         <p>Simple garden manager with plant lists & monthly planner</p>
+        <button id="open-settings" type="button" class="settings-button">⚙️ Einstellungen</button>
       </div>
       <aside id="weather-widget" class="weather-widget" aria-live="polite">
         <strong>Lokales Wetter</strong>
@@ -135,6 +136,31 @@
         <div id="planner" class="planner-grid"></div>
       </section>
     </main>
+
+    <dialog id="settings-dialog" class="settings-dialog">
+      <form id="settings-form" class="form-grid" method="dialog">
+        <h2 class="full-width">Einstellungen</h2>
+        <label>
+          Sprache
+          <select id="settings-language" required>
+            <option value="de">Deutsch</option>
+            <option value="en">English</option>
+          </select>
+        </label>
+        <label>
+          App ID
+          <input id="settings-app-id" type="text" required autocomplete="off" />
+        </label>
+        <label class="full-width">
+          Client Secret
+          <input id="settings-client-secret" type="password" required autocomplete="new-password" />
+        </label>
+        <div class="dialog-actions full-width">
+          <button id="close-settings" type="button" class="secondary">Abbrechen</button>
+          <button type="submit">Speichern</button>
+        </div>
+      </form>
+    </dialog>
 
     <script src="app.js"></script>
   </body>
