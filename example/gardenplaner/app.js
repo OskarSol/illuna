@@ -437,6 +437,21 @@ fetchAndRenderLocalWeather();
 const chatForm = document.getElementById('chat-form');
 const chatInput = document.getElementById('chat-input');
 const chatMessages = document.getElementById('chat-messages');
+const chatFlyout = document.getElementById('chat-flyout');
+const chatToggle = document.getElementById('chat-toggle');
+
+function setChatFlyout(open) {
+  chatFlyout.classList.toggle('open', open);
+  chatToggle.setAttribute('aria-expanded', String(open));
+}
+
+chatToggle.addEventListener('click', () => {
+  const isOpen = chatFlyout.classList.contains('open');
+  setChatFlyout(!isOpen);
+  if (!isOpen) {
+    setTimeout(() => chatInput.focus(), 260);
+  }
+});
 
 function appendChatMessage(role, text) {
   const bubble = document.createElement('div');
