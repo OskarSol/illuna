@@ -116,6 +116,9 @@ input, select, textarea {
 .chat-flyout { position: fixed; right: 1rem; bottom: 1rem; width: min(400px, calc(100vw - 2rem)); z-index: 40; }
 .chat-toggle { width: 100%; }
 .chat-card { margin-top: 0.7rem; }
+
+.chat-flyout-panel[hidden] { display: none; }
+.chat-flyout.open .chat-flyout-panel { display: block; }
 .chat-messages { border-radius: 12px; min-height: 90px; max-height: 210px; overflow: auto; padding: 0.7rem; margin: 0.7rem 0; }
 .chat-form { display: grid; grid-template-columns: 1fr auto; gap: 0.5rem; }
 
