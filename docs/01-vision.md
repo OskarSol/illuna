@@ -1,5 +1,5 @@
 # Vision
-
+![Illuna Vision](assets/illuna_vision.png)
 ## Every App Should Feel Like It Was Made for You
 
 Most applications are still built around a static idea of the user.
