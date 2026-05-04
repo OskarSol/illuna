@@ -1,0 +1,53 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">The Illuna Model – Core Concept</title>
+  <desc id="desc">A concept diagram showing the adaptive loop from user message to continuous learning.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3f5776" />
+    </marker>
+    <style>
+      .h1 { font: 700 48px sans-serif; fill: #1e2f4f; }
+      .h2 { font: 400 24px sans-serif; fill: #56657b; }
+      .step { font: 700 28px sans-serif; fill: #1f2f4a; }
+      .sub { font: 400 20px sans-serif; fill: #43526a; }
+      .arrow { stroke: #3f5776; stroke-width: 5; fill: none; marker-end: url(#arrow); }
+      .loop { stroke: #8795a8; stroke-width: 4; fill: none; stroke-dasharray: 10 10; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <text x="60" y="75" class="h1">The Illuna Model · Core Concepts</text>
+  <text x="60" y="115" class="h2">From language signals to adaptive product behavior.</text>
+
+  <rect x="80" y="180" width="320" height="120" rx="18" fill="#e7f3ff" stroke="#5a7596" stroke-width="3"/>
+  <text x="110" y="230" class="step">1) User Message</text>
+  <text x="110" y="265" class="sub">Request · Feedback · Preference</text>
+
+  <rect x="460" y="180" width="320" height="120" rx="18" fill="#ebf9ef" stroke="#5a7596" stroke-width="3"/>
+  <text x="490" y="230" class="step">2) Intent Understanding</text>
+  <text x="490" y="265" class="sub">Intent · Entities · Confidence</text>
+
+  <rect x="840" y="180" width="320" height="120" rx="18" fill="#fff4e5" stroke="#5a7596" stroke-width="3"/>
+  <text x="870" y="230" class="step">3) Context Interpretation</text>
+  <text x="870" y="265" class="sub">Screen · Session · History</text>
+
+  <rect x="1220" y="180" width="320" height="120" rx="18" fill="#f3ecff" stroke="#5a7596" stroke-width="3"/>
+  <text x="1250" y="230" class="step">4) Personalization Decision</text>
+  <text x="1250" y="265" class="sub">Policy · Memory · Action Type</text>
+
+  <rect x="270" y="430" width="480" height="130" rx="18" fill="#edf9ff" stroke="#5a7596" stroke-width="3"/>
+  <text x="300" y="485" class="step">5) App Adaptation</text>
+  <text x="300" y="520" class="sub">UI · Tone · Workflow · Prioritization</text>
+
+  <rect x="860" y="430" width="520" height="130" rx="18" fill="#eafff0" stroke="#5a7596" stroke-width="3"/>
+  <text x="890" y="485" class="step">6) User Feedback + Continuous Learning</text>
+  <text x="890" y="520" class="sub">Reaction signals update future decisions</text>
+
+  <path class="arrow" d="M400 240 L460 240"/>
+  <path class="arrow" d="M780 240 L840 240"/>
+  <path class="arrow" d="M1160 240 L1220 240"/>
+  <path class="arrow" d="M1380 300 L1120 430"/>
+  <path class="arrow" d="M860 495 L750 495"/>
+
+  <path class="loop" d="M260 495 L100 495 L100 300 L230 300"/>
+  <text x="80" y="610" class="sub">Closed loop: adaptation results generate new signals, enabling progressive personalization.</text>
+</svg>
