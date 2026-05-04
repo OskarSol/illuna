@@ -20,21 +20,7 @@ It is an app where AI becomes part of the interaction model, personalization lay
 
 Illuna describes adaptive applications through a simple flow:
 
-```text
-User Message
-    ↓
-Intent Understanding
-    ↓
-Context Interpretation
-    ↓
-Personalization Decision
-    ↓
-App Adaptation
-    ↓
-User Feedback
-    ↓
-Continuous Learning
-```
+![Illuna Model](assets/illuna_user_flow_in_detail.png)
 
 This flow turns natural language into structured product behavior.
 
@@ -45,7 +31,7 @@ The user does not need to configure the app manually. They can express what they
 
 ## Concept Architecture (visual)
 
-![Illuna Concept Architecture](assets/concept-architecture.svg)
+![Illuna Concept Architecture](assets/illuna_adaptive_flow.png)
 
 The diagram summarizes the same flow: user message → intent understanding → context interpretation → personalization decision → app adaptation, with a feedback loop for continuous learning.
 

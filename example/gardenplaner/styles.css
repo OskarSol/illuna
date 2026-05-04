@@ -1,0 +1,410 @@
+
+:root {
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --line: rgba(255, 255, 255, 0.7);
+  --accent: #2f7a51;
+  --accent-soft: rgba(52, 199, 89, 0.08);
+  --text: #1f2a1f;
+  --glass-tint: linear-gradient(145deg, rgba(255,255,255,0.52), rgba(235,255,245,0.2));
+  --liquid-edge: rgba(255, 255, 255, 0.72);
+  --liquid-shadow: 0 18px 40px rgba(19, 38, 30, 0.16);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "SF Pro Text", Inter, system-ui, -apple-system, sans-serif;
+  background:
+    radial-gradient(1300px 680px at -10% -20%, rgba(255,255,255,0.85), transparent 65%),
+    radial-gradient(980px 540px at 120% 0%, rgba(178, 230, 198, 0.32), transparent 62%),
+    linear-gradient(180deg, #f6faf8 0%, #eaf1ee 100%);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+/* LIQUID GLASS (adapted essentials) */
+.app-header,
+.card,
+.garden-header-widget,
+.weather-widget,
+button,
+.task-toggle,
+.chat-messages {
+  position: relative;
+  overflow: hidden;
+  backdrop-filter: blur(12px) saturate(130%);
+  -webkit-backdrop-filter: blur(12px) saturate(130%);
+}
+
+.app-header::before,
+.card::before,
+.garden-header-widget::before,
+.weather-widget::before,
+button::before,
+.task-toggle::before,
+.chat-messages::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: var(--glass-tint);
+  border: 1px solid rgba(255,255,255,0.36);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.8);
+  pointer-events: none;
+}
+
+.app-header > *,
+.card > *,
+.garden-header-widget > *,
+.weather-widget > *,
+button > *,
+.task-toggle > *,
+.chat-messages > * {
+  position: relative;
+  z-index: 1;
+}
+
+.app-header {
+  position: relative;
+  background: linear-gradient(145deg, rgba(255,255,255,0.58), rgba(255,255,255,0.2));
+  color: rgba(23, 37, 30, 0.88);
+  padding: 1.5rem 1.5rem 2rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.62);
+  box-shadow:
+    0 16px 30px rgba(16, 24, 40, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transform: translateZ(0);
+}
+
+.header-main {
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(255, 255, 255, 0.45);
+}
+
+.header-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.header-main h1 { margin: 0; }
+.header-main p { margin: 0.4rem 0 0; }
+.settings-button { margin-top: 0.8rem; max-width: 220px; }
+
+.garden-header-widget,
+.weather-widget {
+  position: absolute;
+  top: 0.8rem;
+  min-width: 220px;
+  max-width: 300px;
+  padding: 0.65rem 0.8rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.44);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.14);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+.garden-header-widget { left: 1rem; }
+.weather-widget { right: 1rem; max-width: 280px; }
+.garden-header-widget strong,
+.weather-widget strong { display: block; margin-bottom: 0.2rem; }
+.garden-header-widget p,
+.weather-widget p { margin: 0; font-size: 0.9rem; line-height: 1.35; }
+
+@media (max-width: 760px) {
+  .app-header { padding-top: 1rem; }
+  .garden-header-widget,
+  .weather-widget {
+    position: static;
+    max-width: none;
+    margin-top: 0.9rem;
+  }
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.72);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 1rem;
+  box-shadow: var(--liquid-shadow), inset 0 1px 0 rgba(255, 255, 255, 0.95), inset 0 -18px 32px rgba(141, 182, 159, 0.12);
+  backdrop-filter: blur(20px) saturate(125%);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.form-grid label,
+.form-grid button,
+.full-width {
+  grid-column: span 2;
+}
+
+@media (min-width: 720px) {
+  .form-grid label:not(.full-width) {
+    grid-column: span 1;
+  }
+}
+
+input,
+select,
+textarea,
+button {
+  width: 100%;
+  padding: 0.55rem;
+  margin-top: 0.3rem;
+  border-radius: 12px;
+  border: 1px solid rgba(209, 218, 226, 0.92);
+  font: inherit;
+}
+
+button {
+  background: linear-gradient(165deg, rgba(132, 205, 164, 0.55) 0%, rgba(97, 177, 132, 0.44) 100%);
+  color: rgba(23, 37, 30, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  cursor: pointer;
+  box-shadow: 0 12px 26px rgba(27, 58, 40, 0.2), inset 0 1px 0 rgba(255,255,255,0.8), inset 0 -6px 16px rgba(69,126,91,0.28);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.2);
+}
+
+button:hover {
+  background: linear-gradient(165deg, rgba(65, 143, 99, 0.9) 0%, rgba(43, 103, 71, 0.95) 100%);
+  transform: translateY(-1px);
+}
+
+button.secondary {
+  background: rgba(96, 125, 97, 0.78);
+}
+
+button.secondary:hover {
+  background: rgba(74, 100, 76, 0.9);
+}
+
+.settings-dialog {
+  width: min(520px, 92vw);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.settings-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
+}
+
+.summary,
+.list li,
+.month-block {
+  margin-top: 0.75rem;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 14px;
+  padding: 0.7rem;
+  box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+}
+
+.list {
+  list-style: none;
+  padding: 0;
+}
+
+.planner-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.month-block h3 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
+}
+
+.month-tasks {
+  margin: 0;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.month-block.past-month {
+  opacity: 0.65;
+  background: #f2f4f1;
+}
+
+.month-block.current-month {
+  border-color: rgba(52, 199, 89, 0.35);
+  box-shadow: 0 0 0 1px rgba(52, 199, 89, 0.24), 0 10px 24px rgba(16, 24, 40, 0.08);
+}
+
+.task-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.62);
+  border: 1px solid rgba(226, 233, 238, 0.9);
+  color: inherit;
+  margin: 0;
+  padding: 0.42rem 0.55rem;
+  border-radius: 11px;
+  transition: all 0.2s ease;
+}
+
+.task-toggle:hover {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: rgba(52, 199, 89, 0.22);
+  box-shadow: 0 6px 16px rgba(16, 24, 40, 0.08);
+}
+
+.task-icon {
+  width: 1.15rem;
+  color: rgba(80, 94, 109, 0.9);
+  font-weight: 600;
+}
+
+.task-toggle.is-done .task-icon {
+  color: rgba(52, 199, 89, 0.86);
+}
+
+.task-toggle.is-done .task-label {
+  text-decoration: line-through;
+  opacity: 0.58;
+}
+
+.empty-state {
+  color: #607061;
+}
+
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 70vh;
+  margin: 0;
+}
+
+.chat-flyout {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(36vw, 520px);
+  min-width: 320px;
+  height: 100vh;
+  z-index: 30;
+  perspective: 1600px;
+  pointer-events: none;
+}
+
+.chat-flyout .chat-card {
+  height: 100%;
+  border-radius: 18px 0 0 18px;
+  border-right: 0;
+  box-shadow: -20px 0 40px rgba(13, 35, 17, 0.34);
+  transform-origin: right center;
+  transform: translateX(105%) rotateY(-22deg) scale(0.98);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.45s ease;
+  pointer-events: auto;
+}
+
+.chat-flyout.open .chat-card {
+  transform: translateX(0) rotateY(0deg) scale(1);
+  opacity: 1;
+}
+
+.chat-toggle {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  width: 3.2rem;
+  height: 8.6rem;
+  border-radius: 12px 0 0 12px;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%);
+  opacity: 0.95;
+  transition: opacity 0.25s ease;
+  box-shadow: -8px 8px 16px rgba(15, 44, 18, 0.35);
+  pointer-events: auto;
+  z-index: 31;
+}
+
+.chat-flyout:hover .chat-toggle,
+.chat-toggle:focus-visible,
+.chat-flyout.open .chat-toggle {
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .chat-flyout {
+    width: min(92vw, 440px);
+    min-width: 0;
+  }
+}
+
+.chat-hint {
+  margin: 0 0 0.8rem;
+  color: #46614a;
+}
+
+.chat-messages {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f9fff8;
+  padding: 0.8rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.chat-message {
+  max-width: 90%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #daf0dc;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  background: #eef8ee;
+  border: 1px solid var(--line);
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.chat-form input {
+  margin-top: 0;
+}
+
+.chat-form button {
+  margin-top: 0;
+  min-width: 110px;
+}

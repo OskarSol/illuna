@@ -1,0 +1,40 @@
+<svg width="1700" height="700" viewBox="0 0 1700 700" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Illuna Core Components Flow</title>
+  <desc id="desc">Sequential component flow from user to domain services with decision feedback loop.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3f5776" />
+    </marker>
+    <style>
+      .h1 { font: 700 42px sans-serif; fill: #1e2f4f; }
+      .b { font: 700 20px sans-serif; fill: #1f2f4a; }
+      .line { stroke: #3f5776; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+      .loop { stroke: #7d8ea4; stroke-width: 3; stroke-dasharray: 8 8; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <text x="40" y="60" class="h1">Core Components · End-to-End Flow</text>
+
+  <g transform="translate(40,180)">
+    <rect x="0" y="0" width="180" height="90" rx="14" fill="#e7f3ff" stroke="#5a7596" stroke-width="3"/><text x="50" y="52" class="b">User</text>
+    <rect x="210" y="0" width="220" height="90" rx="14" fill="#ebf9ef" stroke="#5a7596" stroke-width="3"/><text x="235" y="52" class="b">Chat / App Interface</text>
+    <rect x="460" y="0" width="220" height="90" rx="14" fill="#fff4e5" stroke="#5a7596" stroke-width="3"/><text x="492" y="52" class="b">Interaction Gateway</text>
+    <rect x="710" y="0" width="200" height="90" rx="14" fill="#f3ecff" stroke="#5a7596" stroke-width="3"/><text x="740" y="52" class="b">Intent Classifier</text>
+    <rect x="940" y="0" width="180" height="90" rx="14" fill="#edf9ff" stroke="#5a7596" stroke-width="3"/><text x="972" y="52" class="b">Context Engine</text>
+    <rect x="1150" y="0" width="250" height="90" rx="14" fill="#eafff0" stroke="#5a7596" stroke-width="3"/><text x="1175" y="52" class="b">Personalization Engine</text>
+    <rect x="1430" y="0" width="220" height="90" rx="14" fill="#f9f1ff" stroke="#5a7596" stroke-width="3"/><text x="1465" y="52" class="b">Adaptation Engine</text>
+
+    <path class="line" d="M180 45 L210 45"/><path class="line" d="M430 45 L460 45"/><path class="line" d="M680 45 L710 45"/>
+    <path class="line" d="M910 45 L940 45"/><path class="line" d="M1120 45 L1150 45"/><path class="line" d="M1400 45 L1430 45"/>
+  </g>
+
+  <g transform="translate(430,390)">
+    <rect x="0" y="0" width="330" height="95" rx="14" fill="#e9f6ff" stroke="#5a7596" stroke-width="3"/>
+    <text x="48" y="56" class="b">Application Runtime</text>
+    <rect x="400" y="0" width="360" height="95" rx="14" fill="#eefcf3" stroke="#5a7596" stroke-width="3"/>
+    <text x="430" y="56" class="b">Domain Services / Data Sources</text>
+    <path class="line" d="M330 47 L400 47"/>
+  </g>
+
+  <path class="line" d="M1510 270 L700 390"/>
+  <path class="loop" d="M490 390 L220 390 L220 270 L300 270"/>
+</svg>
