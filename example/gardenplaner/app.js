@@ -1,4 +1,8 @@
 const STORAGE_KEY = 'gardenplaner-state-v1';
+const SETTINGS_STORAGE_KEY = 'gardenplaner-settings-v1';
+const KEY_DB_NAME = 'gardenplaner-secure-db';
+const KEY_STORE_NAME = 'keys';
+const KEY_ID = 'settings-key';
 
 const gardenForm = document.getElementById('garden-form');
 const plantForm = document.getElementById('plant-form');
@@ -8,6 +12,9 @@ const gardenSummary = document.getElementById('garden-summary');
 const plantList = document.getElementById('plant-list');
 const planner = document.getElementById('planner');
 const weatherWidget = document.getElementById('weather-widget');
+const openSettingsButton = document.getElementById('open-settings');
+const settingsDialog = document.getElementById('settings-dialog');
+const settingsForm = document.getElementById('settings-form');
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -44,6 +51,102 @@ function createInitialState() {
   };
 }
 
+function createInitialSettings() {
+  return {
+    language: 'de',
+    appId: '',
+    clientSecret: ''
+  };
+}
+
+function openKeyDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(KEY_DB_NAME, 1);
+    request.onupgradeneeded = () => {
+      request.result.createObjectStore(KEY_STORE_NAME);
+    };
+    request.onsuccess = () => resolve(request.result);
+    request.onerror = () => reject(request.error);
+  });
+}
+
+async function getOrCreateCryptoKey() {
+  const db = await openKeyDatabase();
+  const key = await new Promise((resolve, reject) => {
+    const tx = db.transaction(KEY_STORE_NAME, 'readwrite');
+    const store = tx.objectStore(KEY_STORE_NAME);
+    const getReq = store.get(KEY_ID);
+
+    getReq.onsuccess = async () => {
+      if (getReq.result) {
+        resolve(getReq.result);
+        return;
+      }
+      const newKey = await crypto.subtle.generateKey(
+        { name: 'AES-GCM', length: 256 },
+        true,
+        ['encrypt', 'decrypt']
+      );
+      const addReq = store.put(newKey, KEY_ID);
+      addReq.onsuccess = () => resolve(newKey);
+      addReq.onerror = () => reject(addReq.error);
+    };
+    getReq.onerror = () => reject(getReq.error);
+  });
+  db.close();
+  return key;
+}
+
+function bytesToBase64(buffer) {
+  return btoa(String.fromCharCode(...new Uint8Array(buffer)));
+}
+
+function base64ToBytes(base64) {
+  return Uint8Array.from(atob(base64), (char) => char.charCodeAt(0));
+}
+
+async function encryptSettings(settings) {
+  const key = await getOrCreateCryptoKey();
+  const iv = crypto.getRandomValues(new Uint8Array(12));
+  const plaintext = new TextEncoder().encode(JSON.stringify(settings));
+  const ciphertext = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plaintext);
+  return {
+    iv: bytesToBase64(iv),
+    data: bytesToBase64(ciphertext)
+  };
+}
+
+async function decryptSettings(payload) {
+  const key = await getOrCreateCryptoKey();
+  const plaintext = await crypto.subtle.decrypt(
+    { name: 'AES-GCM', iv: base64ToBytes(payload.iv) },
+    key,
+    base64ToBytes(payload.data)
+  );
+  return JSON.parse(new TextDecoder().decode(plaintext));
+}
+
+async function saveSettings(settings) {
+  const encrypted = await encryptSettings(settings);
+  localStorage.setItem(SETTINGS_STORAGE_KEY, JSON.stringify(encrypted));
+}
+
+async function loadSettings() {
+  const raw = localStorage.getItem(SETTINGS_STORAGE_KEY);
+  if (!raw) return createInitialSettings();
+
+  try {
+    const parsed = JSON.parse(raw);
+    const decrypted = await decryptSettings(parsed);
+    return {
+      ...createInitialSettings(),
+      ...decrypted
+    };
+  } catch {
+    return createInitialSettings();
+  }
+}
+
 function saveState() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
 }
@@ -71,6 +174,7 @@ function loadState() {
 }
 
 const state = loadState();
+let settings = createInitialSettings();
 
 function renderSummary() {
   const data = state.garden;
@@ -239,8 +343,41 @@ reminderForm.addEventListener('submit', (event) => {
   renderPlanner();
 });
 
+function fillSettingsForm() {
+  document.getElementById('settings-language').value = settings.language;
+  document.getElementById('settings-app-id').value = settings.appId;
+  document.getElementById('settings-client-secret').value = settings.clientSecret;
+}
+
+openSettingsButton.addEventListener('click', () => {
+  fillSettingsForm();
+  settingsDialog.showModal();
+});
+
+document.getElementById('close-settings').addEventListener('click', () => {
+  settingsDialog.close();
+});
+
+settingsForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  settings = {
+    language: document.getElementById('settings-language').value,
+    appId: document.getElementById('settings-app-id').value.trim(),
+    clientSecret: document.getElementById('settings-client-secret').value.trim()
+  };
+
+  await saveSettings(settings);
+  settingsDialog.close();
+});
+
 fillGardenForm();
 renderSummary();
 renderPlants();
 renderPlanner();
 fetchAndRenderLocalWeather();
+
+loadSettings().then((loadedSettings) => {
+  settings = loadedSettings;
+  fillSettingsForm();
+});
