@@ -42,6 +42,15 @@ The user does not need to configure the app manually. They can express what they
 
 ---
 
+
+## Concept Architecture (visual)
+
+![Illuna Concept Architecture](assets/concept-architecture.svg)
+
+The diagram summarizes the same flow: user message → intent understanding → context interpretation → personalization decision → app adaptation, with a feedback loop for continuous learning.
+
+---
+
 ## 1. User Message
 
 The user message is the starting point of every adaptive interaction.
