@@ -316,8 +316,9 @@ function renderPlanner() {
       ? tasks
         .map((task, taskIndex) => `
           <li>
-            <button class="task-toggle ${task.done ? 'is-done' : ''}" data-month="${month}" data-task-index="${taskIndex}" type="button">
-              ${task.text}
+            <button class="task-toggle ${task.done ? 'is-done' : ''}" data-month="${month}" data-task-index="${taskIndex}" type="button" aria-pressed="${task.done ? 'true' : 'false'}">
+              <span class="task-icon" aria-hidden="true">${task.done ? '✓' : '◯'}</span>
+              <span class="task-label">${task.text}</span>
             </button>
           </li>
         `)
