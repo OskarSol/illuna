@@ -341,6 +341,8 @@ planner.addEventListener('click', (event) => {
   monthTasks[taskIndex].done = !monthTasks[taskIndex].done;
   saveState();
   renderPlanner();
+});
+
 openGardenMenuButton.addEventListener('click', () => {
   fillGardenForm();
   gardenMenuDialog.showModal();

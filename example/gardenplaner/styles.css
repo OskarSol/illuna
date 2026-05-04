@@ -259,24 +259,24 @@ button.secondary:hover {
 }
 
 .chat-toggle {
-  position: absolute;
+  position: fixed;
   top: 50%;
-  left: -3.2rem;
+  right: 0;
   width: 3.2rem;
   height: 8.6rem;
   border-radius: 12px 0 0 12px;
   writing-mode: vertical-rl;
-  transform: translateY(-50%) translateX(2.1rem);
-  opacity: 0.35;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transform: translateY(-50%);
+  opacity: 0.95;
+  transition: opacity 0.25s ease;
   box-shadow: -8px 8px 16px rgba(15, 44, 18, 0.35);
   pointer-events: auto;
+  z-index: 31;
 }
 
 .chat-flyout:hover .chat-toggle,
 .chat-toggle:focus-visible,
 .chat-flyout.open .chat-toggle {
-  transform: translateY(-50%) translateX(0);
   opacity: 1;
 }
 
