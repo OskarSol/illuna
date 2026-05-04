@@ -196,3 +196,60 @@ button.secondary:hover {
   margin: 0;
   padding-left: 1rem;
 }
+
+.chat-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 420px;
+}
+
+.chat-hint {
+  margin: 0 0 0.8rem;
+  color: #46614a;
+}
+
+.chat-messages {
+  flex: 1;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: #f9fff8;
+  padding: 0.8rem;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.chat-message {
+  max-width: 90%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 10px;
+  line-height: 1.4;
+}
+
+.chat-message.user {
+  align-self: flex-end;
+  background: #daf0dc;
+}
+
+.chat-message.assistant {
+  align-self: flex-start;
+  background: #eef8ee;
+  border: 1px solid var(--line);
+}
+
+.chat-form {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.6rem;
+  margin-top: 0.8rem;
+}
+
+.chat-form input {
+  margin-top: 0;
+}
+
+.chat-form button {
+  margin-top: 0;
+  min-width: 110px;
+}
