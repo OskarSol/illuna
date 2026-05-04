@@ -315,17 +315,15 @@ function renderPlanner() {
     const taskItems = tasks.length
       ? tasks
         .map((task, taskIndex) => `
-          <li>
-            <button class="task-toggle ${task.done ? 'is-done' : ''}" data-month="${month}" data-task-index="${taskIndex}" type="button" aria-pressed="${task.done ? 'true' : 'false'}">
-              <span class="task-icon" aria-hidden="true">${task.done ? '✓' : '◯'}</span>
-              <span class="task-label">${task.text}</span>
-            </button>
-          </li>
+          <button class="task-toggle ${task.done ? 'is-done' : ''}" data-month="${month}" data-task-index="${taskIndex}" type="button" aria-pressed="${task.done ? 'true' : 'false'}">
+            <span class="task-icon" aria-hidden="true">${task.done ? '✓' : '◯'}</span>
+            <span class="task-label">${task.text}</span>
+          </button>
         `)
         .join('')
-      : '<li class="empty-state">No Tasks</li>';
+      : '<p class="empty-state">No Tasks</p>';
 
-    block.innerHTML = `<h3>${month}</h3><ul>${taskItems}</ul>`;
+    block.innerHTML = `<h3>${month}</h3><div class="month-tasks">${taskItems}</div>`;
     planner.appendChild(block);
   });
 }
