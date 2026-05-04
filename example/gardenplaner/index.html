@@ -75,26 +75,28 @@
         <section class="card glass-surface">
           <h2>Monthly Planner & Reminders</h2>
           <form id="reminder-form" class="form-grid">
-            <label>
-              Month
-              <select id="reminder-month">
-                <option value="January">January</option><option value="February">February</option><option value="March">March</option><option value="April">April</option>
-                <option value="May">May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option>
-                <option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option>
-              </select>
-            </label>
+            <div class="reminder-toolbar full-width">
+              <label class="month-select-label">
+                Month
+                <select id="reminder-month">
+                  <option value="January">January</option><option value="February">February</option><option value="March">March</option><option value="April">April</option>
+                  <option value="May">May</option><option value="June">June</option><option value="July">July</option><option value="August">August</option>
+                  <option value="September">September</option><option value="October">October</option><option value="November">November</option><option value="December">December</option>
+                </select>
+              </label>
+              <button type="submit" class="liquid-button">Add Reminder</button>
+            </div>
             <label class="full-width">
               Task / Reminder
               <input id="reminder-text" type="text" required placeholder="e.g. Mow the lawn for the first time" />
             </label>
-            <button type="submit" class="liquid-button">Add Reminder</button>
           </form>
           <div id="planner" class="planner-grid"></div>
         </section>
       </main>
 
       <aside id="chat-flyout" class="chat-flyout" aria-label="Garden Chat Flyout">
-        <button id="chat-toggle" type="button" class="chat-toggle liquid-button" aria-expanded="false" aria-controls="chat-flyout-panel">💬 Chat</button>
+        <button id="chat-toggle" type="button" class="chat-toggle liquid-button" aria-label="Chat öffnen" aria-expanded="false" aria-controls="chat-flyout-panel"><span aria-hidden="true">💬</span></button>
         <section id="chat-flyout-panel" class="card chat-card glass-surface chat-flyout-panel" hidden aria-hidden="true">
           <h2>Garden Chat</h2>
           <p class="chat-hint">Frage nach Pflanzideen, Aufgaben oder einer Zusammenfassung deines Gartens.</p>
