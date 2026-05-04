@@ -44,6 +44,11 @@ body {
   margin: 0.4rem 0 0;
 }
 
+.settings-button {
+  margin-top: 0.8rem;
+  max-width: 220px;
+}
+
 .weather-widget {
   position: absolute;
   top: 0.8rem;
@@ -134,6 +139,31 @@ button {
 
 button:hover {
   background: #256b2a;
+}
+
+button.secondary {
+  background: #607d61;
+}
+
+button.secondary:hover {
+  background: #4a644c;
+}
+
+.settings-dialog {
+  width: min(520px, 92vw);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1rem;
+}
+
+.settings-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.dialog-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.7rem;
 }
 
 .summary,
