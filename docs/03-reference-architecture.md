@@ -3,50 +3,12 @@
 
 ## Overview
 
-![Illuna Reference Architecture – Layers](assets/reference-architecture-layers.svg)
-
 Illuna is a reference architecture for building adaptive, AI-personalized applications.
 
 The architecture describes how natural language input can be transformed into structured intent, personalization decisions, and controlled application behavior.
 
 At a high level, Illuna consists of six layers:
-
-```text
-┌──────────────────────────────────────────────┐
-│               User Experience                │
-│     Chat UI · App UI · Feedback Controls     │
-└──────────────────────┬───────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────┐
-│              Interaction Layer               │
-│      Message Handling · Session Context      │
-└──────────────────────┬───────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────┐
-│              Intelligence Layer              │
-│ Intent Classification · Context Reasoning    │
-└──────────────────────┬───────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────┐
-│            Personalization Layer             │
-│ Preference Memory · Adaptation Decisions     │
-└──────────────────────┬───────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────┐
-│               Adaptation Layer               │
-│     UI Changes · Workflow Changes · Rules    │
-└──────────────────────┬───────────────────────┘
-                       │
-                       ▼
-┌──────────────────────────────────────────────┐
-│              Application Layer               │
-│      Product Logic · Domain Data · APIs      │
-└──────────────────────────────────────────────┘
-```
+![Illuna Model](assets/architecture_concept.png)
 
 Each layer has a clear responsibility.
 
@@ -76,37 +38,9 @@ Applications can adopt the full model or start with a smaller subset.
 
 ## Core Components
 
-![Illuna Core Components Flow](assets/core-components-flow.svg)
-
 The Illuna architecture contains the following core components:
 
-```text
-User
- │
- ▼
-Chat / App Interface
- │
- ▼
-Interaction Gateway
- │
- ▼
-Intent Classifier
- │
- ▼
-Context Engine
- │
- ▼
-Personalization Engine
- │
- ▼
-Adaptation Engine
- │
- ▼
-Application Runtime
- │
- ▼
-Domain Services / Data Sources
-```
+![Illuna Core Components Flow](assets/illunva_user_flow_in_detail)
 
 ---
 
