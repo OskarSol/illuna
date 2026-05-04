@@ -444,7 +444,15 @@ const chatToggle = document.getElementById('chat-toggle');
 function setChatFlyout(open) {
   chatFlyout.classList.toggle('open', open);
   chatToggle.setAttribute('aria-expanded', String(open));
+
+  const panel = document.getElementById('chat-flyout-panel');
+  if (panel) {
+    panel.hidden = !open;
+    panel.setAttribute('aria-hidden', String(!open));
+  }
 }
+
+setChatFlyout(false);
 
 chatToggle.addEventListener('click', () => {
   const isOpen = chatFlyout.classList.contains('open');
