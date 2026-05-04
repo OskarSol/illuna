@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GardenPlaner – Example SPA</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <h1>🌿 GardenPlaner</h1>
+      <p>Simple garden manager with plant lists & monthly planner</p>
+    </header>
+
+    <main class="layout">
+      <section class="card">
+        <h2>General Garden Details</h2>
+        <form id="garden-form" class="form-grid">
+          <label>
+            Title
+            <input id="garden-title" type="text" placeholder="e.g. South Backyard" />
+          </label>
+          <label>
+            Icon
+            <input id="garden-icon" type="text" placeholder="🌱" maxlength="3" />
+          </label>
+          <label>
+            Location
+            <input id="garden-location" type="text" placeholder="e.g. Cologne, south side" />
+          </label>
+          <label>
+            Soil Type
+            <select id="garden-soil">
+              <option value="Loamy">Loamy</option>
+              <option value="Sandy">Sandy</option>
+              <option value="Humus-rich">Humus-rich</option>
+              <option value="Gravelly">Gravelly</option>
+              <option value="Mixed soil">Mixed soil</option>
+            </select>
+          </label>
+          <label>
+            Lawn area available?
+            <select id="garden-lawn">
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+            </select>
+          </label>
+          <label class="full-width">
+            Short Description
+            <textarea id="garden-description" rows="3" placeholder="Important garden notes..."></textarea>
+          </label>
+          <button type="submit">Save Garden Details</button>
+        </form>
+        <div id="garden-summary" class="summary"></div>
+      </section>
+
+      <section class="card">
+        <h2>Add Plant</h2>
+        <form id="plant-form" class="form-grid">
+          <label>
+            Plant Name
+            <input id="plant-name" type="text" required placeholder="e.g. Lavender" />
+          </label>
+          <label>
+            Category
+            <select id="plant-category">
+              <option value="Vegetables">Vegetables</option>
+              <option value="Herbs">Herbs</option>
+              <option value="Flowers">Flowers</option>
+              <option value="Shrubs">Shrubs</option>
+              <option value="Fruit">Fruit</option>
+              <option value="Ornamental Plants">Ornamental Plants</option>
+            </select>
+          </label>
+          <label>
+            Water Need
+            <select id="plant-water">
+              <option value="Low">Low</option>
+              <option value="Medium">Medium</option>
+              <option value="High">High</option>
+            </select>
+          </label>
+          <label>
+            Location
+            <select id="plant-sun">
+              <option value="Sun">Sun</option>
+              <option value="Partial Shade">Partial Shade</option>
+              <option value="Shade">Shade</option>
+              <option value="Container">Container</option>
+            </select>
+          </label>
+          <label class="full-width">
+            Note
+            <input id="plant-note" type="text" placeholder="e.g. Prune after flowering" />
+          </label>
+          <button type="submit">Save Plant</button>
+        </form>
+
+        <ul id="plant-list" class="list"></ul>
+      </section>
+
+      <section class="card">
+        <h2>Monthly Planner & Reminders</h2>
+        <form id="reminder-form" class="form-grid">
+          <label>
+            Month
+            <select id="reminder-month">
+              <option value="January">January</option>
+              <option value="February">February</option>
+              <option value="March">March</option>
+              <option value="April">April</option>
+              <option value="May">May</option>
+              <option value="June">June</option>
+              <option value="July">July</option>
+              <option value="August">August</option>
+              <option value="September">September</option>
+              <option value="October">October</option>
+              <option value="November">November</option>
+              <option value="December">December</option>
+            </select>
+          </label>
+          <label class="full-width">
+            Task / Reminder
+            <input id="reminder-text" type="text" required placeholder="e.g. Mow the lawn for the first time" />
+          </label>
+          <button type="submit">Add Reminder</button>
+        </form>
+
+        <div id="planner" class="planner-grid"></div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
