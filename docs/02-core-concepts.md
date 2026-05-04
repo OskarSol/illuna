@@ -18,6 +18,10 @@ It is an app where AI becomes part of the interaction model, personalization lay
 
 ## The Illuna Model
 
+## The Illuna Model (visual)
+
+![The Illuna Model – Core Concept](assets/illuna-model-concept.svg)
+
 Illuna describes adaptive applications through a simple flow:
 
 ```text

@@ -3,6 +3,8 @@
 
 ## Overview
 
+![Illuna Reference Architecture – Layers](assets/reference-architecture-layers.svg)
+
 Illuna is a reference architecture for building adaptive, AI-personalized applications.
 
 The architecture describes how natural language input can be transformed into structured intent, personalization decisions, and controlled application behavior.
@@ -73,6 +75,8 @@ Applications can adopt the full model or start with a smaller subset.
 ---
 
 ## Core Components
+
+![Illuna Core Components Flow](assets/core-components-flow.svg)
 
 The Illuna architecture contains the following core components:
 

@@ -1,0 +1,40 @@
+<svg width="1400" height="1100" viewBox="0 0 1400 1100" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Illuna Reference Architecture – Layers</title>
+  <desc id="desc">Six-layer architecture from user experience down to application layer.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#3f5776" />
+    </marker>
+    <style>
+      .h1 { font: 700 44px sans-serif; fill: #1e2f4f; }
+      .t { font: 700 28px sans-serif; fill: #1f2f4a; }
+      .s { font: 400 20px sans-serif; fill: #43526a; }
+      .line { stroke: #3f5776; stroke-width: 4; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <text x="60" y="70" class="h1">03 · Reference Architecture (Layers)</text>
+
+  <rect x="160" y="120" width="1080" height="120" rx="16" fill="#e7f3ff" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="175" class="t">1) User Experience</text><text x="620" y="175" class="s">Chat UI · App UI · Feedback Controls</text>
+
+  <rect x="160" y="270" width="1080" height="120" rx="16" fill="#ebf9ef" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="325" class="t">2) Interaction Layer</text><text x="620" y="325" class="s">Message Handling · Session Context</text>
+
+  <rect x="160" y="420" width="1080" height="120" rx="16" fill="#fff4e5" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="475" class="t">3) Intelligence Layer</text><text x="620" y="475" class="s">Intent Classification · Context Reasoning</text>
+
+  <rect x="160" y="570" width="1080" height="120" rx="16" fill="#f3ecff" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="625" class="t">4) Personalization Layer</text><text x="620" y="625" class="s">Preference Memory · Adaptation Decisions</text>
+
+  <rect x="160" y="720" width="1080" height="120" rx="16" fill="#edf9ff" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="775" class="t">5) Adaptation Layer</text><text x="620" y="775" class="s">UI Changes · Workflow Changes · Rules</text>
+
+  <rect x="160" y="870" width="1080" height="120" rx="16" fill="#eafff0" stroke="#5a7596" stroke-width="3"/>
+  <text x="200" y="925" class="t">6) Application Layer</text><text x="620" y="925" class="s">Product Logic · Domain Data · APIs</text>
+
+  <line class="line" x1="700" y1="240" x2="700" y2="270"/>
+  <line class="line" x1="700" y1="390" x2="700" y2="420"/>
+  <line class="line" x1="700" y1="540" x2="700" y2="570"/>
+  <line class="line" x1="700" y1="690" x2="700" y2="720"/>
+  <line class="line" x1="700" y1="840" x2="700" y2="870"/>
+</svg>
