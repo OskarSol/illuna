@@ -1,6 +1,4 @@
-# 04-intent-classification.md
-
-# Intent Classification
+# 04 · Intent Classification
 
 ## Overview
 
@@ -36,30 +34,11 @@ Those signals can then be used by downstream components such as the Context Engi
 
 ---
 
-## Why Intent Classification Matters
+## Objective
 
-Adaptive applications need to understand more than the literal text of a message.
+Classify user intent as the basis for selecting the right actions and adaptive UI responses.
 
-They need to understand what kind of action the message represents.
-
-A user message may be:
-
-* a question,
-* a command,
-* feedback,
-* a preference update,
-* a request for visual adaptation,
-* a workflow instruction,
-* a system-level action,
-* or an ambiguous signal.
-
-Without intent classification, every message becomes just text.
-
-With intent classification, every message becomes a possible product signal.
-
-The goal is not only to answer the user.
-
-The goal is to understand whether the app should adapt.
+The classifier should produce structured output that is directly usable by the Personalization Engine.
 
 ---
 
@@ -83,28 +62,14 @@ Context Engine
 Personalization / App Logic
 ```
 
-This separation is important.
-
 The classifier interprets.
 
 It does not execute.
 
-Otherwise, every misunderstood sentence gets promoted to product manager. And nobody wants that. Not even the sentence.
-
 ---
 
-## Intent Output Schema
-
-A simple Illuna intent output may look like this:
-
-# 04 · Intent Classification
-
-## Objective
-Classify user intent as the basis for selecting the right actions and adaptive UI responses.
-
-The classifier should produce structured output that is directly usable by the Personalization Engine.
-
 ## Recommended Intent Taxonomy
+
 The taxonomy should stay consistent with the concepts used in the other Illuna documents.
 
 - `information_request` (user asks for explanation or facts)
@@ -116,7 +81,10 @@ The taxonomy should stay consistent with the concepts used in the other Illuna d
 - `clarification_response` (user answers a disambiguation question)
 - `system_action_request` (user asks for reset, undo, export, or account-level actions)
 
+---
+
 ## Minimal Output Schema
+
 ```json
 {
   "intent": "preference_update",
@@ -128,18 +96,6 @@ The taxonomy should stay consistent with the concepts used in the other Illuna d
   "context": "user requests visual personalization",
   "confidence": 0.92
 }
-```
-
-## Minimal Intent Taxonomy
-
-```text
-general_qa
-preference_update
-workflow_request
-feature_request
-feedback
-system_meta
-other
 ```
 
 ---
@@ -163,13 +119,14 @@ Identify:
 - and confidence score.
 
 Allowed intents:
-- general_qa
+- information_request
+- task_request
 - preference_update
-- workflow_request
-- feature_request
-- feedback
-- system_meta
-- other
+- ui_adaptation_request
+- workflow_guidance_request
+- feedback_signal
+- clarification_response
+- system_action_request
 
 Rules:
 1. Do not answer the user.
@@ -178,19 +135,6 @@ Rules:
 4. If uncertain, choose the closest intent and lower the confidence score.
 5. Keep the output minimal and structured.
 6. Return JSON only.
-
-Output schema:
-
-{
-  "intent": "string",
-  "entities": {
-    "topic": "string",
-    "language": "string"
-  },
-  "tone": "string",
-  "context": "string",
-  "confidence": 0.0
-}
 ```
 
 ---
@@ -201,13 +145,14 @@ A simple TypeScript representation may look like this:
 
 ```ts
 export type IllunaIntent =
-  | "general_qa"
+  | "information_request"
+  | "task_request"
   | "preference_update"
-  | "workflow_request"
-  | "feature_request"
-  | "feedback"
-  | "system_meta"
-  | "other";
+  | "ui_adaptation_request"
+  | "workflow_guidance_request"
+  | "feedback_signal"
+  | "clarification_response"
+  | "system_action_request";
 
 export interface IntentEntities {
   topic: string;
@@ -259,53 +204,4 @@ Downstream systems need structured and stable JSON.
 
 ### Test with real user language
 
-Users rarely speak like documentation.
-
-They say things like:
-
-```text
-"Can this be less corporate and more cozy?"
-```
-
-And the system needs to survive that beautifully chaotic little gift.
-
----
-
-## Summary
-
-Intent Classification turns natural language into structured product signals.
-
-It helps Illuna understand whether a user message is:
-
-* a question,
-* a preference,
-* a workflow request,
-* feedback,
-* a feature idea,
-* a system action,
-* or something unclear.
-
-The classifier does not execute changes.
-
-It creates structured input for the rest of the Illuna pipeline.
-
-This makes adaptive behavior more reliable, testable, and safe.
-
-In Illuna, Intent Classification is the first step from conversation to application behavior.
-
----
-    "target": "app_theme",
-    "requested_change": "brighter"
-  },
-  "tone": "friendly",
-  "confidence": 0.91,
-  "requires_clarification": false
-}
-```
-
-## Quality Criteria
-- Precision and recall per intent category
-- Confidence thresholds with explicit fallback strategies
-- Transparency when classification is uncertain
-- Consistent entity extraction for adaptation targets
-- Stable behavior across multilingual phrasing
+Use examples from real product usage, not only synthetic test phrases.
