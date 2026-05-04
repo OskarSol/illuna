@@ -1,16 +1,20 @@
 # GardenPlaner (Example SPA)
 
-## Test Locally Before Opening a PR
+## Run the project locally
 
-1. Change into the project folder:
+1. Clone the repository with Git:
    ```bash
-   cd /workspace/illuna
+   git clone <REPO_URL>
    ```
-2. Start a local static server (Python 3):
+2. Change into the project directory:
+   ```bash
+   cd illuna
+   ```
+3. Start a local static server (Python 3):
    ```bash
    python3 -m http.server 8080
    ```
-3. Open in your browser:
+4. Open in your browser:
    - `http://localhost:8080/example/gardenplaner/`
 
 ## Manual Test Checklist
