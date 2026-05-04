@@ -38,6 +38,26 @@ const defaultReminders = {
   December: ['Garden rest & planning for next year']
 };
 
+function normalizeReminderEntries(entries = []) {
+  return entries
+    .map((entry) => {
+      if (typeof entry === 'string') return { text: entry, done: false };
+      if (entry && typeof entry.text === 'string') {
+        return { text: entry.text, done: Boolean(entry.done) };
+      }
+      return null;
+    })
+    .filter((entry) => entry && entry.text.trim());
+}
+
+function normalizeRemindersMap(reminders = {}) {
+  const normalized = {};
+  months.forEach((month) => {
+    normalized[month] = normalizeReminderEntries(reminders[month] || defaultReminders[month] || []);
+  });
+  return normalized;
+}
+
 function createInitialState() {
   return {
     garden: {
@@ -49,7 +69,7 @@ function createInitialState() {
       description: ''
     },
     plants: [],
-    reminders: { ...defaultReminders }
+    reminders: normalizeRemindersMap(defaultReminders)
   };
 }
 
@@ -166,8 +186,8 @@ function loadState() {
       },
       plants: Array.isArray(parsed.plants) ? parsed.plants : [],
       reminders: {
-        ...defaultReminders,
-        ...(parsed.reminders || {})
+        ...normalizeRemindersMap(defaultReminders),
+        ...normalizeRemindersMap(parsed.reminders || {})
       }
     };
   } catch {
@@ -282,19 +302,45 @@ function renderPlants() {
 
 function renderPlanner() {
   planner.innerHTML = '';
+  const currentMonthIndex = new Date().getMonth();
 
-  months.forEach((month) => {
+  months.forEach((month, index) => {
     const block = document.createElement('div');
     block.className = 'month-block';
+    if (index === currentMonthIndex) block.classList.add('current-month');
+    if (index < currentMonthIndex) block.classList.add('past-month');
 
-    const tasks = state.reminders[month] || [];
-    const lis = tasks.map((t) => `<li>${t}</li>`).join('');
+    const tasks = normalizeReminderEntries(state.reminders[month] || []);
+    if (!state.reminders[month]) state.reminders[month] = tasks;
+    const taskItems = tasks.length
+      ? tasks
+        .map((task, taskIndex) => `
+          <li>
+            <button class="task-toggle ${task.done ? 'is-done' : ''}" data-month="${month}" data-task-index="${taskIndex}" type="button">
+              ${task.text}
+            </button>
+          </li>
+        `)
+        .join('')
+      : '<li class="empty-state">No Tasks</li>';
 
-    block.innerHTML = `<h3>${month}</h3><ul>${lis || '<li>No Tasks</li>'}</ul>`;
+    block.innerHTML = `<h3>${month}</h3><ul>${taskItems}</ul>`;
     planner.appendChild(block);
   });
 }
 
+planner.addEventListener('click', (event) => {
+  const taskButton = event.target.closest('.task-toggle');
+  if (!taskButton) return;
+
+  const month = taskButton.dataset.month;
+  const taskIndex = Number(taskButton.dataset.taskIndex);
+  const monthTasks = state.reminders[month];
+  if (!monthTasks || Number.isNaN(taskIndex) || !monthTasks[taskIndex]) return;
+
+  monthTasks[taskIndex].done = !monthTasks[taskIndex].done;
+  saveState();
+  renderPlanner();
 openGardenMenuButton.addEventListener('click', () => {
   fillGardenForm();
   gardenMenuDialog.showModal();
@@ -346,7 +392,7 @@ reminderForm.addEventListener('submit', (event) => {
   if (!text) return;
 
   if (!state.reminders[month]) state.reminders[month] = [];
-  state.reminders[month].push(text);
+  state.reminders[month].push({ text, done: false });
 
   saveState();
   reminderForm.reset();
@@ -415,16 +461,18 @@ function buildAssistantReply(message) {
 
   if (normalized.includes('heute') || normalized.includes('diesen monat') || normalized.includes('aktuell')) {
     const month = getCurrentMonthName();
-    const tasks = state.reminders[month] || [];
-    return tasks.length
-      ? `Für ${month} empfehle ich: ${tasks.join(' • ')}`
+    const tasks = normalizeReminderEntries(state.reminders[month] || []);
+    const openTasks = tasks.filter((task) => !task.done).map((task) => task.text);
+    return openTasks.length
+      ? `Für ${month} empfehle ich: ${openTasks.join(' • ')}`
       : `Für ${month} hast du noch keine Aufgaben. Lege eine Erinnerung im Planer an.`;
   }
 
   if (normalized.includes('mai')) {
-    const tasks = state.reminders.May || [];
-    return tasks.length
-      ? `Im Mai passt: ${tasks.join(' • ')}`
+    const tasks = normalizeReminderEntries(state.reminders.May || []);
+    const openTasks = tasks.filter((task) => !task.done).map((task) => task.text);
+    return openTasks.length
+      ? `Im Mai passt: ${openTasks.join(' • ')}`
       : 'Für Mai sind noch keine Aufgaben hinterlegt.';
   }
 
