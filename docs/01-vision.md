@@ -1,4 +1,3 @@
-# Vision
 ![Illuna Vision](assets/illuna_vision.png)
 ## Every App Should Feel Like It Was Made for You
 
