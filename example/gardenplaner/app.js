@@ -7,6 +7,7 @@ const reminderForm = document.getElementById('reminder-form');
 const gardenSummary = document.getElementById('garden-summary');
 const plantList = document.getElementById('plant-list');
 const planner = document.getElementById('planner');
+const weatherWidget = document.getElementById('weather-widget');
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -92,6 +93,75 @@ function fillGardenForm() {
   document.getElementById('garden-description').value = state.garden.description;
 }
 
+function renderWeatherMessage(title, detail) {
+  weatherWidget.innerHTML = `<strong>${title}</strong><p>${detail}</p>`;
+}
+
+function weatherCodeLabel(code) {
+  const map = {
+    0: 'Klar',
+    1: 'Überwiegend klar',
+    2: 'Teilweise bewölkt',
+    3: 'Bewölkt',
+    45: 'Nebel',
+    48: 'Reifnebel',
+    51: 'Leichter Nieselregen',
+    53: 'Mäßiger Nieselregen',
+    55: 'Starker Nieselregen',
+    61: 'Leichter Regen',
+    63: 'Mäßiger Regen',
+    65: 'Starker Regen',
+    71: 'Leichter Schneefall',
+    73: 'Mäßiger Schneefall',
+    75: 'Starker Schneefall',
+    80: 'Leichte Regenschauer',
+    81: 'Mäßige Regenschauer',
+    82: 'Heftige Regenschauer',
+    95: 'Gewitter'
+  };
+  return map[code] || 'Unbekannt';
+}
+
+async function fetchAndRenderLocalWeather() {
+  const location = state.garden.location?.trim();
+  if (!location) {
+    renderWeatherMessage('Lokales Wetter', 'Ort speichern, um Wetter zu laden.');
+    return;
+  }
+
+  renderWeatherMessage('Lokales Wetter', 'Wetter wird geladen ...');
+
+  try {
+    const geocodeResponse = await fetch(
+      `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(location)}&count=1&language=de&format=json`
+    );
+    const geocodeData = await geocodeResponse.json();
+    const hit = geocodeData?.results?.[0];
+
+    if (!hit) {
+      renderWeatherMessage('Lokales Wetter', `Kein Wetter für „${location}“ gefunden.`);
+      return;
+    }
+
+    const weatherResponse = await fetch(
+      `https://api.open-meteo.com/v1/forecast?latitude=${hit.latitude}&longitude=${hit.longitude}&current=temperature_2m,apparent_temperature,weathercode,windspeed_10m&timezone=auto`
+    );
+    const weatherData = await weatherResponse.json();
+    const current = weatherData?.current;
+
+    if (!current) {
+      renderWeatherMessage('Lokales Wetter', 'Aktuelle Wetterdaten sind gerade nicht verfügbar.');
+      return;
+    }
+
+    const cityLabel = [hit.name, hit.country].filter(Boolean).join(', ');
+    const detail = `${cityLabel}: ${Math.round(current.temperature_2m)}°C, ${weatherCodeLabel(current.weathercode)}, gefühlt ${Math.round(current.apparent_temperature)}°C, Wind ${Math.round(current.windspeed_10m)} km/h`;
+    renderWeatherMessage('Lokales Wetter', detail);
+  } catch {
+    renderWeatherMessage('Lokales Wetter', 'Wetterdaten konnten nicht geladen werden.');
+  }
+}
+
 function renderPlants() {
   plantList.innerHTML = '';
 
@@ -135,6 +205,7 @@ gardenForm.addEventListener('submit', (event) => {
 
   saveState();
   renderSummary();
+  fetchAndRenderLocalWeather();
 });
 
 plantForm.addEventListener('submit', (event) => {
@@ -172,3 +243,4 @@ fillGardenForm();
 renderSummary();
 renderPlants();
 renderPlanner();
+fetchAndRenderLocalWeather();
