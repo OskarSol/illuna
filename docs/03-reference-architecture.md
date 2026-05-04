@@ -40,7 +40,7 @@ Applications can adopt the full model or start with a smaller subset.
 
 The Illuna architecture contains the following core components:
 
-![Illuna Core Components Flow](assets/illuna_user_flow_in_detail)
+![Illuna Core Components Flow](assets/illuna_user_flow_in_detail.png)
 
 ---
 
