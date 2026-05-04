@@ -16,6 +16,7 @@ body {
   font-family: Inter, system-ui, -apple-system, sans-serif;
   background: var(--bg);
   color: var(--text);
+  overflow-x: hidden;
 }
 
 .app-header {
@@ -200,7 +201,66 @@ button.secondary:hover {
 .chat-card {
   display: flex;
   flex-direction: column;
-  min-height: 420px;
+  min-height: 70vh;
+  margin: 0;
+}
+
+.chat-flyout {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: min(36vw, 520px);
+  min-width: 320px;
+  height: 100vh;
+  z-index: 30;
+  perspective: 1600px;
+  pointer-events: none;
+}
+
+.chat-flyout .chat-card {
+  height: 100%;
+  border-radius: 18px 0 0 18px;
+  border-right: 0;
+  box-shadow: -20px 0 40px rgba(13, 35, 17, 0.34);
+  transform-origin: right center;
+  transform: translateX(105%) rotateY(-22deg) scale(0.98);
+  opacity: 0;
+  transition: transform 0.5s ease, opacity 0.45s ease;
+  pointer-events: auto;
+}
+
+.chat-flyout.open .chat-card {
+  transform: translateX(0) rotateY(0deg) scale(1);
+  opacity: 1;
+}
+
+.chat-toggle {
+  position: absolute;
+  top: 50%;
+  left: -3.2rem;
+  width: 3.2rem;
+  height: 8.6rem;
+  border-radius: 12px 0 0 12px;
+  writing-mode: vertical-rl;
+  transform: translateY(-50%) translateX(2.1rem);
+  opacity: 0.35;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  box-shadow: -8px 8px 16px rgba(15, 44, 18, 0.35);
+  pointer-events: auto;
+}
+
+.chat-flyout:hover .chat-toggle,
+.chat-toggle:focus-visible,
+.chat-flyout.open .chat-toggle {
+  transform: translateY(-50%) translateX(0);
+  opacity: 1;
+}
+
+@media (max-width: 980px) {
+  .chat-flyout {
+    width: min(92vw, 440px);
+    min-width: 0;
+  }
 }
 
 .chat-hint {
