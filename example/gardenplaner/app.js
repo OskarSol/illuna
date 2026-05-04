@@ -244,3 +244,77 @@ renderSummary();
 renderPlants();
 renderPlanner();
 fetchAndRenderLocalWeather();
+
+
+const chatForm = document.getElementById('chat-form');
+const chatInput = document.getElementById('chat-input');
+const chatMessages = document.getElementById('chat-messages');
+
+function appendChatMessage(role, text) {
+  const bubble = document.createElement('div');
+  bubble.className = `chat-message ${role}`;
+  bubble.textContent = text;
+  chatMessages.appendChild(bubble);
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+}
+
+function getCurrentMonthName() {
+  return months[new Date().getMonth()];
+}
+
+function buildAssistantReply(message) {
+  const normalized = message.toLowerCase();
+
+  if (normalized.includes('zusammenfassung') || normalized.includes('garten')) {
+    const title = state.garden.title || 'dein Garten';
+    const plantCount = state.plants.length;
+    return `${state.garden.icon || '🌿'} ${title}: ${plantCount} Pflanzen eingetragen, Boden ${state.garden.soil}, Standort ${state.garden.location || 'nicht gesetzt'}.`;
+  }
+
+  if (normalized.includes('heute') || normalized.includes('diesen monat') || normalized.includes('aktuell')) {
+    const month = getCurrentMonthName();
+    const tasks = state.reminders[month] || [];
+    return tasks.length
+      ? `Für ${month} empfehle ich: ${tasks.join(' • ')}`
+      : `Für ${month} hast du noch keine Aufgaben. Lege eine Erinnerung im Planer an.`;
+  }
+
+  if (normalized.includes('mai')) {
+    const tasks = state.reminders.May || [];
+    return tasks.length
+      ? `Im Mai passt: ${tasks.join(' • ')}`
+      : 'Für Mai sind noch keine Aufgaben hinterlegt.';
+  }
+
+  if (normalized.includes('pflanz') || normalized.includes('idee')) {
+    const soil = state.garden.soil;
+    if (soil === 'Sandy') return 'Bei sandigem Boden passen z. B. Lavendel, Salbei und Thymian sehr gut.';
+    if (soil === 'Humus-rich') return 'Bei humusreichem Boden sind Tomaten, Zucchini und Hortensien oft dankbar.';
+    return 'Als einfache Starter eignen sich Kräuter wie Schnittlauch, Petersilie und Minze.';
+  }
+
+  if (normalized.includes('wasser')) {
+    const high = state.plants.filter((p) => p.water === 'High').map((p) => p.name);
+    return high.length
+      ? `Diese Pflanzen brauchen mehr Wasser: ${high.join(', ')}.`
+      : 'Aktuell ist keine Pflanze mit hohem Wasserbedarf eingetragen.';
+  }
+
+  return 'Ich kann dir bei Monatsaufgaben, Pflanzideen, Wasserbedarf und einer Garten-Zusammenfassung helfen.';
+}
+
+chatForm.addEventListener('submit', (event) => {
+  event.preventDefault();
+
+  const message = chatInput.value.trim();
+  if (!message) return;
+
+  appendChatMessage('user', message);
+  const reply = buildAssistantReply(message);
+  appendChatMessage('assistant', reply);
+
+  chatInput.value = '';
+  chatInput.focus();
+});
+
+appendChatMessage('assistant', 'Hallo! Ich bin dein Garten-Chat. Frag mich z. B. nach Aufgaben im aktuellen Monat.');

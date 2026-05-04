@@ -134,6 +134,16 @@
 
         <div id="planner" class="planner-grid"></div>
       </section>
+
+      <section class="card chat-card">
+        <h2>Garden Chat</h2>
+        <p class="chat-hint">Frage nach Pflanzideen, Aufgaben oder einer Zusammenfassung deines Gartens.</p>
+        <div id="chat-messages" class="chat-messages" aria-live="polite"></div>
+        <form id="chat-form" class="chat-form">
+          <input id="chat-input" type="text" placeholder="z. B. Was soll ich im Mai machen?" required />
+          <button type="submit">Senden</button>
+        </form>
+      </section>
     </main>
 
     <script src="app.js"></script>
