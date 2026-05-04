@@ -17,6 +17,7 @@ const gardenMenuDialog = document.getElementById('garden-menu-dialog');
 const openSettingsButton = document.getElementById('open-settings');
 const settingsDialog = document.getElementById('settings-dialog');
 const settingsForm = document.getElementById('settings-form');
+const reminderMonthSelect = document.getElementById('reminder-month');
 
 const months = [
   'January', 'February', 'March', 'April', 'May', 'June',
@@ -328,6 +329,15 @@ function renderPlanner() {
   });
 }
 
+function updateReminderMonthOptions() {
+  const currentMonthIndex = new Date().getMonth();
+  const options = Array.from(reminderMonthSelect.options);
+  options.forEach((option, index) => {
+    option.disabled = index < currentMonthIndex;
+  });
+  reminderMonthSelect.selectedIndex = currentMonthIndex;
+}
+
 planner.addEventListener('click', (event) => {
   const taskButton = event.target.closest('.task-toggle');
   if (!taskButton) return;
@@ -429,6 +439,7 @@ settingsForm.addEventListener('submit', async (event) => {
 });
 
 fillGardenForm();
+updateReminderMonthOptions();
 renderSummary();
 renderPlants();
 renderPlanner();
