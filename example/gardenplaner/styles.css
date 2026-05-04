@@ -36,25 +36,23 @@ body {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
 }
 
-.header-main h1 {
-  margin: 0;
+.header-actions {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
-.header-main p {
-  margin: 0.4rem 0 0;
-}
+.header-main h1 { margin: 0; }
+.header-main p { margin: 0.4rem 0 0; }
+.settings-button { margin-top: 0.8rem; max-width: 220px; }
 
-.settings-button {
-  margin-top: 0.8rem;
-  max-width: 220px;
-}
-
+.garden-header-widget,
 .weather-widget {
   position: absolute;
   top: 0.8rem;
-  right: 1rem;
   min-width: 220px;
-  max-width: 280px;
+  max-width: 300px;
   padding: 0.65rem 0.8rem;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.14);
@@ -62,23 +60,16 @@ body {
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
   backdrop-filter: blur(3px);
 }
-
-.weather-widget strong {
-  display: block;
-  margin-bottom: 0.2rem;
-}
-
-.weather-widget p {
-  margin: 0;
-  font-size: 0.92rem;
-  line-height: 1.35;
-}
+.garden-header-widget { left: 1rem; }
+.weather-widget { right: 1rem; max-width: 280px; }
+.garden-header-widget strong,
+.weather-widget strong { display: block; margin-bottom: 0.2rem; }
+.garden-header-widget p,
+.weather-widget p { margin: 0; font-size: 0.9rem; line-height: 1.35; }
 
 @media (max-width: 760px) {
-  .app-header {
-    padding-top: 1rem;
-  }
-
+  .app-header { padding-top: 1rem; }
+  .garden-header-widget,
   .weather-widget {
     position: static;
     max-width: none;
@@ -86,170 +77,34 @@ body {
   }
 }
 
-.layout {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
-  padding: 1rem;
-}
+.layout { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1rem; padding: 1rem; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+.form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+.form-grid label, .form-grid button, .full-width { grid-column: span 2; }
+@media (min-width: 720px) { .form-grid label:not(.full-width) { grid-column: span 1; } }
 
-.card {
-  background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 1rem;
-}
+input, select, textarea, button { width: 100%; padding: 0.55rem; margin-top: 0.3rem; border-radius: 8px; border: 1px solid #cfd8cc; font: inherit; }
+button { background: var(--accent); color: white; border: none; cursor: pointer; }
+button:hover { background: #256b2a; }
+button.secondary { background: #607d61; }
+button.secondary:hover { background: #4a644c; }
 
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.75rem;
-}
+.settings-dialog { width: min(520px, 92vw); border: 1px solid var(--line); border-radius: 12px; padding: 1rem; }
+.settings-dialog::backdrop { background: rgba(0, 0, 0, 0.35); }
+.dialog-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
 
-.form-grid label,
-.form-grid button,
-.full-width {
-  grid-column: span 2;
-}
+.summary, .list li, .month-block { margin-top: 0.75rem; background: var(--accent-soft); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem; }
+.list { list-style: none; padding: 0; }
+.planner-grid { display: grid; gap: 0.5rem; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.month-block h3 { margin: 0 0 0.4rem; font-size: 1rem; }
+.month-block ul { margin: 0; padding-left: 1rem; }
 
-@media (min-width: 720px) {
-  .form-grid label:not(.full-width) {
-    grid-column: span 1;
-  }
-}
-
-input,
-select,
-textarea,
-button {
-  width: 100%;
-  padding: 0.55rem;
-  margin-top: 0.3rem;
-  border-radius: 8px;
-  border: 1px solid #cfd8cc;
-  font: inherit;
-}
-
-button {
-  background: var(--accent);
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-button:hover {
-  background: #256b2a;
-}
-
-button.secondary {
-  background: #607d61;
-}
-
-button.secondary:hover {
-  background: #4a644c;
-}
-
-.settings-dialog {
-  width: min(520px, 92vw);
-  border: 1px solid var(--line);
-  border-radius: 12px;
-  padding: 1rem;
-}
-
-.settings-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.35);
-}
-
-.dialog-actions {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.7rem;
-}
-
-.summary,
-.list li,
-.month-block {
-  margin-top: 0.75rem;
-  background: var(--accent-soft);
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 0.6rem;
-}
-
-.list {
-  list-style: none;
-  padding: 0;
-}
-
-.planner-grid {
-  display: grid;
-  gap: 0.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-
-.month-block h3 {
-  margin: 0 0 0.4rem;
-  font-size: 1rem;
-}
-
-.month-block ul {
-  margin: 0;
-  padding-left: 1rem;
-}
-
-.chat-card {
-  display: flex;
-  flex-direction: column;
-  min-height: 420px;
-}
-
-.chat-hint {
-  margin: 0 0 0.8rem;
-  color: #46614a;
-}
-
-.chat-messages {
-  flex: 1;
-  border: 1px solid var(--line);
-  border-radius: 10px;
-  background: #f9fff8;
-  padding: 0.8rem;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.chat-message {
-  max-width: 90%;
-  padding: 0.55rem 0.7rem;
-  border-radius: 10px;
-  line-height: 1.4;
-}
-
-.chat-message.user {
-  align-self: flex-end;
-  background: #daf0dc;
-}
-
-.chat-message.assistant {
-  align-self: flex-start;
-  background: #eef8ee;
-  border: 1px solid var(--line);
-}
-
-.chat-form {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 0.6rem;
-  margin-top: 0.8rem;
-}
-
-.chat-form input {
-  margin-top: 0;
-}
-
-.chat-form button {
-  margin-top: 0;
-  min-width: 110px;
-}
+.chat-card { display: flex; flex-direction: column; min-height: 420px; }
+.chat-hint { margin: 0 0 0.8rem; color: #46614a; }
+.chat-messages { flex: 1; border: 1px solid var(--line); border-radius: 10px; background: #f9fff8; padding: 0.8rem; overflow-y: auto; display: flex; flex-direction: column; gap: 0.6rem; }
+.chat-message { max-width: 90%; padding: 0.55rem 0.7rem; border-radius: 10px; line-height: 1.4; }
+.chat-message.user { align-self: flex-end; background: #daf0dc; }
+.chat-message.assistant { align-self: flex-start; background: #eef8ee; border: 1px solid var(--line); }
+.chat-form { display: grid; grid-template-columns: 1fr auto; gap: 0.6rem; margin-top: 0.8rem; }
+.chat-form input, .chat-form button { margin-top: 0; }
+.chat-form button { min-width: 110px; }
