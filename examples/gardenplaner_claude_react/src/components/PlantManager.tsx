@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Plus, Trash2, MapPin, StickyNote, Leaf } from 'lucide-react'
 import { useGardenStore, type Plant } from '../store'
+import { useShallow } from 'zustand/shallow'
 
 const PLANT_EMOJIS = ['🌱', '🌿', '🍅', '🥕', '🥦', '🌹', '🌻', '🌷', '🍓', '🫐', '🍋', '🌺', '🌾', '🪴', '🫚']
 
@@ -151,7 +152,7 @@ export default function PlantManager() {
 }
 
 function PlantCard({ plant, deleteConfirm, onDelete }: { plant: Plant; deleteConfirm: boolean; onDelete: () => void }) {
-  const tasks = useGardenStore((s) => s.tasks.filter((t) => t.plantId === plant.id && !t.completed))
+  const tasks = useGardenStore(useShallow((s) => s.tasks.filter((t) => t.plantId === plant.id && !t.completed)))
 
   return (
     <div className="bg-white border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
