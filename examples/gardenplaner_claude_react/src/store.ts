@@ -103,7 +103,6 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
   initialized: false,
 
   init: async () => {
-    ensureDbSync(set)
     const plants = await db.plants.toArray()
     const tasks = await db.tasks.toArray()
     if (plants.length === 0 && tasks.length === 0) {
@@ -115,6 +114,8 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
     } else {
       set({ plants, tasks, initialized: true })
     }
+
+    ensureDbSync(set)
     await ensureUiSeedData()
   },
 
