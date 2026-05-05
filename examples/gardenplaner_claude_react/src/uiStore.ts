@@ -23,6 +23,10 @@ function applyCssVariables(tokens: Record<string, string>) {
   })
 }
 
+function isTokenKey(key: string) {
+  return !key.startsWith('text.') && !key.startsWith('icon.')
+}
+
 function buildTokensAndElements(
   tokenRows: UiToken[],
   elementRows: { elementKey: string; value: string }[]
@@ -32,7 +36,7 @@ function buildTokensAndElements(
     return acc
   }, {})
   elementRows.forEach((element) => {
-    if (!element.elementKey.startsWith('text.')) tokens[element.elementKey] = element.value
+    if (isTokenKey(element.elementKey)) tokens[element.elementKey] = element.value
   })
   const elements = elementRows.reduce<Record<string, string>>((acc, element) => {
     acc[element.elementKey] = element.value
@@ -110,7 +114,7 @@ export const useUiStore = create<UiState>((set, get) => ({
       await db.ui_elements.update(existingElement.id, { value, valueType, updatedAt: now() })
     }
 
-    if (!elementKey.startsWith('text.')) {
+    if (isTokenKey(elementKey)) {
       await get().setToken(elementKey, value, valueType)
     }
 

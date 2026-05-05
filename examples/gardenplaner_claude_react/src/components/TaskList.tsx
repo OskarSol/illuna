@@ -3,28 +3,13 @@ import { Plus, Trash2, CheckCircle2, Circle, CalendarDays, RefreshCw, ChevronDow
 import { format, isToday, isTomorrow, isPast, parseISO } from 'date-fns'
 import { de } from 'date-fns/locale'
 import { useGardenStore, type Task, type TaskType } from '../store'
+import { useUiStore } from '../uiStore'
 import clsx from 'clsx'
 
-const TASK_TYPES: { value: TaskType; label: string; icon: string; color: string }[] = [
-  { value: 'watering', label: 'Gießen', icon: '💧', color: 'bg-sky-100 text-sky-700' },
-  { value: 'fertilizing', label: 'Düngen', icon: '🌿', color: 'bg-emerald-100 text-emerald-700' },
-  { value: 'pruning', label: 'Schneiden', icon: '✂️', color: 'bg-orange-100 text-orange-700' },
-  { value: 'harvesting', label: 'Ernten', icon: '🧺', color: 'bg-yellow-100 text-yellow-700' },
-  { value: 'repotting', label: 'Umtopfen', icon: '🪴', color: 'bg-amber-100 text-amber-700' },
-  { value: 'other', label: 'Sonstiges', icon: '📝', color: 'bg-gray-100 text-gray-600' },
-]
+const TASK_TYPE_VALUES: TaskType[] = ['watering', 'fertilizing', 'pruning', 'harvesting', 'repotting', 'other']
 
 type GroupKey = 'overdue' | 'today' | 'tomorrow' | 'upcoming' | 'done'
-
-function groupLabel(key: GroupKey): { label: string; color: string } {
-  return {
-    overdue: { label: '⚠️ Überfällig', color: 'text-red-600' },
-    today: { label: '📅 Heute', color: 'text-green-700' },
-    tomorrow: { label: '🌅 Morgen', color: 'text-amber-700' },
-    upcoming: { label: '🗓 Demnächst', color: 'text-blue-700' },
-    done: { label: '✅ Erledigt', color: 'text-gray-500' },
-  }[key]
-}
+const GROUP_KEYS: GroupKey[] = ['overdue', 'today', 'tomorrow', 'upcoming', 'done']
 
 function classifyTask(task: Task): GroupKey {
   if (task.completed) return 'done'
@@ -66,6 +51,7 @@ const EMPTY_TASK_FORM: TaskFormData = {
 
 export default function TaskList() {
   const { tasks, plants, toggleTask, removeTask, addTask } = useGardenStore()
+  const { elements } = useUiStore()
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<TaskFormData>(EMPTY_TASK_FORM)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<GroupKey>>(new Set(['done']))
@@ -99,16 +85,20 @@ export default function TaskList() {
     setShowForm(false)
   }
 
-  const ORDER: GroupKey[] = ['overdue', 'today', 'tomorrow', 'upcoming', 'done']
+  const taskTypeOptions = TASK_TYPE_VALUES.map((type) => ({
+    value: type,
+    label: elements[`text.tasktype.${type}`] || type,
+    icon: elements[`icon.tasktype.${type}`] || '',
+  }))
 
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <h2 className="text-lg font-semibold text-green-900 flex items-center gap-2">
           <CalendarDays className="w-5 h-5 text-green-600" />
-          Aufgaben
+          {elements['text.tasks.heading'] || 'Aufgaben'}
           <span className="text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
-            {tasks.filter((t) => !t.completed).length} offen
+            {tasks.filter((t) => !t.completed).length} {elements['text.stats.open'] || 'offen'}
           </span>
         </h2>
         <div className="flex gap-2 flex-wrap">
@@ -117,7 +107,7 @@ export default function TaskList() {
             onChange={(e) => setFilterPlant(e.target.value)}
             className="text-sm border border-green-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-green-800"
           >
-            <option value="all">Alle Pflanzen</option>
+            <option value="all">{elements['text.tasks.filterAll'] || 'Alle Pflanzen'}</option>
             {plants.map((p) => (
               <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
             ))}
@@ -127,14 +117,14 @@ export default function TaskList() {
             className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
-            Aufgabe
+            {elements['text.tasks.addButton'] || 'Aufgabe'}
           </button>
         </div>
       </div>
 
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-white border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
-          <p className="text-sm font-medium text-green-800">Neue Aufgabe</p>
+          <p className="text-sm font-medium text-green-800">{elements['text.tasks.formTitle'] || 'Neue Aufgabe'}</p>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
@@ -158,7 +148,7 @@ export default function TaskList() {
                 onChange={(e) => setForm({ ...form, taskType: e.target.value as TaskType })}
                 className="w-full border border-green-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
               >
-                {TASK_TYPES.map((t) => (
+                {taskTypeOptions.map((t) => (
                   <option key={t.value} value={t.value}>{t.icon} {t.label}</option>
                 ))}
               </select>
@@ -246,10 +236,11 @@ export default function TaskList() {
       )}
 
       <div className="space-y-2">
-        {ORDER.map((key) => {
+        {GROUP_KEYS.map((key) => {
           const group = groups[key]
           if (group.length === 0) return null
-          const { label, color } = groupLabel(key)
+          const label = elements[`text.tasks.group.${key}`] || key
+          const color = elements[`color.tasks.group.${key}`]
           const collapsed = collapsedGroups.has(key)
           return (
             <div key={key} className="bg-white border border-green-100 rounded-xl overflow-hidden shadow-sm">
@@ -257,7 +248,7 @@ export default function TaskList() {
                 onClick={() => toggleGroup(key)}
                 className="w-full flex items-center justify-between px-4 py-3 hover:bg-green-50 transition-colors"
               >
-                <span className={clsx('text-sm font-semibold', color)}>{label}</span>
+                <span className="text-sm font-semibold" style={color ? { color } : undefined}>{label}</span>
                 <div className="flex items-center gap-2">
                   <span className="text-xs text-green-500 bg-green-50 px-2 py-0.5 rounded-full">{group.length}</span>
                   {collapsed ? <ChevronDown className="w-4 h-4 text-green-400" /> : <ChevronUp className="w-4 h-4 text-green-400" />}
@@ -279,7 +270,7 @@ export default function TaskList() {
         {tasks.length === 0 && (
           <div className="text-center py-10 text-green-500 bg-white rounded-xl border border-green-100">
             <p className="text-3xl mb-2">📋</p>
-            <p className="text-sm">Noch keine Aufgaben. Füge deine erste hinzu!</p>
+            <p className="text-sm">{elements['text.tasks.emptyState'] || 'Noch keine Aufgaben. Füge deine erste hinzu!'}</p>
           </div>
         )}
       </div>
@@ -289,7 +280,12 @@ export default function TaskList() {
 
 function TaskItem({ task, onToggle, onDelete }: { task: Task; onToggle: () => void; onDelete: () => void }) {
   const plant = useGardenStore((s) => s.plants.find((p) => p.id === task.plantId))
-  const typeInfo = TASK_TYPES.find((t) => t.value === task.taskType)
+  const { elements } = useUiStore()
+
+  const icon = elements[`icon.tasktype.${task.taskType}`] || ''
+  const label = elements[`text.tasktype.${task.taskType}`] || task.taskType
+  const bg = elements[`color.tasktype.${task.taskType}.bg`]
+  const textColor = elements[`color.tasktype.${task.taskType}.text`]
 
   return (
     <li className="flex items-center gap-3 px-4 py-3 hover:bg-green-50/50 transition-colors group">
@@ -309,8 +305,11 @@ function TaskItem({ task, onToggle, onDelete }: { task: Task; onToggle: () => vo
               {plant.emoji} {plant.name}
             </span>
           )}
-          <span className={clsx('text-xs px-1.5 py-0.5 rounded', typeInfo?.color)}>
-            {typeInfo?.icon} {typeInfo?.label}
+          <span
+            className="text-xs px-1.5 py-0.5 rounded"
+            style={bg ? { backgroundColor: bg, color: textColor } : undefined}
+          >
+            {icon} {label}
           </span>
           <span className="text-xs text-green-500 flex items-center gap-1">
             <CalendarDays className="w-3 h-3" />

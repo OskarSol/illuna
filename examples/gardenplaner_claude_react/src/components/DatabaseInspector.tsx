@@ -19,10 +19,10 @@ export default function DatabaseInspector() {
     setMessage('')
     try {
       const data = await table.toArray()
-      setRows(data as Record<string, unknown>[])
+      setRows(data as unknown as Record<string, unknown>[])
       setDrafts(
         Object.fromEntries(
-          data.map((row: Record<string, unknown>, index: number) => [index, JSON.stringify(row, null, 2)])
+          (data as unknown as Record<string, unknown>[]).map((row, index: number) => [index, JSON.stringify(row, null, 2)])
         )
       )
     } catch (error) {
@@ -50,9 +50,9 @@ export default function DatabaseInspector() {
           setMessage(`Primärschlüssel "${keyPath}" fehlt in Zeile ${index + 1}.`)
           return
         }
-        await table.put(parsed, keyValue)
+        await (table as import('dexie').Table).put(parsed, keyValue)
       } else {
-        await table.put(parsed)
+        await (table as import('dexie').Table).put(parsed)
       }
 
       setMessage(`Zeile ${index + 1} gespeichert.`)

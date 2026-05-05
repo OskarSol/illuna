@@ -7,27 +7,11 @@ import {
 import { de } from 'date-fns/locale'
 import { ChevronLeft, ChevronRight, CheckCircle2, Circle, CalendarDays } from 'lucide-react'
 import { useGardenStore, type Task } from '../store'
+import { useUiStore } from '../uiStore'
 import clsx from 'clsx'
 
 const WEEKDAYS = ['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So']
-
-const TASK_TYPE_COLOR: Record<string, string> = {
-  watering: 'bg-sky-400',
-  fertilizing: 'bg-emerald-500',
-  pruning: 'bg-orange-400',
-  harvesting: 'bg-yellow-400',
-  repotting: 'bg-amber-500',
-  other: 'bg-gray-400',
-}
-
-const TASK_TYPE_ICON: Record<string, string> = {
-  watering: '💧',
-  fertilizing: '🌿',
-  pruning: '✂️',
-  harvesting: '🧺',
-  repotting: '🪴',
-  other: '📝',
-}
+const TASK_TYPES = ['watering', 'fertilizing', 'pruning', 'harvesting', 'repotting', 'other']
 
 function mondayIndex(date: Date): number {
   const d = getDay(date)
@@ -39,6 +23,7 @@ export default function MonthlyCalendar() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(new Date())
 
   const { tasks, toggleTask } = useGardenStore()
+  const { elements } = useUiStore()
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -58,7 +43,7 @@ export default function MonthlyCalendar() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-green-900 flex items-center gap-2">
           <CalendarDays className="w-5 h-5 text-green-600" />
-          Monatsübersicht
+          {elements['text.calendar.heading'] || 'Monatsübersicht'}
         </h2>
         <div className="flex items-center gap-1">
           <button
@@ -115,8 +100,9 @@ export default function MonthlyCalendar() {
                 <span
                   className={clsx(
                     'inline-flex w-6 h-6 items-center justify-center rounded-full text-xs font-medium',
-                    today ? 'bg-green-600 text-white' : 'text-green-800',
+                    today ? 'text-white' : 'text-green-800',
                   )}
+                  style={today ? { backgroundColor: elements['color.primary'] || '#16a34a' } : undefined}
                 >
                   {format(day, 'd')}
                 </span>
@@ -125,7 +111,8 @@ export default function MonthlyCalendar() {
                   {pending.slice(0, 3).map((t) => (
                     <span
                       key={t.id}
-                      className={clsx('w-1.5 h-1.5 rounded-full', TASK_TYPE_COLOR[t.taskType])}
+                      className="w-1.5 h-1.5 rounded-full"
+                      style={{ backgroundColor: elements[`color.tasktype.${t.taskType}.dot`] || '#9ca3af' }}
                       title={t.title}
                     />
                   ))}
@@ -147,17 +134,20 @@ export default function MonthlyCalendar() {
         </div>
       </div>
 
-      {/* Legend */}
+      {/* Legende */}
       <div className="flex flex-wrap gap-3 px-1">
-        {Object.entries(TASK_TYPE_ICON).map(([type, icon]) => (
+        {TASK_TYPES.map((type) => (
           <span key={type} className="flex items-center gap-1.5 text-xs text-green-600">
-            <span className={clsx('w-2 h-2 rounded-full', TASK_TYPE_COLOR[type])} />
-            {icon} {TYPE_LABEL[type]}
+            <span
+              className="w-2 h-2 rounded-full"
+              style={{ backgroundColor: elements[`color.tasktype.${type}.dot`] || '#9ca3af' }}
+            />
+            {elements[`icon.tasktype.${type}`] || ''} {elements[`text.tasktype.${type}`] || type}
           </span>
         ))}
       </div>
 
-      {/* Day detail panel */}
+      {/* Tagesdetails */}
       {selectedDay && (
         <div className="bg-white border border-green-100 rounded-xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-green-100 flex items-center justify-between">
@@ -171,7 +161,7 @@ export default function MonthlyCalendar() {
 
           {selectedDayTasks.length === 0 ? (
             <div className="py-8 text-center text-green-400 text-sm">
-              <p>🌞 Kein Aufgaben an diesem Tag</p>
+              <p>🌞 Keine Aufgaben an diesem Tag</p>
             </div>
           ) : (
             <ul className="divide-y divide-green-50">
@@ -188,6 +178,11 @@ export default function MonthlyCalendar() {
 
 function DayTaskItem({ task, onToggle }: { task: Task; onToggle: () => void }) {
   const plant = useGardenStore((s) => s.plants.find((p) => p.id === task.plantId))
+  const { elements } = useUiStore()
+
+  const icon = elements[`icon.tasktype.${task.taskType}`] || ''
+  const typeLabel = elements[`text.tasktype.${task.taskType}`] || task.taskType
+  const dotColor = elements[`color.tasktype.${task.taskType}.dot`] || '#9ca3af'
 
   return (
     <li
@@ -199,7 +194,7 @@ function DayTaskItem({ task, onToggle }: { task: Task; onToggle: () => void }) {
           ? <CheckCircle2 className="w-5 h-5 text-green-500" />
           : <Circle className="w-5 h-5" />}
       </span>
-      <span className="text-xl">{TASK_TYPE_ICON[task.taskType]}</span>
+      <span className="text-xl">{icon}</span>
       <div className="flex-1 min-w-0">
         <p className={clsx('text-sm font-medium', task.completed ? 'line-through text-green-400' : 'text-green-900')}>
           {task.title}
@@ -208,18 +203,12 @@ function DayTaskItem({ task, onToggle }: { task: Task; onToggle: () => void }) {
           <p className="text-xs text-green-600 mt-0.5">{plant.emoji} {plant.name}</p>
         )}
       </div>
-      <span className={clsx('text-xs px-2 py-0.5 rounded-full text-white', TASK_TYPE_COLOR[task.taskType])}>
-        {TYPE_LABEL[task.taskType]}
+      <span
+        className="text-xs px-2 py-0.5 rounded-full text-white"
+        style={{ backgroundColor: dotColor }}
+      >
+        {typeLabel}
       </span>
     </li>
   )
-}
-
-const TYPE_LABEL: Record<string, string> = {
-  watering: 'Gießen',
-  fertilizing: 'Düngen',
-  pruning: 'Schneiden',
-  harvesting: 'Ernten',
-  repotting: 'Umtopfen',
-  other: 'Sonstiges',
 }

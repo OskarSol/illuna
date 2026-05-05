@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Plus, Trash2, MapPin, StickyNote, Leaf } from 'lucide-react'
 import { useGardenStore, type Plant } from '../store'
+import { useUiStore } from '../uiStore'
 import { useShallow } from 'zustand/shallow'
 
-const PLANT_EMOJIS = ['🌱', '🌿', '🍅', '🥕', '🥦', '🌹', '🌻', '🌷', '🍓', '🫐', '🍋', '🌺', '🌾', '🪴', '🫚']
+const FALLBACK_EMOJIS = ['🌱', '🌿', '🍅', '🥕', '🥦', '🌹', '🌻', '🌷', '🍓', '🫐', '🍋', '🌺', '🌾', '🪴', '🫚']
 
 interface PlantFormData {
   name: string
@@ -16,9 +17,14 @@ const EMPTY_FORM: PlantFormData = { name: '', emoji: '🌱', location: '', notes
 
 export default function PlantManager() {
   const { plants, addPlant, removePlant } = useGardenStore()
+  const { elements } = useUiStore()
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<PlantFormData>(EMPTY_FORM)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
+
+  const plantEmojis = elements['text.plants.emojis']
+    ? elements['text.plants.emojis'].split(',').map((e) => e.trim()).filter(Boolean)
+    : FALLBACK_EMOJIS
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -43,7 +49,7 @@ export default function PlantManager() {
       <div className="flex items-center justify-between">
         <h2 className="text-lg font-semibold text-green-900 flex items-center gap-2">
           <Leaf className="w-5 h-5 text-green-600" />
-          Meine Pflanzen
+          {elements['text.plants.heading'] || 'Meine Pflanzen'}
           <span className="ml-1 text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
             {plants.length}
           </span>
@@ -53,13 +59,13 @@ export default function PlantManager() {
           className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
-          Pflanze hinzufügen
+          {elements['text.plants.addButton'] || 'Pflanze hinzufügen'}
         </button>
       </div>
 
       {showForm && (
         <form onSubmit={handleSubmit} className="bg-white border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
-          <p className="text-sm font-medium text-green-800">Neue Pflanze</p>
+          <p className="text-sm font-medium text-green-800">{elements['text.plants.formTitle'] || 'Neue Pflanze'}</p>
 
           <div className="flex gap-2">
             <div className="flex-1">
@@ -78,7 +84,7 @@ export default function PlantManager() {
           <div>
             <label className="block text-xs text-green-700 mb-1">Emoji</label>
             <div className="flex flex-wrap gap-1.5">
-              {PLANT_EMOJIS.map((e) => (
+              {plantEmojis.map((e) => (
                 <button
                   key={e}
                   type="button"
@@ -143,7 +149,7 @@ export default function PlantManager() {
         {plants.length === 0 && (
           <div className="col-span-2 text-center py-10 text-green-500">
             <p className="text-3xl mb-2">🌱</p>
-            <p className="text-sm">Noch keine Pflanzen. Füge deine erste hinzu!</p>
+            <p className="text-sm">{elements['text.plants.emptyState'] || 'Noch keine Pflanzen. Füge deine erste hinzu!'}</p>
           </div>
         )}
       </div>
@@ -153,6 +159,7 @@ export default function PlantManager() {
 
 function PlantCard({ plant, deleteConfirm, onDelete }: { plant: Plant; deleteConfirm: boolean; onDelete: () => void }) {
   const tasks = useGardenStore(useShallow((s) => s.tasks.filter((t) => t.plantId === plant.id && !t.completed)))
+  const { elements } = useUiStore()
 
   return (
     <div className="bg-white border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
@@ -192,7 +199,7 @@ function PlantCard({ plant, deleteConfirm, onDelete }: { plant: Plant; deleteCon
         <div className="flex gap-1">
           {tasks.slice(0, 3).map((t) => (
             <span key={t.id} className="text-xs bg-green-50 text-green-700 px-1.5 py-0.5 rounded">
-              {TASK_ICON[t.taskType]}
+              {elements[`icon.tasktype.${t.taskType}`] || t.taskType}
             </span>
           ))}
           {tasks.length > 3 && <span className="text-xs text-green-500">+{tasks.length - 3}</span>}
@@ -200,13 +207,4 @@ function PlantCard({ plant, deleteConfirm, onDelete }: { plant: Plant; deleteCon
       </div>
     </div>
   )
-}
-
-const TASK_ICON: Record<string, string> = {
-  watering: '💧',
-  fertilizing: '🌿',
-  pruning: '✂️',
-  harvesting: '🧺',
-  repotting: '🪴',
-  other: '📝',
 }

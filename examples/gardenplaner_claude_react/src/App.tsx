@@ -15,13 +15,15 @@ import clsx from 'clsx'
 
 type Tab = 'plants' | 'tasks' | 'calendar' | 'settings' | 'database'
 
-const TABS: { id: Tab; label: string; icon: typeof Leaf }[] = [
-  { id: 'plants', label: 'Pflanzen', icon: Sprout },
-  { id: 'tasks', label: 'Aufgaben', icon: ListChecks },
-  { id: 'calendar', label: 'Kalender', icon: CalendarDays },
-  { id: 'settings', label: 'Einstellungen', icon: Settings },
-  { id: 'database', label: 'Datenbank', icon: Database },
-]
+const TAB_ICONS: Record<Tab, typeof Leaf> = {
+  plants: Sprout,
+  tasks: ListChecks,
+  calendar: CalendarDays,
+  settings: Settings,
+  database: Database,
+}
+
+const TAB_KEYS: Tab[] = ['plants', 'tasks', 'calendar', 'settings', 'database']
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
@@ -42,6 +44,9 @@ export default function App() {
     fontSize: tokens['font.size.base'] || undefined,
   } as const
 
+  const iconBg = elements['color.header.iconBg'] || '#16a34a'
+  const navActive = elements['color.nav.active'] || '#16a34a'
+
   if (!initialized) return null
 
   return (
@@ -49,7 +54,7 @@ export default function App() {
       <header className="bg-white border-b border-green-100 shadow-sm sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 bg-green-600 rounded-xl flex items-center justify-center shadow-sm">
+            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: iconBg }}>
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
@@ -59,28 +64,33 @@ export default function App() {
           </div>
 
           <div className="hidden sm:flex gap-4">
-            <Stat label="Pflanzen" value={plants.length} color="text-green-600" />
-            <Stat label="Heute fällig" value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
-            <Stat label="Offen" value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
+            <Stat label={elements['text.stats.plants'] || 'Pflanzen'} value={plants.length} color="text-green-600" />
+            <Stat label={elements['text.stats.dueToday'] || 'Heute fällig'} value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
+            <Stat label={elements['text.stats.open'] || 'Offen'} value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
           </div>
         </div>
 
         <div className="max-w-3xl mx-auto px-4 flex gap-1 pb-0 pt-1">
-          {TABS.map(({ id, label, icon: Icon }) => (
-            <button
-              key={id}
-              onClick={() => setActiveTab(id)}
-              className={clsx(
-                'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all',
-                activeTab === id
-                  ? 'border-green-600 text-green-700 bg-green-50'
-                  : 'border-transparent text-green-500 hover:text-green-700 hover:bg-green-50/50'
-              )}
-            >
-              <Icon className="w-4 h-4" />
-              {label}
-            </button>
-          ))}
+          {TAB_KEYS.map((id) => {
+            const Icon = TAB_ICONS[id]
+            const label = elements[`text.nav.tab.${id}`] || id
+            return (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id)}
+                className={clsx(
+                  'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all',
+                  activeTab === id
+                    ? 'bg-green-50'
+                    : 'border-transparent text-green-500 hover:text-green-700 hover:bg-green-50/50'
+                )}
+                style={activeTab === id ? { borderBottomColor: navActive, color: navActive } : undefined}
+              >
+                <Icon className="w-4 h-4" />
+                {label}
+              </button>
+            )
+          })}
         </div>
       </header>
 
