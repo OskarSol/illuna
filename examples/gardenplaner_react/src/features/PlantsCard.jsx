@@ -33,11 +33,11 @@ export function PlantsCard({ plants, setState }) {
   return (
     <article className="card-base stack-md">
       <div className="card-top">
-        <h2 className="card-header"><span aria-hidden="true">🪴</span> Meine Pflanzen</h2>
+        <h2 className="card-header"><span className="feature-icon" aria-hidden="true">🌿</span> Meine Pflanzen</h2>
         <button className="btn-secondary" type="button">Übersicht</button>
       </div>
       {plants.length === 0 ? (
-        <p className="empty-state">Noch keine Pflanzen vorhanden. Füge deine erste Pflanze hinzu.</p>
+        <p className="empty-state">Noch keine Pflanzen vorhanden. Lege jetzt deine erste Pflanze an.</p>
       ) : (
         <ul>
           {plants.map((plant) => (

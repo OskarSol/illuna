@@ -31,11 +31,11 @@ export function EventsCard({ events, setState }) {
   return (
     <article className="card-base stack-md">
       <div className="card-top">
-        <h2 className="card-header"><span aria-hidden="true">📅</span> Kalender</h2>
+        <h2 className="card-header"><span className="feature-icon" aria-hidden="true">🗓️</span> Kalender</h2>
         <button className="btn-secondary" type="button">Nächster</button>
       </div>
       {sortedEvents.length === 0 ? (
-        <p className="empty-state">Noch keine Termine geplant. Füge deinen ersten Termin hinzu.</p>
+        <p className="empty-state">Noch keine Termine geplant. Plane jetzt deinen ersten Termin.</p>
       ) : (
         <ul>
           {sortedEvents.map((event) => (
