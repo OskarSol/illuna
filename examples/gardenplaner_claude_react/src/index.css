@@ -1,0 +1,24 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --garden-green: #16a34a;
+    --garden-green-light: #dcfce7;
+    --garden-amber: #d97706;
+    --garden-amber-light: #fef3c7;
+    --garden-sky: #0284c7;
+    --garden-sky-light: #e0f2fe;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: #f0fdf4;
+    color: #14532d;
+    min-height: 100vh;
+  }
+}
