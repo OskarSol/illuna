@@ -89,13 +89,26 @@ At its core, Illuna connects four ideas:
 
 Developers should only need to provide the base application.
 
-From there, Illuna should automatically tailor the user experience for each person — without requiring the developer to manually implement every variation.
+From there, Illuna should automatically tailor the user experience for each person — without requiring the developer to manually implement every variation, edge case, or personalization setting themselves.
 
 This includes automatic adaptation of language, interface behavior, and accessibility preferences (for example larger text or clearer visual contrast).
+
+At the same time, adaptation must stay inside developer-defined boundaries: teams decide what Illuna may change, how far it may go, and which areas remain fixed. Illuna should reduce implementation overhead — not remove product ownership.
 
 Chat is one possible interface layer, but not the only one.
 
 Depending on context and user preference, the experience can appear as chat-first, traditional UI-first, or a hybrid of both.
+
+
+### 1.5 Bounded adaptation, not design replacement
+
+Illuna is meant to support product teams — not replace UX designers, UI experts, or product thinking.
+
+Design systems, navigation concepts, and core user journeys are still created by humans.
+
+Illuna adds a configurable adaptation layer within those rules: for example tone, explanation depth, guidance intensity, content density, or visual emphasis.
+
+Developers and designers can define clear limits (what is adaptable, what is locked, what needs explicit consent) so personalization stays safe, brand-consistent, and testable.
 
 ### 2. Intent understanding
 
@@ -236,6 +249,8 @@ AI should not randomly generate features or behavior. It should operate within c
 ### Developer-friendly
 
 Adaptive behavior should be easy to integrate, test, and control.
+
+Illuna should take over repetitive personalization plumbing, while keeping all critical constraints configurable by the product team.
 
 ---
 
