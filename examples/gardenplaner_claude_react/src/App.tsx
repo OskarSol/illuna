@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Leaf, ListChecks, CalendarDays, Sprout, Settings } from 'lucide-react'
 import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
@@ -7,6 +7,7 @@ import WeatherWidget from './components/WeatherWidget'
 import ChatWidget from './components/ChatWidget'
 import SettingsPanel from './components/SettingsPanel'
 import { useGardenStore } from './store'
+import { useUiStore } from './uiStore'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 import clsx from 'clsx'
@@ -22,15 +23,27 @@ const TABS: { id: Tab; label: string; icon: typeof Leaf }[] = [
 
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
-  const { tasks, plants } = useGardenStore()
+  const { tasks, plants, init, initialized } = useGardenStore()
+  const { tokens, init: initUi } = useUiStore()
 
-  const openToday = tasks.filter(
-    (t) => !t.completed && t.dueDate <= format(new Date(), 'yyyy-MM-dd')
-  ).length
+  useEffect(() => {
+    init()
+    initUi()
+  }, [init, initUi])
+
+  const openToday = tasks.filter((t) => !t.completed && t.dueDate <= format(new Date(), 'yyyy-MM-dd')).length
+
+  const appStyle = {
+    backgroundImage: tokens['bg.app.imageUrl']
+      ? `url(${tokens['bg.app.imageUrl']}), linear-gradient(to bottom right, var(--bg-app-gradientFrom), var(--bg-app-gradientTo))`
+      : 'linear-gradient(to bottom right, var(--bg-app-gradientFrom), var(--bg-app-gradientTo))',
+    fontSize: tokens['font.size.base'] || undefined,
+  } as const
+
+  if (!initialized) return null
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 to-emerald-50">
-      {/* Header */}
+    <div className="min-h-screen" style={appStyle}>
       <header className="bg-white border-b border-green-100 shadow-sm sticky top-0 z-10">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -39,13 +52,10 @@ export default function App() {
             </div>
             <div>
               <h1 className="text-base font-bold text-green-900 leading-tight">Gartenplaner</h1>
-              <p className="text-xs text-green-500">
-                {format(new Date(), 'EEEE, d. MMMM', { locale: de })}
-              </p>
+              <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
             </div>
           </div>
 
-          {/* Stats */}
           <div className="hidden sm:flex gap-4">
             <Stat label="Pflanzen" value={plants.length} color="text-green-600" />
             <Stat label="Heute fällig" value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
@@ -53,7 +63,6 @@ export default function App() {
           </div>
         </div>
 
-        {/* Tabs */}
         <div className="max-w-3xl mx-auto px-4 flex gap-1 pb-0 pt-1">
           {TABS.map(({ id, label, icon: Icon }) => (
             <button
@@ -68,17 +77,11 @@ export default function App() {
             >
               <Icon className="w-4 h-4" />
               {label}
-              {id === 'tasks' && openToday > 0 && (
-                <span className="ml-0.5 w-4 h-4 text-[10px] font-bold bg-amber-500 text-white rounded-full flex items-center justify-center">
-                  {openToday > 9 ? '9+' : openToday}
-                </span>
-              )}
             </button>
           ))}
         </div>
       </header>
 
-      {/* Main content */}
       <main className="max-w-3xl mx-auto px-4 py-6 pb-24 sm:pb-6">
         {activeTab === 'plants' && <PlantManager />}
         {activeTab === 'tasks' && <TaskList />}
@@ -88,28 +91,6 @@ export default function App() {
 
       <WeatherWidget />
       <ChatWidget />
-
-      {/* Mobile bottom nav */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-green-100 px-4 py-2 flex justify-around">
-        {TABS.map(({ id, label, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => setActiveTab(id)}
-            className={clsx(
-              'flex flex-col items-center gap-0.5 py-1 px-3 rounded-lg transition-colors relative',
-              activeTab === id ? 'text-green-700' : 'text-green-400'
-            )}
-          >
-            <Icon className="w-5 h-5" />
-            <span className="text-[10px] font-medium">{label}</span>
-            {id === 'tasks' && openToday > 0 && (
-              <span className="absolute top-0.5 right-1.5 w-4 h-4 text-[9px] font-bold bg-amber-500 text-white rounded-full flex items-center justify-center">
-                {openToday > 9 ? '9+' : openToday}
-              </span>
-            )}
-          </button>
-        ))}
-      </nav>
     </div>
   )
 }

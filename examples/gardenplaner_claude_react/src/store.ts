@@ -1,6 +1,6 @@
 import { create } from 'zustand'
-import { persist } from 'zustand/middleware'
 import { addDays, addWeeks, addMonths, format } from 'date-fns'
+import { db, ensureUiSeedData } from './db'
 
 export type TaskType = 'watering' | 'fertilizing' | 'pruning' | 'harvesting' | 'repotting' | 'other'
 
@@ -18,6 +18,8 @@ export interface Task {
   completed: boolean
   notes?: string
   recurring?: RecurringRule
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface Plant {
@@ -26,23 +28,26 @@ export interface Plant {
   emoji: string
   location: string
   notes?: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface GardenStore {
   plants: Plant[]
   tasks: Task[]
-  addPlant: (plant: Omit<Plant, 'id'>) => void
-  removePlant: (id: string) => void
-  updatePlant: (id: string, updates: Partial<Omit<Plant, 'id'>>) => void
-  addTask: (task: Omit<Task, 'id' | 'completed'>) => void
-  removeTask: (id: string) => void
-  toggleTask: (id: string) => void
-  updateTask: (id: string, updates: Partial<Omit<Task, 'id'>>) => void
+  initialized: boolean
+  addPlant: (plant: Omit<Plant, 'id'>) => Promise<void>
+  removePlant: (id: string) => Promise<void>
+  updatePlant: (id: string, updates: Partial<Omit<Plant, 'id'>>) => Promise<void>
+  addTask: (task: Omit<Task, 'id' | 'completed'>) => Promise<void>
+  removeTask: (id: string) => Promise<void>
+  toggleTask: (id: string) => Promise<void>
+  updateTask: (id: string, updates: Partial<Omit<Task, 'id'>>) => Promise<void>
+  init: () => Promise<void>
 }
 
-function uid() {
-  return Math.random().toString(36).slice(2, 10)
-}
+function uid() { return Math.random().toString(36).slice(2, 10) }
+function now() { return new Date().toISOString() }
 
 function nextDueDate(task: Task): string {
   if (!task.recurring) return task.dueDate
@@ -53,65 +58,94 @@ function nextDueDate(task: Task): string {
   return format(addMonths(base, interval), 'yyyy-MM-dd')
 }
 
+const today = format(new Date(), 'yyyy-MM-dd')
 const SEED_PLANTS: Plant[] = [
   { id: 'p1', name: 'Tomaten', emoji: '🍅', location: 'Hochbeet Süd', notes: 'Sonne mind. 6h täglich' },
   { id: 'p2', name: 'Basilikum', emoji: '🌿', location: 'Fensterbrett', notes: 'Warm und windgeschützt' },
   { id: 'p3', name: 'Rosen', emoji: '🌹', location: 'Vorgarten', notes: 'Hoch- und Strauchrose' },
 ]
-
-const today = format(new Date(), 'yyyy-MM-dd')
-
 const SEED_TASKS: Task[] = [
   { id: 't1', plantId: 'p1', title: 'Tomaten gießen', taskType: 'watering', dueDate: today, completed: false, recurring: { type: 'daily', interval: 2 } },
   { id: 't2', plantId: 'p1', title: 'Tomaten düngen', taskType: 'fertilizing', dueDate: today, completed: false, recurring: { type: 'weekly', interval: 2 } },
   { id: 't3', plantId: 'p2', title: 'Basilikum gießen', taskType: 'watering', dueDate: today, completed: false, recurring: { type: 'daily', interval: 1 } },
-  { id: 't4', plantId: 'p3', title: 'Rosen schneiden', taskType: 'pruning', dueDate: format(addDays(new Date(), 3), 'yyyy-MM-dd'), completed: false },
-  { id: 't5', plantId: 'p3', title: 'Rosen düngen', taskType: 'fertilizing', dueDate: format(addDays(new Date(), 5), 'yyyy-MM-dd'), completed: false, recurring: { type: 'monthly', interval: 1 } },
 ]
 
-export const useGardenStore = create<GardenStore>()(
-  persist(
-    (set) => ({
-      plants: SEED_PLANTS,
-      tasks: SEED_TASKS,
+function withTimestamps<T extends { createdAt?: string; updatedAt?: string }>(entity: T): T {
+  const ts = now()
+  return { ...entity, createdAt: entity.createdAt ?? ts, updatedAt: ts }
+}
 
-      addPlant: (plant) =>
-        set((s) => ({ plants: [...s.plants, { ...plant, id: uid() }] })),
+export const useGardenStore = create<GardenStore>((set, get) => ({
+  plants: [],
+  tasks: [],
+  initialized: false,
 
-      removePlant: (id) =>
-        set((s) => ({
-          plants: s.plants.filter((p) => p.id !== id),
-          tasks: s.tasks.filter((t) => t.plantId !== id),
-        })),
+  init: async () => {
+    const plants = await db.plants.toArray()
+    const tasks = await db.tasks.toArray()
+    if (plants.length === 0 && tasks.length === 0) {
+      const seededPlants = SEED_PLANTS.map(withTimestamps)
+      const seededTasks = SEED_TASKS.map(withTimestamps)
+      await db.plants.bulkAdd(seededPlants)
+      await db.tasks.bulkAdd(seededTasks)
+      set({ plants: seededPlants, tasks: seededTasks, initialized: true })
+    } else {
+      set({ plants, tasks, initialized: true })
+    }
+    await ensureUiSeedData()
+  },
 
-      updatePlant: (id, updates) =>
-        set((s) => ({
-          plants: s.plants.map((p) => (p.id === id ? { ...p, ...updates } : p)),
-        })),
+  addPlant: async (plant) => {
+    const created = withTimestamps({ ...plant, id: uid() })
+    await db.plants.add(created)
+    set((s) => ({ plants: [...s.plants, created] }))
+  },
 
-      addTask: (task) =>
-        set((s) => ({ tasks: [...s.tasks, { ...task, id: uid(), completed: false }] })),
+  removePlant: async (id) => {
+    await db.transaction('rw', db.plants, db.tasks, async () => {
+      await db.plants.delete(id)
+      const taskIds = (await db.tasks.where('plantId').equals(id).toArray()).map((t) => t.id)
+      await db.tasks.bulkDelete(taskIds)
+    })
+    set((s) => ({ plants: s.plants.filter((p) => p.id !== id), tasks: s.tasks.filter((t) => t.plantId !== id) }))
+  },
 
-      removeTask: (id) =>
-        set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) })),
+  updatePlant: async (id, updates) => {
+    const updated = { ...updates, updatedAt: now() }
+    await db.plants.update(id, updated)
+    set((s) => ({ plants: s.plants.map((p) => (p.id === id ? { ...p, ...updated } : p)) }))
+  },
 
-      toggleTask: (id) =>
-        set((s) => ({
-          tasks: s.tasks.flatMap((t) => {
-            if (t.id !== id) return [t]
-            const toggled = { ...t, completed: !t.completed }
-            if (!toggled.completed || !t.recurring) return [toggled]
-            // spawn next occurrence when completing a recurring task
-            const next: Task = { ...t, id: uid(), dueDate: nextDueDate(t), completed: false }
-            return [toggled, next]
-          }),
-        })),
+  addTask: async (task) => {
+    const created = withTimestamps({ ...task, id: uid(), completed: false })
+    await db.tasks.add(created)
+    set((s) => ({ tasks: [...s.tasks, created] }))
+  },
 
-      updateTask: (id, updates) =>
-        set((s) => ({
-          tasks: s.tasks.map((t) => (t.id === id ? { ...t, ...updates } : t)),
-        })),
-    }),
-    { name: 'garden-planner-v1' }
-  )
-)
+  removeTask: async (id) => {
+    await db.tasks.delete(id)
+    set((s) => ({ tasks: s.tasks.filter((t) => t.id !== id) }))
+  },
+
+  toggleTask: async (id) => {
+    const task = get().tasks.find((t) => t.id === id)
+    if (!task) return
+    const toggled = { ...task, completed: !task.completed, updatedAt: now() }
+    const next = toggled.completed && task.recurring
+      ? withTimestamps({ ...task, id: uid(), dueDate: nextDueDate(task), completed: false })
+      : null
+
+    await db.transaction('rw', db.tasks, async () => {
+      await db.tasks.put(toggled)
+      if (next) await db.tasks.add(next)
+    })
+
+    set((s) => ({ tasks: s.tasks.flatMap((t) => t.id === id ? (next ? [toggled, next] : [toggled]) : [t]) }))
+  },
+
+  updateTask: async (id, updates) => {
+    const updated = { ...updates, updatedAt: now() }
+    await db.tasks.update(id, updated)
+    set((s) => ({ tasks: s.tasks.map((t) => (t.id === id ? { ...t, ...updated } : t)) }))
+  },
+}))
