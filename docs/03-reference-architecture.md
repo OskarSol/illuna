@@ -7,7 +7,7 @@ Illuna is a reference architecture for building adaptive, AI-personalized applic
 
 The architecture describes how natural language input can be transformed into structured intent, personalization decisions, and controlled application behavior.
 
-At a high level, Illuna consists of six layers:
+At a high level, Illuna consists of nine structured components:
 ![Illuna Model](assets/architecture_concept.png)
 
 Each layer has a clear responsibility.

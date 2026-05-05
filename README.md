@@ -14,3 +14,15 @@ Illuna, the Illuna name, logo, and related branding are not covered by the open-
 ## Documentation Note
 
 The docs in this repository are aligned with the expanded example and implementation descriptions published on **https://illunaai.de** and are continuously refined as those public concept examples evolve.
+
+
+## Documentation Pages
+
+- `docs/01-vision.md` · Vision and principles
+- `docs/02-core-concepts.md` · Core adaptive interaction model
+- `docs/03-reference-architecture.md` · Reference architecture and implementation blueprint
+- `docs/04-intent-classification.md` · Intent taxonomy and parsing patterns
+- `docs/05-personalization-engine.md` · Personalization decision model
+- `docs/06-adaptive-ui-patterns.md` · Adaptive UI strategy and guardrails
+- `docs/07-roadmap.md` · Phased roadmap
+- `docs/08-examples-and-implementation.md` · Cross-domain examples and implementation walkthrough
