@@ -3,6 +3,7 @@ import { Leaf, ListChecks, CalendarDays, Sprout } from 'lucide-react'
 import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
 import MonthlyCalendar from './components/MonthlyCalendar'
+import WeatherWidget from './components/WeatherWidget'
 import { useGardenStore } from './store'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
@@ -80,6 +81,8 @@ export default function App() {
         {activeTab === 'tasks' && <TaskList />}
         {activeTab === 'calendar' && <MonthlyCalendar />}
       </main>
+
+      <WeatherWidget />
 
       {/* Mobile bottom nav */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-green-100 px-4 py-2 flex justify-around">
