@@ -8,6 +8,28 @@ type Message = {
   text: string
 }
 
+
+type Settings = {
+  apiKey: string
+  apiUrl: string
+}
+
+const SETTINGS_STORAGE_KEY = 'gardenplanner-settings'
+
+function loadSettings(): Settings {
+  try {
+    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY)
+    if (!raw) return { apiKey: '', apiUrl: '' }
+    const parsed = JSON.parse(raw) as Partial<Settings>
+    return {
+      apiKey: parsed.apiKey ?? '',
+      apiUrl: parsed.apiUrl ?? '',
+    }
+  } catch {
+    return { apiKey: '', apiUrl: '' }
+  }
+}
+
 const DEFAULT_REPLIES = [
   'Das ist eine spannende Frage! 🤔 Leider weiß ich das noch nicht, aber ich lerne täglich dazu. Schau dich gerne in den Tabs um!',
   'Hmm, da bin ich überfragt! 🌱 Aber für Pflanzen, Aufgaben und Kalender bin ich dein Ansprechpartner!',
@@ -79,15 +101,23 @@ export default function ChatWidget() {
     setIsTyping(true)
 
     try {
-      const response = await fetch(
-        'https://n8n.braveriver-d2333d65.swedencentral.azurecontainerapps.io/webhook/e34bf523-a4ae-482a-951e-7e306e7eb9fc',
-        {
-          method: 'GET',
-          headers: {
-            N8NAuth: '435dfgh7f9a3c2e1b8d4a6f9c0e3b7a1d5f8c2e9a4b6d1c3e7f8a9b',
-          },
-        }
-      )
+      const { apiUrl, apiKey } = loadSettings()
+
+      if (!apiUrl || !apiKey) {
+        throw new Error('Missing API settings')
+      }
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${apiKey}`,
+          'x-api-key': apiKey,
+        },
+        body: JSON.stringify({
+          message: text,
+        }),
+      })
 
       if (!response.ok) {
         throw new Error(`Webhook request failed with status ${response.status}`)
