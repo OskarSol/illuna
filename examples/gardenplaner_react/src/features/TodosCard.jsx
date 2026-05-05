@@ -34,11 +34,11 @@ export function TodosCard({ todos, setState, className = '' }) {
   return (
     <article className={`card-base stack-md ${className}`.trim()}>
       <div className="card-top">
-        <h2 className="card-header"><span aria-hidden="true">✅</span> Todos (Wässern & Düngen)</h2>
+        <h2 className="card-header"><span className="feature-icon" aria-hidden="true">☑️</span> Aufgaben</h2>
         <button className="btn-secondary" type="button">Fokus</button>
       </div>
       {todos.length === 0 ? (
-        <p className="empty-state">Keine Aufgaben offen. Füge dein erstes Todo hinzu.</p>
+        <p className="empty-state">Keine Aufgaben offen. Lege jetzt deine erste Aufgabe an.</p>
       ) : (
         <ul>
           {todos.map((todo) => (
@@ -46,7 +46,7 @@ export function TodosCard({ todos, setState, className = '' }) {
               <label className="todo-item">
                 <input type="checkbox" checked={todo.done} onChange={() => toggleTodo(todo.id)} />{' '}
                 <span className={todo.done ? 'todo-item done' : 'todo-item'}>
-                  <span className={todo.type === 'wässern' ? 'chip chip-wasser' : 'chip chip-duenger'}>{todo.type}</span> {todo.task}
+                  <span className={todo.type === 'wässern' ? 'chip chip-wasser' : 'chip chip-duenger'}><span aria-hidden="true" className="chip-icon">{todo.type === 'wässern' ? '💧' : '🧪'}</span>{todo.type}</span> {todo.task}
                 </span>
               </label>
             </li>

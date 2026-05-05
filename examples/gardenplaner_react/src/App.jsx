@@ -24,8 +24,8 @@ export default function App() {
   const header = (
     <div className="top-bar">
       <div>
-        <h1>🌱 Gartenplaner (React)</h1>
-        <p className="context-line">Standort & Planung auf einen Blick</p>
+        <h1>🌱 Gartenplaner</h1>
+        <p className="context-line">Plane heute klar, was deinem Garten guttut.</p>
       </div>
       <div className="top-actions">
         <input
@@ -47,15 +47,15 @@ export default function App() {
     >
       <section className="kpi-row" aria-label="Statusübersicht">
         <article className="metric">
-          <span className="metric-label">Heutige Aufgaben</span>
+          <span className="metric-label"><span className="metric-icon" aria-hidden="true">✓</span>Heutige Aufgaben</span>
           <strong>{metrics.todayTasks}</strong>
         </article>
         <article className="metric">
-          <span className="metric-label">Offene Todos</span>
+          <span className="metric-label"><span className="metric-icon" aria-hidden="true">•</span>Offene Aufgaben</span>
           <strong>{metrics.openTodos}</strong>
         </article>
         <article className="metric">
-          <span className="metric-label">Nächster Termin</span>
+          <span className="metric-label"><span className="metric-icon" aria-hidden="true">◦</span>Nächster Termin</span>
           <strong>{metrics.nextEvent}</strong>
         </article>
       </section>

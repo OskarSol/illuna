@@ -36,9 +36,9 @@
   --font-weight-semibold: theme('fontWeight.semibold');
   --font-weight-bold: theme('fontWeight.bold');
 
-  --motion-fast: 120ms;
+  --motion-fast: 150ms;
   --motion-base: 180ms;
-  --motion-slow: 240ms;
+  --motion-slow: 220ms;
   --ring: 0 0 0 3px color-mix(in oklab, var(--color-primary) 25%, transparent);
 }
 
@@ -69,7 +69,19 @@
   }
 
   .app-shell-header {
-    @apply rounded-xl border border-garden-neutral-300 bg-white p-4 shadow-md;
+    @apply relative overflow-hidden rounded-xl border border-garden-neutral-300 bg-white p-4 shadow-md;
+  }
+
+  .app-shell-header::before {
+    content: "";
+    @apply pointer-events-none absolute -top-16 -right-20 h-48 w-48 rounded-full;
+    background: radial-gradient(circle, color-mix(in oklab, var(--color-accent) 45%, white) 0%, transparent 70%);
+  }
+
+  .app-shell-header::after {
+    content: "";
+    @apply pointer-events-none absolute -bottom-24 left-12 h-56 w-56 rounded-full;
+    background: radial-gradient(circle, color-mix(in oklab, var(--color-primary) 28%, white) 0%, transparent 72%);
   }
 
   .app-shell-content {
@@ -106,6 +118,7 @@
 
   .card-base {
     @apply rounded-xl border border-garden-neutral-300 bg-white p-4 shadow-md transition-shadow duration-200;
+    transition-duration: var(--motion-base);
   }
 
   .card-top {
@@ -160,14 +173,16 @@
 
   .btn-cta {
     @apply min-h-field rounded-lg bg-garden-primary px-4 text-sm font-semibold text-white shadow-md transition duration-200;
+    transition-duration: var(--motion-base);
   }
 
   .btn-secondary {
     @apply min-h-field rounded-lg border border-garden-neutral-300 bg-white px-3 text-sm font-medium text-garden-neutral-700 transition duration-200;
+    transition-duration: var(--motion-base);
   }
 
   .btn-cta:hover {
-    @apply -translate-y-0.5 bg-garden-primary-hover shadow-lg;
+    @apply bg-garden-primary-hover shadow-lg;
   }
 
   .btn-cta:active {
@@ -189,23 +204,40 @@
   }
 
   .chip {
-    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+    @apply inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold tracking-wide;
+  }
+
+  .chip-icon {
+    @apply text-xs leading-none;
   }
 
   .chip-wasser {
-    @apply bg-garden-accent text-garden-primary-active;
+    background: color-mix(in oklab, var(--color-accent) 35%, white);
+    @apply text-garden-primary-active;
   }
 
   .chip-duenger {
-    @apply bg-garden-warning text-garden-warning-active;
+    background: color-mix(in oklab, var(--color-warning) 25%, white);
+    @apply text-garden-warning-active;
   }
 
   .metric {
-    @apply flex flex-col rounded-lg border border-garden-neutral-300 bg-garden-neutral-100 p-3;
+    @apply relative overflow-hidden flex flex-col rounded-lg border border-garden-neutral-300 p-3;
+    background: linear-gradient(135deg, color-mix(in oklab, white 78%, var(--color-accent)) 0%, color-mix(in oklab, white 90%, var(--color-primary)) 100%);
+  }
+
+  .metric::after {
+    content: "";
+    @apply pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full;
+    background: color-mix(in oklab, var(--color-primary) 15%, transparent);
   }
 
   .metric-label {
-    @apply text-xs text-garden-neutral-700;
+    @apply inline-flex items-center gap-1 text-xs text-garden-neutral-700;
+  }
+
+  .metric-icon {
+    @apply inline-flex h-4 w-4 items-center justify-center rounded-full bg-white/70 text-[10px] font-semibold text-garden-primary-active;
   }
 
   .empty-state {
@@ -233,6 +265,7 @@
 
   .success-feedback {
     @apply text-xs font-medium text-garden-primary-active opacity-0 translate-y-1 transition duration-200;
+    transition-duration: var(--motion-base);
   }
 
   .success-feedback.is-visible {
@@ -240,3 +273,6 @@
   }
 }
 
+
+
+/* Motion guideline: ruhige Übergänge von 150–220ms ohne springende Effekte. */
