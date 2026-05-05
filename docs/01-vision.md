@@ -185,6 +185,9 @@ This is the kind of interaction Illuna is designed to enable.
 
 ---
 
+
+For expanded cross-domain scenarios and a concrete implementation walkthrough, see **`08-examples-and-implementation.md`**.
+
 ## What This Repository Contains
 
 This repository documents the public concepts behind Illuna.

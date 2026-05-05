@@ -7,7 +7,7 @@ Illuna is a reference architecture for building adaptive, AI-personalized applic
 
 The architecture describes how natural language input can be transformed into structured intent, personalization decisions, and controlled application behavior.
 
-At a high level, Illuna consists of six layers:
+At a high level, Illuna consists of nine structured components:
 ![Illuna Model](assets/architecture_concept.png)
 
 Each layer has a clear responsibility.
@@ -467,6 +467,34 @@ A typical Illuna interaction follows this flow:
 9. Application Runtime applies allowed changes.
 10. User receives adapted experience and can give feedback.
 ```
+
+---
+
+## Concrete Implementation Blueprint
+
+To support teams that need a concrete build path, use this minimum implementation sequence:
+
+### Step 1 · Define Adaptation Contract
+Create a machine-readable contract per screen/module, e.g. tone, density, guidance level, feature visibility.
+
+### Step 2 · Build Intent + Signal Schema
+Normalize messages into `{ intent, entities, tone, confidence, preference_signal }` so downstream logic is deterministic.
+
+### Step 3 · Add Policy and Safety Layer
+Before adaptation execution, evaluate:
+
+* allowed target?
+* confidence threshold reached?
+* explicit confirmation required?
+* domain/business constraints satisfied?
+
+### Step 4 · Execute via Adaptation Plans
+Generate plan objects (`adaptation_plan_v1`) and apply them through runtime adapters, not direct model output to UI.
+
+### Step 5 · Observe and Iterate
+Track adaptation acceptance, undo rate, clarification rate, and long-term preference stability.
+
+This blueprint turns the reference architecture into an implementation path that can be rolled out incrementally.
 
 ---
 
