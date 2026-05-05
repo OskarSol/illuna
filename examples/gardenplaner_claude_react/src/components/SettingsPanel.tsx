@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { liveQuery } from 'dexie'
-import { db, type UiElementDefinition } from '../db'
+import { db, resetUiElementsToDefault, type UiElementDefinition } from '../db'
 import { useUiStore } from '../uiStore'
 
 type Settings = {
@@ -27,6 +27,7 @@ export default function SettingsPanel() {
   const [settings, setSettings] = useState<Settings>({ apiKey: '', apiUrl: '' })
   const [uiElements, setUiElements] = useState<UiElementDefinition[]>([])
   const [saved, setSaved] = useState(false)
+  const [resetConfirm, setResetConfirm] = useState(false)
   const [activeCategory, setActiveCategory] = useState<UiElementDefinition['category'] | 'all'>('all')
   const { setElementValue, init: initUi } = useUiStore()
   useEffect(() => {
@@ -59,6 +60,17 @@ export default function SettingsPanel() {
     })
     return () => subscription.unsubscribe()
   }, [])
+
+  async function handleReset() {
+    if (!resetConfirm) {
+      setResetConfirm(true)
+      setTimeout(() => setResetConfirm(false), 3000)
+      return
+    }
+    setResetConfirm(false)
+    const active = await db.ui_profiles.where('isActive').equals(1).first()
+    await resetUiElementsToDefault(active?.id ?? 'default')
+  }
 
   async function saveSettings() {
     const ts = new Date().toISOString()
@@ -198,9 +210,15 @@ export default function SettingsPanel() {
         })}
       </div>
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <button onClick={saveSettings} className="px-4 py-2 rounded-xl bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors">Speichern</button>
         {saved && <span className="text-sm text-green-700">Gespeichert ✓</span>}
+        <button
+          onClick={handleReset}
+          className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border ${resetConfirm ? 'bg-red-600 text-white border-red-600 hover:bg-red-700' : 'border-red-200 text-red-600 hover:bg-red-50'}`}
+        >
+          {resetConfirm ? 'Wirklich zurücksetzen?' : 'Auf Standard zurücksetzen'}
+        </button>
       </div>
     </section>
   )
