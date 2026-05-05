@@ -2,159 +2,143 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-primary: theme('colors.garden.primary.DEFAULT');
+  --color-primary-hover: theme('colors.garden.primary.hover');
+  --color-primary-active: theme('colors.garden.primary.active');
+  --color-accent: theme('colors.garden.accent.DEFAULT');
+  --color-neutral-100: theme('colors.garden.neutral.100');
+  --color-neutral-200: theme('colors.garden.neutral.200');
+  --color-neutral-300: theme('colors.garden.neutral.300');
+  --color-text: theme('colors.garden.neutral.900');
+  --color-muted: theme('colors.garden.neutral.700');
+  --color-success: theme('colors.garden.success.DEFAULT');
+  --color-warning: theme('colors.garden.warning.DEFAULT');
+
+  --radius-sm: theme('borderRadius.garden.sm');
+  --radius-md: theme('borderRadius.garden.md');
+  --radius-lg: theme('borderRadius.garden.lg');
+  --radius-pill: theme('borderRadius.full');
+
+  --shadow-1: theme('boxShadow.garden.1');
+  --shadow-2: theme('boxShadow.garden.2');
+
+  --space-1: theme('spacing.2');
+  --space-2: theme('spacing.3');
+  --space-3: theme('spacing.4');
+  --space-4: theme('spacing.5');
+  --space-5: theme('spacing.6');
+
+  --font-size-xs: theme('fontSize.xs');
+  --font-size-sm: theme('fontSize.sm');
+  --font-size-base: theme('fontSize.base');
+  --font-weight-medium: theme('fontWeight.medium');
+  --font-weight-semibold: theme('fontWeight.semibold');
+  --font-weight-bold: theme('fontWeight.bold');
+
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-slow: 240ms;
+  --ring: 0 0 0 3px color-mix(in oklab, var(--color-primary) 25%, transparent);
+}
+
 @layer base {
   body {
-    @apply m-0 bg-garden-bg font-sans text-garden-text antialiased;
+    @apply m-0 bg-garden-neutral-100 font-sans text-garden-neutral-900 antialiased;
+  }
+
+  h1,
+  h2 {
+    @apply m-0;
+  }
+
+  input,
+  select,
+  button {
+    font: inherit;
   }
 }
 
 @layer components {
-  .field {
-    @apply min-h-field w-full rounded-2xl border border-garden-line/90 bg-white/75 px-4 text-sm text-garden-text shadow-soft/50 outline-none transition focus:border-garden-primary focus:ring-2 focus:ring-garden-primary/30;
-  }
-
-  .btn-primary {
-    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
-  }
-}
-
-.done {
-  text-decoration: line-through;
-  opacity: 0.7;
-}
-
-.progress-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.95rem;
-  margin-bottom: 0.4rem;
-}
-
-.progress-track {
-  background: #e1efdf;
-  border-radius: 999px;
-  height: 0.7rem;
-  overflow: hidden;
-}
-
-.progress-fill {
-  background: linear-gradient(90deg, #59b56f, #2f8650);
-  height: 100%;
-  width: 0;
-}
-
-.card {
-  background: white;
-  border: 1px solid #d9eadb;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  margin-bottom: 1rem;
-}
-
-.quick-actions p {
-  margin-top: 0;
-}
-
-.action-row {
-  display: grid;
-  gap: 0.5rem;
-}
-
-.tabs {
-  display: flex;
-  gap: 0.5rem;
-  margin: 1rem 0;
-  overflow-x: auto;
-}
-
-.tab {
-  background: #dceede;
-  color: #20472a;
-}
-
-.tab.active {
-  background: #3a814e;
-  color: white;
-}
-
-.layout-grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: 1fr;
-}
-
-.kpi-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 0.75rem;
-}
-
-.kpi {
-  background: #f4fbf5;
-  border: 1px solid #d9eadb;
-  border-radius: 10px;
-  padding: 0.75rem;
-  display: flex;
-  flex-direction: column;
-}
-
-.kpi-label {
-  font-size: 0.85rem;
-  opacity: 0.75;
-}
-
-.empty-state {
-  color: #4d6a55;
-  background: #f4fbf5;
-  border: 1px dashed #bdd6c0;
-  border-radius: 10px;
-  padding: 0.8rem;
-}
-
-.todo-label {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-}
-
-.badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 600;
-  padding: 0.15rem 0.45rem;
-  border-radius: 999px;
-  margin-right: 0.35rem;
-}
-
-.badge-wässern {
-  background: #d8f0ff;
-  color: #1f5f84;
-}
-
-.badge-düngen {
-  background: #f6e8c6;
-  color: #825f1f;
-}
-
-button.primary {
-  font-weight: 700;
-}
-
-@media (min-width: 800px) {
-  .action-row {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .app-shell {
+    @apply mx-auto flex w-full max-w-5xl flex-col gap-4 px-4 py-6 md:gap-6 md:px-6;
   }
 
   .layout-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    @apply grid grid-cols-1 gap-4 md:grid-cols-2;
   }
 
-  .span-two {
-    grid-column: span 2;
+  .card-base {
+    @apply rounded-garden-lg border border-garden-neutral-300 bg-white p-4 shadow-garden-1 transition-shadow duration-garden;
   }
 
-  .kpi-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+  .card-base:focus-within {
+    box-shadow: var(--shadow-2), var(--ring);
+  }
+
+  .card-header {
+    @apply mb-3 text-lg font-semibold text-garden-neutral-900;
+  }
+
+  .stack-md {
+    @apply flex flex-col gap-3;
+  }
+
+  .field-control {
+    @apply min-h-field w-full rounded-garden-md border border-garden-neutral-300 bg-garden-neutral-100 px-3 text-sm text-garden-neutral-900 outline-none transition duration-garden;
+  }
+
+  .field-control:focus {
+    @apply border-garden-primary shadow-none;
+    box-shadow: var(--ring);
+  }
+
+  .btn-cta {
+    @apply min-h-field rounded-garden-md bg-garden-primary px-4 text-sm font-semibold text-white shadow-garden-1 transition duration-garden;
+  }
+
+  .btn-cta:hover {
+    @apply -translate-y-0.5 bg-garden-primary-hover shadow-garden-2;
+  }
+
+  .btn-cta:active {
+    @apply translate-y-0 bg-garden-primary-active;
+  }
+
+  .btn-cta:focus-visible {
+    @apply outline-none;
+    box-shadow: var(--shadow-2), var(--ring);
+  }
+
+  .todo-item {
+    @apply flex items-center gap-2;
+  }
+
+  .todo-item.done {
+    @apply opacity-70 line-through;
+  }
+
+  .chip {
+    @apply inline-flex items-center rounded-full px-2 py-0.5 text-xs font-semibold;
+  }
+
+  .chip-wasser {
+    @apply bg-garden-accent text-garden-primary-active;
+  }
+
+  .chip-duenger {
+    @apply bg-garden-warning text-garden-warning-active;
+  }
+
+  .metric {
+    @apply flex flex-col rounded-garden-md border border-garden-neutral-300 bg-garden-neutral-100 p-3;
+  }
+
+  .metric-label {
+    @apply text-xs text-garden-neutral-700;
+  }
+
+  .empty-state {
+    @apply rounded-garden-md border border-dashed border-garden-neutral-300 bg-garden-neutral-100 p-3 text-sm text-garden-neutral-700;
   }
 }

@@ -18,8 +18,8 @@ export function EventsCard({ events, setState }) {
   };
 
   return (
-    <article className="card">
-      <h2>Kalender</h2>
+    <article className="card-base stack-md">
+      <h2 className="card-header">Kalender</h2>
       <ul>
         {sortedEvents.map((event) => (
           <li key={event.id}>
@@ -27,10 +27,10 @@ export function EventsCard({ events, setState }) {
           </li>
         ))}
       </ul>
-      <form onSubmit={addEvent}>
-        <input name="title" placeholder="Termin" required />
-        <input name="date" type="date" required />
-        <button type="submit">Termin hinzufügen</button>
+      <form className="stack-md" onSubmit={addEvent}>
+        <input className="field-control" name="title" placeholder="Termin" required />
+        <input className="field-control" name="date" type="date" required />
+        <button className="btn-cta" type="submit">Termin hinzufügen</button>
       </form>
     </article>
   );

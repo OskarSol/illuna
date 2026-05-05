@@ -23,27 +23,27 @@ export function TodosCard({ todos, setState }) {
   };
 
   return (
-    <article className="card">
-      <h2>Todos (Wässern & Düngen)</h2>
+    <article className="card-base stack-md">
+      <h2 className="card-header">Todos (Wässern & Düngen)</h2>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>
-            <label>
+            <label className="todo-item">
               <input type="checkbox" checked={todo.done} onChange={() => toggleTodo(todo.id)} />{' '}
-              <span className={todo.done ? 'done' : ''}>
-                [{todo.type}] {todo.task}
+              <span className={todo.done ? 'todo-item done' : 'todo-item'}>
+                <span className={todo.type === 'wässern' ? 'chip chip-wasser' : 'chip chip-duenger'}>{todo.type}</span> {todo.task}
               </span>
             </label>
           </li>
         ))}
       </ul>
-      <form onSubmit={addTodo}>
-        <input name="task" placeholder="Aufgabe" required />
-        <select name="type" defaultValue="wässern">
+      <form className="stack-md" onSubmit={addTodo}>
+        <input className="field-control" name="task" placeholder="Aufgabe" required />
+        <select className="field-control" name="type" defaultValue="wässern">
           <option value="wässern">wässern</option>
           <option value="düngen">düngen</option>
         </select>
-        <button type="submit">Todo hinzufügen</button>
+        <button className="btn-cta" type="submit">Todo hinzufügen</button>
       </form>
     </article>
   );

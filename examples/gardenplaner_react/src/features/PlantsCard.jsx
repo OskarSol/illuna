@@ -16,8 +16,8 @@ export function PlantsCard({ plants, setState }) {
   };
 
   return (
-    <article className="card">
-      <h2>Meine Pflanzen</h2>
+    <article className="card-base stack-md">
+      <h2 className="card-header">Meine Pflanzen</h2>
       <ul>
         {plants.map((plant) => (
           <li key={plant.id}>
@@ -26,10 +26,10 @@ export function PlantsCard({ plants, setState }) {
           </li>
         ))}
       </ul>
-      <form onSubmit={addPlant}>
-        <input name="name" placeholder="Pflanzenname" required />
-        <input name="note" placeholder="Notiz" />
-        <button type="submit">Pflanze hinzufügen</button>
+      <form className="stack-md" onSubmit={addPlant}>
+        <input className="field-control" name="name" placeholder="Pflanzenname" required />
+        <input className="field-control" name="note" placeholder="Notiz" />
+        <button className="btn-cta" type="submit">Pflanze hinzufügen</button>
       </form>
     </article>
   );
