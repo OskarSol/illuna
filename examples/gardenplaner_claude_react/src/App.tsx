@@ -1,24 +1,26 @@
 import { useEffect, useState } from 'react'
-import { Leaf, ListChecks, CalendarDays, Sprout, Settings } from 'lucide-react'
+import { Leaf, ListChecks, CalendarDays, Sprout, Settings, Database } from 'lucide-react'
 import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
 import MonthlyCalendar from './components/MonthlyCalendar'
 import WeatherWidget from './components/WeatherWidget'
 import ChatWidget from './components/ChatWidget'
 import SettingsPanel from './components/SettingsPanel'
+import DatabaseInspector from './components/DatabaseInspector'
 import { useGardenStore } from './store'
 import { useUiStore } from './uiStore'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 import clsx from 'clsx'
 
-type Tab = 'plants' | 'tasks' | 'calendar' | 'settings'
+type Tab = 'plants' | 'tasks' | 'calendar' | 'settings' | 'database'
 
 const TABS: { id: Tab; label: string; icon: typeof Leaf }[] = [
   { id: 'plants', label: 'Pflanzen', icon: Sprout },
   { id: 'tasks', label: 'Aufgaben', icon: ListChecks },
   { id: 'calendar', label: 'Kalender', icon: CalendarDays },
   { id: 'settings', label: 'Einstellungen', icon: Settings },
+  { id: 'database', label: 'Datenbank', icon: Database },
 ]
 
 export default function App() {
@@ -87,6 +89,7 @@ export default function App() {
         {activeTab === 'tasks' && <TaskList />}
         {activeTab === 'calendar' && <MonthlyCalendar />}
         {activeTab === 'settings' && <SettingsPanel />}
+        {activeTab === 'database' && <DatabaseInspector />}
       </main>
 
       <WeatherWidget />
