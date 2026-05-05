@@ -4,6 +4,7 @@ import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
 import MonthlyCalendar from './components/MonthlyCalendar'
 import WeatherWidget from './components/WeatherWidget'
+import ChatWidget from './components/ChatWidget'
 import { useGardenStore } from './store'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
@@ -83,6 +84,7 @@ export default function App() {
       </main>
 
       <WeatherWidget />
+      <ChatWidget />
 
       {/* Mobile bottom nav */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-green-100 px-4 py-2 flex justify-around">
