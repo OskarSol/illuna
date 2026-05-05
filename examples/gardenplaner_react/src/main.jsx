@@ -1,6 +1,8 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { useEffect, useMemo, useState } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
+import App from './App';
 import './styles.css';
 
 const STORAGE_KEY = 'gardenplaner-react-state-v1';
@@ -19,6 +21,14 @@ const defaultState = {
     { id: crypto.randomUUID(), task: 'Kräuter düngen', type: 'düngen', done: false }
   ]
 };
+
+const cardMotion = {
+  initial: { opacity: 0, y: 10 },
+  animate: { opacity: 1, y: 0 },
+  transition: { duration: 0.35, ease: 'easeOut' }
+};
+
+const itemTransition = { duration: 0.25, ease: 'easeOut' };
 
 function loadState() {
   try {
@@ -52,6 +62,9 @@ function App() {
 
   const openTodos = useMemo(() => state.todos.filter((todo) => !todo.done).length, [state.todos]);
   const nextEvent = sortedEvents.find((event) => event.date >= new Date().toISOString().slice(0, 10));
+  const doneToday = state.todos.filter((todo) => todo.done).length;
+  const totalTodos = state.todos.length;
+  const progress = totalTodos === 0 ? 0 : Math.round((doneToday / totalTodos) * 100);
 
   const addPlant = (e) => {
     e.preventDefault();
@@ -90,8 +103,11 @@ function App() {
   };
 
   return (
-    <main className="container">
-      <h1>🌱 Gartenplaner (React)</h1>
+    <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 lg:px-10">
+      <header className="mb-6 rounded-3xl border border-garden-line/80 bg-gradient-to-r from-garden-primary/15 via-garden-lavender/15 to-garden-sun/20 p-6 shadow-soft">
+        <h1 className="text-3xl font-bold tracking-tight">🌱 Gartenplaner (React)</h1>
+        <p className="mt-2 text-sm text-garden-muted">Garden playful Theme mit Design Tokens & Tailwind Utilities.</p>
+      </header>
 
       <section className="quick-actions card">
         <h2>Schnellzugriff</h2>
@@ -104,14 +120,29 @@ function App() {
       </section>
 
       <section className="card">
+      <motion.section className="card" {...cardMotion}>
         <h2>Standort des Gartens</h2>
+      <section className="rounded-3xl border border-garden-line/80 bg-garden-surface p-5 shadow-soft backdrop-blur-sm sm:p-6">
+        <h2 className="text-lg font-semibold">Standort des Gartens</h2>
         <input
+          className="field mt-3"
           type="text"
           placeholder="z. B. Hinterhof Berlin"
           value={state.gardenLocation}
           onChange={(e) => setState((prev) => ({ ...prev, gardenLocation: e.target.value }))}
         />
-      </section>
+      </motion.section>
+
+      <motion.section className="card" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.05 }}>
+        <h2>Heute erledigt</h2>
+        <div className="progress-row">
+          <span>{doneToday} von {totalTodos} Aufgaben</span>
+          <span>{progress}%</span>
+        </div>
+        <div className="progress-track" aria-label="Fortschritt heute">
+          <motion.div className="progress-fill" animate={{ width: `${progress}%` }} transition={{ duration: 0.35 }} />
+        </div>
+      </motion.section>
 
       <nav className="tabs" aria-label="Hauptbereiche">
         <button type="button" className={activeTab === 'dashboard' ? 'tab active' : 'tab'} onClick={() => setActiveTab('dashboard')}>Dashboard</button>
@@ -212,6 +243,172 @@ function App() {
             </form>
           </article>
         )}
+      <section className="grid">
+        <motion.article className="card" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.1 }}>
+          <h2>Meine Pflanzen</h2>
+          {state.plants.length === 0 ? (
+            <p className="empty-state">🪴 Noch keine Pflanzen hinzugefügt.</p>
+          ) : (
+            <ul>
+              <AnimatePresence initial={false}>
+                {state.plants.map((plant) => (
+                  <motion.li
+                    key={plant.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={itemTransition}
+                  >
+                    <strong>{plant.name}</strong>
+                    {plant.note && <span> — {plant.note}</span>}
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+          <form onSubmit={addPlant}>
+            <input name="name" placeholder="Pflanzenname" required />
+            <input name="note" placeholder="Notiz" />
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }} type="submit">Pflanze hinzufügen</motion.button>
+      <section className="mt-6 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+        <article className="rounded-3xl border border-garden-line/80 bg-garden-surface p-5 shadow-soft backdrop-blur-sm sm:p-6">
+          <h2 className="text-lg font-semibold">Meine Pflanzen</h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {state.plants.map((plant) => (
+              <li key={plant.id} className="rounded-2xl border border-garden-line/70 bg-white/70 p-3">
+                <strong>{plant.name}</strong>
+                {plant.note && <span className="text-garden-muted"> — {plant.note}</span>}
+              </li>
+            ))}
+          </ul>
+          <form className="mt-4 grid gap-2.5" onSubmit={addPlant}>
+            <input className="field" name="name" placeholder="Pflanzenname" required />
+            <input className="field" name="note" placeholder="Notiz" />
+            <button className="btn-primary" type="submit">Pflanze hinzufügen</button>
+          </form>
+        </motion.article>
+
+        <motion.article className="card" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.15 }}>
+          <h2>Kalender</h2>
+          {sortedEvents.length === 0 ? (
+            <p className="empty-state">📅 Keine Termine geplant.</p>
+          ) : (
+            <ul>
+              <AnimatePresence initial={false}>
+                {sortedEvents.map((event) => (
+                  <motion.li
+                    key={event.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={itemTransition}
+                  >
+                    <strong>{event.date}</strong>: {event.title}
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+          <form onSubmit={addEvent}>
+            <input name="title" placeholder="Termin" required />
+            <input name="date" type="date" required />
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }} type="submit">Termin hinzufügen</motion.button>
+        <article className="rounded-3xl border border-garden-line/80 bg-garden-surface p-5 shadow-soft backdrop-blur-sm sm:p-6">
+          <h2 className="text-lg font-semibold">Kalender</h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {sortedEvents.map((event) => (
+              <li key={event.id} className="rounded-2xl border border-garden-line/70 bg-white/70 p-3">
+                <strong>{event.date}</strong>: {event.title}
+              </li>
+            ))}
+          </ul>
+          <form className="mt-4 grid gap-2.5" onSubmit={addEvent}>
+            <input className="field" name="title" placeholder="Termin" required />
+            <input className="field" name="date" type="date" required />
+            <button className="btn-primary" type="submit">Termin hinzufügen</button>
+          </form>
+        </motion.article>
+
+        <motion.article className="card" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.2 }}>
+          <h2>Todos (Wässern & Düngen)</h2>
+          {state.todos.length === 0 ? (
+            <p className="empty-state">✨ Keine Todos offen.</p>
+          ) : (
+            <ul>
+              <AnimatePresence initial={false}>
+                {state.todos.map((todo) => (
+                  <motion.li
+                    key={todo.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={itemTransition}
+                  >
+                    <label className="todo-label">
+                      <motion.input
+                        type="checkbox"
+                        checked={todo.done}
+                        onChange={() =>
+                          setState((prev) => ({
+                            ...prev,
+                            todos: prev.todos.map((t) => (t.id === todo.id ? { ...t, done: !t.done } : t))
+                          }))
+                        }
+                        whileTap={{ scale: 0.9 }}
+                      />{' '}
+                      <motion.span
+                        className={todo.done ? 'done' : ''}
+                        animate={todo.done ? { scale: [1, 1.04, 1], color: '#2f8650' } : { scale: 1, color: '#102a1d' }}
+                        transition={{ duration: 0.28 }}
+                      >
+                        <span className={`badge badge-${todo.type}`}>{todo.type}</span> {todo.task}
+                      </motion.span>
+                    </label>
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          )}
+          <form onSubmit={addTodo}>
+            <input name="task" placeholder="Aufgabe" required />
+            <select name="type" defaultValue="wässern">
+              <option value="wässern">wässern</option>
+              <option value="düngen">düngen</option>
+            </select>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.96 }} type="submit">Todo hinzufügen</motion.button>
+        <article className="rounded-3xl border border-garden-line/80 bg-garden-surface p-5 shadow-soft backdrop-blur-sm sm:p-6 md:col-span-2 xl:col-span-1">
+          <h2 className="text-lg font-semibold">Todos (Wässern & Düngen)</h2>
+          <ul className="mt-3 space-y-2 text-sm">
+            {state.todos.map((todo) => (
+              <li key={todo.id} className="rounded-2xl border border-garden-line/70 bg-white/70 p-3">
+                <label className="flex items-center gap-2">
+                  <input
+                    className="h-4 w-4 rounded border-garden-line text-garden-primary focus:ring-garden-primary/40"
+                    type="checkbox"
+                    checked={todo.done}
+                    onChange={() =>
+                      setState((prev) => ({
+                        ...prev,
+                        todos: prev.todos.map((t) => (t.id === todo.id ? { ...t, done: !t.done } : t))
+                      }))
+                    }
+                  />
+                  <span className={todo.done ? 'text-garden-muted line-through opacity-70' : ''}>
+                    [{todo.type}] {todo.task}
+                  </span>
+                </label>
+              </li>
+            ))}
+          </ul>
+          <form className="mt-4 grid gap-2.5" onSubmit={addTodo}>
+            <input className="field" name="task" placeholder="Aufgabe" required />
+            <select className="field" name="type" defaultValue="wässern">
+              <option value="wässern">wässern</option>
+              <option value="düngen">düngen</option>
+            </select>
+            <button className="btn-primary" type="submit">Todo hinzufügen</button>
+          </form>
+        </motion.article>
       </section>
     </main>
   );

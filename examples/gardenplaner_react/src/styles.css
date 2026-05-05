@@ -1,21 +1,35 @@
-:root {
-  font-family: Inter, system-ui, sans-serif;
-  color: #102a1d;
-  background: #eff8f0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 bg-garden-bg font-sans text-garden-text antialiased;
+  }
 }
 
-body {
-  margin: 0;
+@layer components {
+  .field {
+    @apply min-h-field w-full rounded-2xl border border-garden-line/90 bg-white/75 px-4 text-sm text-garden-text shadow-soft/50 outline-none transition focus:border-garden-primary focus:ring-2 focus:ring-garden-primary/30;
+  }
+
+.done {
+  text-decoration: line-through;
+  opacity: 0.7;
 }
 
-.container {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 1rem;
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
 }
 
-h1 {
-  margin-bottom: 1rem;
+.progress-track {
+  background: #e1efdf;
+  border-radius: 999px;
+  height: 0.7rem;
+  overflow: hidden;
 }
 
 .card {
@@ -77,27 +91,38 @@ h1 {
 .kpi-label {
   font-size: 0.85rem;
   opacity: 0.75;
+.progress-fill {
+  background: linear-gradient(90deg, #59b56f, #2f8650);
+  height: 100%;
+  width: 0;
 }
 
-form {
-  margin-top: 0.75rem;
-  display: grid;
-  gap: 0.5rem;
+.empty-state {
+  color: #4d6a55;
+  background: #f4fbf5;
+  border: 1px dashed #bdd6c0;
+  border-radius: 10px;
+  padding: 0.8rem;
 }
 
-input,
-select,
-button {
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #bdd6c0;
+.todo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
 }
 
-button {
-  background: #3a814e;
-  color: white;
-  border: none;
-  cursor: pointer;
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  margin-right: 0.35rem;
+}
+
+.badge-wässern {
+  background: #d8f0ff;
+  color: #1f5f84;
 }
 
 button.primary {
@@ -107,6 +132,12 @@ button.primary {
 .done {
   text-decoration: line-through;
   opacity: 0.6;
+.badge-düngen {
+  background: #f6e8c6;
+  color: #825f1f;
+  .btn-primary {
+    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
+  }
 }
 
 @media (min-width: 800px) {
