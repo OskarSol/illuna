@@ -13,6 +13,11 @@
     @apply min-h-field w-full rounded-2xl border border-garden-line/90 bg-white/75 px-4 text-sm text-garden-text shadow-soft/50 outline-none transition focus:border-garden-primary focus:ring-2 focus:ring-garden-primary/30;
   }
 
+  .btn-primary {
+    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
+  }
+}
+
 .done {
   text-decoration: line-through;
   opacity: 0.7;
@@ -30,6 +35,12 @@
   border-radius: 999px;
   height: 0.7rem;
   overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, #59b56f, #2f8650);
+  height: 100%;
+  width: 0;
 }
 
 .card {
@@ -91,10 +102,6 @@
 .kpi-label {
   font-size: 0.85rem;
   opacity: 0.75;
-.progress-fill {
-  background: linear-gradient(90deg, #59b56f, #2f8650);
-  height: 100%;
-  width: 0;
 }
 
 .empty-state {
@@ -125,19 +132,13 @@
   color: #1f5f84;
 }
 
-button.primary {
-  font-weight: 700;
-}
-
-.done {
-  text-decoration: line-through;
-  opacity: 0.6;
 .badge-düngen {
   background: #f6e8c6;
   color: #825f1f;
-  .btn-primary {
-    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
-  }
+}
+
+button.primary {
+  font-weight: 700;
 }
 
 @media (min-width: 800px) {
