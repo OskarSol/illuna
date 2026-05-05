@@ -16,7 +16,7 @@ export default function SettingsPanel() {
   const [settings, setSettings] = useState<Settings>({ apiKey: '', apiUrl: '' })
   const [uiElements, setUiElements] = useState<UiElementDefinition[]>([])
   const [saved, setSaved] = useState(false)
-  const { setToken, init: initUi } = useUiStore()
+  const { setElementValue, init: initUi } = useUiStore()
 
   async function loadUiElements() {
     const active = await db.ui_profiles.where('isActive').equals(1).first()
@@ -41,13 +41,7 @@ export default function SettingsPanel() {
       { key: 'api.url', value: settings.apiUrl, valueType: 'string', updatedAt: ts },
     ])
 
-    await db.ui_elements.bulkPut(uiElements.map((e) => ({ ...e, updatedAt: ts })))
-
-    await Promise.all(
-      uiElements
-        .filter((e) => !e.elementKey.startsWith('text.'))
-        .map((e) => setToken(e.elementKey, e.value, e.valueType))
-    )
+    await Promise.all(uiElements.map((element) => setElementValue(element.elementKey, element.value, element.valueType)))
 
     setSaved(true)
     setTimeout(() => setSaved(false), 1800)
@@ -92,7 +86,11 @@ export default function SettingsPanel() {
               <input
                 type={element.valueType === 'color' ? 'color' : 'text'}
                 value={element.value}
-                onChange={(e) => setUiElements((prev) => prev.map((row, i) => (i === index ? { ...row, value: e.target.value } : row)))}
+                onChange={(e) => {
+                  const nextValue = e.target.value
+                  setUiElements((prev) => prev.map((row, i) => (i === index ? { ...row, value: nextValue } : row)))
+                  void setElementValue(element.elementKey, nextValue, element.valueType)
+                }}
                 className="mt-1 w-full rounded-lg border border-green-200 px-2.5 py-1.5 text-sm"
               />
             </label>
