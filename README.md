@@ -9,3 +9,8 @@ The production Illuna Framework Core, proprietary personalization logic, commerc
 ## Brand
 
 Illuna, the Illuna name, logo, and related branding are not covered by the open-source license.
+
+
+## Documentation Note
+
+The docs in this repository are aligned with the expanded example and implementation descriptions published on **https://illunaai.de** and are continuously refined as those public concept examples evolve.
