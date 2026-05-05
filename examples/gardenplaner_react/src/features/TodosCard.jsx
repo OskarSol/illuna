@@ -1,6 +1,6 @@
 import React from 'react';
 
-export function TodosCard({ todos, setState }) {
+export function TodosCard({ todos, setState, className = '' }) {
   const addTodo = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -23,8 +23,11 @@ export function TodosCard({ todos, setState }) {
   };
 
   return (
-    <article className="card-base stack-md">
-      <h2 className="card-header">Todos (Wässern & Düngen)</h2>
+    <article className={`card-base stack-md ${className}`.trim()}>
+      <div className="card-top">
+        <h2 className="card-header"><span aria-hidden="true">✅</span> Todos (Wässern & Düngen)</h2>
+        <button className="btn-secondary" type="button">Fokus</button>
+      </div>
       <ul>
         {todos.map((todo) => (
           <li key={todo.id}>

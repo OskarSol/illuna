@@ -17,7 +17,10 @@ export function PlantsCard({ plants, setState }) {
 
   return (
     <article className="card-base stack-md">
-      <h2 className="card-header">Meine Pflanzen</h2>
+      <div className="card-top">
+        <h2 className="card-header"><span aria-hidden="true">🪴</span> Meine Pflanzen</h2>
+        <button className="btn-secondary" type="button">Übersicht</button>
+      </div>
       <ul>
         {plants.map((plant) => (
           <li key={plant.id}>
