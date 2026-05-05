@@ -1,16 +1,16 @@
-# Gartenplaner React
+# Garden Planner React
 
-Einfache React-Anwendung mit persistentem Speicher über `localStorage`.
+Simple React application with persistent storage via `localStorage`.
 
-## Funktionen
+## Features
 
-- Meine Pflanzen (inkl. Notizen)
-- Standort des Gartens
-- Kalender für Garten-Termine
-- Todos für **wässern** und **düngen**
-- Persistenz beim Neuladen der Seite
+- My plants (including notes)
+- Garden location
+- Calendar for garden events
+- Todos for **watering** and **fertilizing**
+- State persistence when reloading the page
 
-## Starten
+## Run locally
 
 ```bash
 cd examples/gardenplaner_react
