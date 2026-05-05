@@ -15,7 +15,7 @@
    python3 -m http.server 8080
    ```
 4. Open in your browser:
-   - `http://localhost:8080/example/gardenplaner/`
+   - `http://localhost:8080/examples/gardenplaner/`
 
 ## Manual Test Checklist
 
