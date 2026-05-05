@@ -16,7 +16,7 @@ export default function App() {
         onChange={(e) => setState((prev) => ({ ...prev, gardenLocation: e.target.value }))}
       />
 
-      <section className="grid">
+      <section className="layout-grid">
         <PlantsCard plants={state.plants} setState={setState} />
         <EventsCard events={state.events} setState={setState} />
         <TodosCard todos={state.todos} setState={setState} />
