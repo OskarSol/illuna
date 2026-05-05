@@ -1,6 +1,6 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
-import { useEffect, useMemo, useState } from 'react';
+import App from './App';
 import './styles.css';
 
 const STORAGE_KEY = 'gardenplaner-react-state-v1';
