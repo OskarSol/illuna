@@ -42,6 +42,7 @@ export interface UiElementDefinition {
   label: string
   description: string
   value: string
+  defaultValue: string
   valueType: 'color' | 'px' | 'rem' | 'number' | 'font' | 'url' | 'string'
   category: 'text' | 'color' | 'background' | 'font' | 'border' | 'layout' | 'icon'
   updatedAt: string
@@ -83,7 +84,7 @@ export const db = new GardenPlannerDB()
 function now() { return new Date().toISOString() }
 function uid() { return Math.random().toString(36).slice(2, 10) }
 
-const DEFAULT_UI_ELEMENTS: Array<Omit<UiElementDefinition, 'id' | 'updatedAt'>> = [
+const DEFAULT_UI_ELEMENTS: Array<Omit<UiElementDefinition, 'id' | 'updatedAt' | 'defaultValue'>> = [
   // ── Allgemein: Header & App ──────────────────────────────────────────────
   { profileId: 'default', elementKey: 'text.header.title', label: 'Header Titel', description: 'Haupttitel in der Top-Navigation.', value: 'Gartenplaner', valueType: 'string', category: 'text' },
   { profileId: 'default', elementKey: 'text.header.subtitle', label: 'Header Untertitel', description: 'Optionaler Untertitel unter dem Haupttitel.', value: '', valueType: 'string', category: 'text' },
@@ -199,7 +200,17 @@ export async function ensureUiSeedData() {
   const existingElementKeys = new Set(existingElements.map((e) => e.elementKey))
   const missingElements = DEFAULT_UI_ELEMENTS.filter((e) => !existingElementKeys.has(e.elementKey))
   if (missingElements.length > 0) {
-    await db.ui_elements.bulkAdd(missingElements.map((e) => ({ ...e, id: uid(), updatedAt: now() })))
+    await db.ui_elements.bulkAdd(missingElements.map((e) => ({ ...e, defaultValue: e.value, id: uid(), updatedAt: now() })))
+  }
+
+  const defaultValueMap = Object.fromEntries(DEFAULT_UI_ELEMENTS.map((e) => [e.elementKey, e.value]))
+  const elementsWithoutDefault = existingElements.filter((e) => !e.defaultValue)
+  if (elementsWithoutDefault.length > 0) {
+    await Promise.all(
+      elementsWithoutDefault.map((e) =>
+        db.ui_elements.update(e.id, { defaultValue: defaultValueMap[e.elementKey] ?? e.value })
+      )
+    )
   }
 
   const existingTokens = await db.ui_tokens.where('profileId').equals('default').toArray()
@@ -213,4 +224,21 @@ export async function ensureUiSeedData() {
       missingTokens.map((t) => ({ id: uid(), profileId: 'default', tokenPath: t.elementKey, value: t.value, valueType: t.valueType, updatedAt: now() }))
     )
   }
+}
+
+export async function resetUiElementsToDefault(profileId = 'default') {
+  const ts = now()
+  const elements = await db.ui_elements.where('profileId').equals(profileId).toArray()
+  await Promise.all(
+    elements
+      .filter((e) => e.defaultValue !== undefined)
+      .map((e) => db.ui_elements.update(e.id, { value: e.defaultValue, updatedAt: ts }))
+  )
+  const elementDefaultMap = Object.fromEntries(elements.map((e) => [e.elementKey, e.defaultValue]))
+  const tokens = await db.ui_tokens.where('profileId').equals(profileId).toArray()
+  await Promise.all(
+    tokens
+      .filter((t) => elementDefaultMap[t.tokenPath] !== undefined)
+      .map((t) => db.ui_tokens.update(t.id, { value: elementDefaultMap[t.tokenPath], updatedAt: ts }))
+  )
 }
