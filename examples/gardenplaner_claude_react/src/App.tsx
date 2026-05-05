@@ -9,7 +9,6 @@ import SettingsPanel from './components/SettingsPanel'
 import DatabaseInspector from './components/DatabaseInspector'
 import { useGardenStore } from './store'
 import { useUiStore } from './uiStore'
-import { db } from './db'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 import clsx from 'clsx'
@@ -27,18 +26,11 @@ const TABS: { id: Tab; label: string; icon: typeof Leaf }[] = [
 export default function App() {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
   const { tasks, plants, init, initialized } = useGardenStore()
-  const { tokens, init: initUi } = useUiStore()
-  const [headerTitle, setHeaderTitle] = useState('Gartenplaner')
+  const { tokens, elements, init: initUi } = useUiStore()
 
   useEffect(() => {
     init()
     initUi()
-    ;(async () => {
-      const active = await db.ui_profiles.where('isActive').equals(1).first()
-      const profileId = active?.id ?? 'default'
-      const title = await db.ui_elements.where('[profileId+elementKey]').equals([profileId, 'text.header.title']).first()
-      if (title?.value) setHeaderTitle(title.value)
-    })()
   }, [init, initUi])
 
   const openToday = tasks.filter((t) => !t.completed && t.dueDate <= format(new Date(), 'yyyy-MM-dd')).length
@@ -61,7 +53,7 @@ export default function App() {
               <Leaf className="w-5 h-5 text-white" />
             </div>
             <div>
-              <h1 className="text-base font-bold text-green-900 leading-tight">{headerTitle}</h1>
+              <h1 className="text-base font-bold text-green-900 leading-tight">{elements['text.header.title'] || 'Gartenplaner'}</h1>
               <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
             </div>
           </div>
