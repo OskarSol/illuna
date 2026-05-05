@@ -1,27 +1,35 @@
-:root {
-  font-family: Inter, system-ui, sans-serif;
-  color: #102a1d;
-  background: #eff8f0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 bg-garden-bg font-sans text-garden-text antialiased;
+  }
 }
 
-body {
-  margin: 0;
+@layer components {
+  .field {
+    @apply min-h-field w-full rounded-2xl border border-garden-line/90 bg-white/75 px-4 text-sm text-garden-text shadow-soft/50 outline-none transition focus:border-garden-primary focus:ring-2 focus:ring-garden-primary/30;
+  }
+
+.done {
+  text-decoration: line-through;
+  opacity: 0.7;
 }
 
-.container {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 1rem;
+.progress-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
 }
 
-h1 {
-  margin-bottom: 1rem;
-}
-
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+.progress-track {
+  background: #e1efdf;
+  border-radius: 999px;
+  height: 0.7rem;
+  overflow: hidden;
 }
 
 .card {
@@ -30,30 +38,122 @@ h1 {
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
 }
 
-form {
-  margin-top: 0.75rem;
+.quick-actions p {
+  margin-top: 0;
+}
+
+.action-row {
   display: grid;
   gap: 0.5rem;
 }
 
-input,
-select,
-button {
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #bdd6c0;
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
 }
 
-button {
+.tab {
+  background: #dceede;
+  color: #20472a;
+}
+
+.tab.active {
   background: #3a814e;
   color: white;
-  border: none;
-  cursor: pointer;
+}
+
+.layout-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.kpi {
+  background: #f4fbf5;
+  border: 1px solid #d9eadb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
+.progress-fill {
+  background: linear-gradient(90deg, #59b56f, #2f8650);
+  height: 100%;
+  width: 0;
+}
+
+.empty-state {
+  color: #4d6a55;
+  background: #f4fbf5;
+  border: 1px dashed #bdd6c0;
+  border-radius: 10px;
+  padding: 0.8rem;
+}
+
+.todo-label {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  margin-right: 0.35rem;
+}
+
+.badge-wässern {
+  background: #d8f0ff;
+  color: #1f5f84;
+}
+
+button.primary {
+  font-weight: 700;
 }
 
 .done {
   text-decoration: line-through;
   opacity: 0.6;
+.badge-düngen {
+  background: #f6e8c6;
+  color: #825f1f;
+  .btn-primary {
+    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
+  }
+}
+
+@media (min-width: 800px) {
+  .action-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .span-two {
+    grid-column: span 2;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
