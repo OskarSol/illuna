@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
 import { db } from '../db'
 
-type TableName = keyof Pick<typeof db, 'plants' | 'tasks' | 'app_settings' | 'ui_profiles' | 'ui_tokens' | 'ui_component_overrides'>
+type TableName = keyof Pick<typeof db, 'plants' | 'tasks' | 'app_settings' | 'ui_profiles' | 'ui_tokens' | 'ui_component_overrides' | 'ui_elements'>
 
-const TABLES: TableName[] = ['plants', 'tasks', 'app_settings', 'ui_profiles', 'ui_tokens', 'ui_component_overrides']
+const TABLES: TableName[] = ['plants', 'tasks', 'app_settings', 'ui_profiles', 'ui_tokens', 'ui_component_overrides', 'ui_elements']
 
 export default function DatabaseInspector() {
   const [activeTable, setActiveTable] = useState<TableName>('plants')
