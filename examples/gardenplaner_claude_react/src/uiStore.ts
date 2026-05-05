@@ -28,10 +28,14 @@ export const useUiStore = create<UiState>((set, get) => ({
     const active = await db.ui_profiles.where('isActive').equals(1).first()
     const profileId = active?.id ?? 'default'
     const tokenRows = await db.ui_tokens.where('profileId').equals(profileId).toArray()
+    const elementRows = await db.ui_elements.where('profileId').equals(profileId).toArray()
     const tokens = tokenRows.reduce<Record<string, string>>((acc, token) => {
       acc[token.tokenPath] = token.value
       return acc
     }, {})
+    elementRows.forEach((element) => {
+      if (!element.elementKey.startsWith('text.')) tokens[element.elementKey] = element.value
+    })
     applyCssVariables(tokens)
     set({ profileId, tokens, ready: true })
   },
@@ -43,6 +47,11 @@ export const useUiStore = create<UiState>((set, get) => ({
     } else {
       await db.ui_tokens.add({ id: uid(), profileId, tokenPath, value, valueType, updatedAt: now() })
     }
+    const element = await db.ui_elements.where('[profileId+elementKey]').equals([profileId, tokenPath]).first()
+    if (element) {
+      await db.ui_elements.update(element.id, { value, updatedAt: now() })
+    }
+
     const nextTokens = { ...tokens, [tokenPath]: value }
     applyCssVariables(nextTokens)
     set({ tokens: nextTokens })
