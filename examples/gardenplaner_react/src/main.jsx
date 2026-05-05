@@ -5,11 +5,17 @@ import { AnimatePresence, motion } from 'framer-motion';
 import App from './App';
 import './styles.css';
 
-const STORAGE_KEY = 'gardenplaner-react-state-v1';
+const STORAGE_KEY_V1 = 'gardenplaner-react-state-v1';
+const STORAGE_KEY_V2 = 'gardenplaner-react-state-v2';
+
+const VALID_TODO_TYPES = new Set(['wässern', 'düngen']);
 
 const defaultState = {
+  schemaVersion: 2,
   gardenLocation: '',
   plants: [
+    { id: crypto.randomUUID(), name: 'Tomate', note: 'Sonnig, Rankhilfe nötig', category: 'Gemüse' },
+    { id: crypto.randomUUID(), name: 'Basilikum', note: 'Halbschatten, regelmäßig ernten', category: 'Kräuter' }
     {
       id: crypto.randomUUID(),
       name: 'Tomate',
@@ -32,6 +38,98 @@ const defaultState = {
       id: crypto.randomUUID(),
       date: new Date().toISOString().slice(0, 10),
       title: 'Aussaat prüfen',
+      done: false
+    }
+  ],
+  todos: [
+    { id: crypto.randomUUID(), task: 'Tomaten wässern', type: 'wässern', done: false, priority: 'normal' },
+    { id: crypto.randomUUID(), task: 'Kräuter düngen', type: 'düngen', done: false, priority: 'normal' }
+  ]
+};
+
+const asNonEmptyString = (value, fallback = '') => {
+  if (typeof value !== 'string') return fallback;
+  const trimmed = value.trim();
+  return trimmed || fallback;
+};
+
+const normalizePlant = (plant) => {
+  if (!plant || typeof plant !== 'object') return null;
+  const name = asNonEmptyString(plant.name);
+  if (!name) return null;
+
+  return {
+    id: asNonEmptyString(plant.id, crypto.randomUUID()),
+    name,
+    note: typeof plant.note === 'string' ? plant.note.trim() : '',
+    category: asNonEmptyString(plant.category, 'Allgemein')
+  };
+};
+
+const normalizeEvent = (event) => {
+  if (!event || typeof event !== 'object') return null;
+  const title = asNonEmptyString(event.title);
+  const date = asNonEmptyString(event.date);
+  if (!title || !date) return null;
+
+  return {
+    id: asNonEmptyString(event.id, crypto.randomUUID()),
+    title,
+    date,
+    done: typeof event.done === 'boolean' ? event.done : false
+  };
+};
+
+const normalizeTodo = (todo) => {
+  if (!todo || typeof todo !== 'object') return null;
+  const task = asNonEmptyString(todo.task);
+  if (!task) return null;
+
+  const rawType = asNonEmptyString(todo.type, 'wässern');
+  return {
+    id: asNonEmptyString(todo.id, crypto.randomUUID()),
+    task,
+    type: VALID_TODO_TYPES.has(rawType) ? rawType : 'wässern',
+    done: typeof todo.done === 'boolean' ? todo.done : false,
+    priority: asNonEmptyString(todo.priority, 'normal')
+  };
+};
+
+function migrateState(rawState) {
+  if (!rawState || typeof rawState !== 'object') return defaultState;
+
+  const plants = Array.isArray(rawState.plants)
+    ? rawState.plants.map(normalizePlant).filter(Boolean)
+    : [];
+  const events = Array.isArray(rawState.events)
+    ? rawState.events.map(normalizeEvent).filter(Boolean)
+    : [];
+  const todos = Array.isArray(rawState.todos)
+    ? rawState.todos.map(normalizeTodo).filter(Boolean)
+    : [];
+
+  return {
+    schemaVersion: 2,
+    gardenLocation: typeof rawState.gardenLocation === 'string' ? rawState.gardenLocation : '',
+    plants: plants.length ? plants : defaultState.plants,
+    events: events.length ? events : defaultState.events,
+    todos: todos.length ? todos : defaultState.todos
+  };
+}
+
+function loadState() {
+  try {
+    const rawV2 = localStorage.getItem(STORAGE_KEY_V2);
+    if (rawV2) {
+      return migrateState(JSON.parse(rawV2));
+    }
+
+    const rawV1 = localStorage.getItem(STORAGE_KEY_V1);
+    if (rawV1) {
+      return migrateState(JSON.parse(rawV1));
+    }
+
+    return defaultState;
       category: 'Aussaat',
       color: '#8bc34a'
     }
@@ -110,7 +208,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(state));
   }, [state]);
 
   const sortedEvents = useMemo(
@@ -155,6 +253,7 @@ function App() {
     if (!name) return;
     setState((prev) => ({
       ...prev,
+      plants: [...prev.plants, { id: crypto.randomUUID(), name, note, category: 'Allgemein' }]
       plants: [
         ...prev.plants,
         { id: crypto.randomUUID(), name, note, category, waterIntervalDays, lastWateredAt }
@@ -171,6 +270,7 @@ function App() {
     const category = String(formData.get('category') || 'Allgemein').trim();
     const color = String(formData.get('color') || '#4dd0e1').trim();
     if (!title || !date) return;
+    setState((prev) => ({ ...prev, events: [...prev.events, { id: crypto.randomUUID(), title, date, done: false }] }));
     setState((prev) => ({
       ...prev,
       events: [...prev.events, { id: crypto.randomUUID(), title, date, category, color }]
@@ -189,6 +289,7 @@ function App() {
     if (!task) return;
     setState((prev) => ({
       ...prev,
+      todos: [...prev.todos, { id: crypto.randomUUID(), task, type, done: false, priority: 'normal' }]
       todos: [...prev.todos, { id: crypto.randomUUID(), task, type, done: false, priority, dueDate, plantId }]
     }));
     e.currentTarget.reset();
