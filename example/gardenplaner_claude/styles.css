@@ -63,21 +63,26 @@ textarea { resize: vertical; }
 .app {
   display: flex;
   flex-direction: column;
-  min-height: 100dvh;
+  min-height: calc(100dvh - var(--header-h));
   max-width: var(--max-w);
   margin: 0 auto;
   position: relative;
 }
 
-/* ── Header ── */
+/* ── Header (full viewport width) ── */
 .app-header {
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
   background: var(--green-2);
   color: #fff;
   box-shadow: var(--shadow);
-  height: var(--header-h);
+}
+
+.header-inner {
+  max-width: var(--max-w);
+  margin: 0 auto;
 }
 
 .header-content {
@@ -85,9 +90,29 @@ textarea { resize: vertical; }
   align-items: center;
   justify-content: space-between;
   padding: 0 16px;
-  height: 100%;
+  height: var(--header-h);
   gap: 12px;
 }
+
+/* ── Weather Bar ── */
+.weather-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  background: rgba(0,0,0,.18);
+  font-size: .82rem;
+  color: rgba(255,255,255,.92);
+  border-top: 1px solid rgba(255,255,255,.1);
+  flex-wrap: wrap;
+}
+.weather-bar.hidden { display: none; }
+
+.weather-icon-el { font-size: 1.05rem; }
+.weather-temp-el { font-weight: 700; font-size: .95rem; }
+.weather-desc-el { opacity: .85; }
+.weather-wind-el { opacity: .75; }
+.weather-sep     { opacity: .4; }
 
 .header-garden-info {
   display: flex;
@@ -132,7 +157,7 @@ textarea { resize: vertical; }
   background: var(--surface);
   border-bottom: 1px solid var(--border);
   position: sticky;
-  top: var(--header-h);
+  top: var(--real-header-h, var(--header-h));
   z-index: 90;
   box-shadow: var(--shadow-sm);
 }

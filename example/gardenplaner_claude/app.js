@@ -1,6 +1,99 @@
 'use strict';
 
 // ═══════════════════════════════════════════
+//  WEATHER
+// ═══════════════════════════════════════════
+
+const WMO = {
+  0:  { icon: '☀️',  desc: 'Klarer Himmel' },
+  1:  { icon: '🌤️', desc: 'Überwiegend klar' },
+  2:  { icon: '⛅',  desc: 'Teilweise bewölkt' },
+  3:  { icon: '☁️',  desc: 'Bedeckt' },
+  45: { icon: '🌫️', desc: 'Nebelig' },
+  48: { icon: '🌫️', desc: 'Gefrierender Nebel' },
+  51: { icon: '🌦️', desc: 'Leichter Nieselregen' },
+  53: { icon: '🌦️', desc: 'Nieselregen' },
+  55: { icon: '🌧️', desc: 'Starker Nieselregen' },
+  61: { icon: '🌧️', desc: 'Leichter Regen' },
+  63: { icon: '🌧️', desc: 'Regen' },
+  65: { icon: '🌧️', desc: 'Starker Regen' },
+  71: { icon: '❄️',  desc: 'Leichter Schnee' },
+  73: { icon: '❄️',  desc: 'Schnee' },
+  75: { icon: '❄️',  desc: 'Starker Schnee' },
+  77: { icon: '🌨️', desc: 'Schneekörner' },
+  80: { icon: '🌦️', desc: 'Leichte Schauer' },
+  81: { icon: '🌦️', desc: 'Schauer' },
+  82: { icon: '⛈️',  desc: 'Starke Schauer' },
+  85: { icon: '🌨️', desc: 'Schneeschauer' },
+  86: { icon: '🌨️', desc: 'Starke Schneeschauer' },
+  95: { icon: '⛈️',  desc: 'Gewitter' },
+  96: { icon: '⛈️',  desc: 'Gewitter mit Hagel' },
+  99: { icon: '⛈️',  desc: 'Schweres Gewitter' },
+};
+
+function wmoInfo(code) {
+  return WMO[code] || WMO[Math.floor(code / 10) * 10] || { icon: '🌡️', desc: 'Wetter' };
+}
+
+async function geocodeLocation(location) {
+  const url = `https://nominatim.openstreetmap.org/search?format=json&limit=1&q=${encodeURIComponent(location)}`;
+  const res = await fetch(url, { headers: { 'Accept-Language': 'de' } });
+  const data = await res.json();
+  if (!data.length) return null;
+  return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+}
+
+async function fetchWeatherByCoords(lat, lon) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&timezone=auto`;
+  const res = await fetch(url);
+  const data = await res.json();
+  return data.current_weather || null;
+}
+
+function renderWeather(weather) {
+  const bar   = document.getElementById('weather-bar');
+  const info  = wmoInfo(weather.weathercode);
+  const isDay = weather.is_day !== 0;
+  const icon  = (weather.weathercode === 0 && !isDay) ? '🌙' : info.icon;
+
+  document.getElementById('weather-icon-el').textContent = icon;
+  document.getElementById('weather-temp-el').textContent = `${Math.round(weather.temperature)} °C`;
+  document.getElementById('weather-desc-el').textContent = info.desc;
+  document.getElementById('weather-wind-el').textContent = `💨 ${Math.round(weather.windspeed)} km/h`;
+
+  bar.classList.remove('hidden');
+  updateTabOffset();
+}
+
+async function initWeather() {
+  const location = state.garden.location;
+  if (!location) return;
+
+  try {
+    let coords = state.weatherCoords;
+
+    // Re-geocode if location changed
+    if (!coords || coords.location !== location) {
+      coords = await geocodeLocation(location);
+      if (!coords) return;
+      coords.location = location;
+      state.weatherCoords = coords;
+      saveState();
+    }
+
+    const weather = await fetchWeatherByCoords(coords.lat, coords.lon);
+    if (weather) renderWeather(weather);
+  } catch (e) {
+    console.warn('Wetter konnte nicht geladen werden:', e);
+  }
+}
+
+function updateTabOffset() {
+  const headerH = document.querySelector('.app-header').offsetHeight;
+  document.documentElement.style.setProperty('--real-header-h', headerH + 'px');
+}
+
+// ═══════════════════════════════════════════
 //  CONSTANTS
 // ═══════════════════════════════════════════
 
@@ -475,6 +568,7 @@ let state = {
   garden: { ...DEFAULT_GARDEN },
   plants: [],
   reminders: [],
+  weatherCoords: null,
 };
 
 function loadState() {
@@ -621,6 +715,7 @@ function updateLawnLabel() {
 }
 
 function saveGarden() {
+  const prevLocation = state.garden.location;
   state.garden = {
     title:       document.getElementById('garden-title-input').value.trim() || 'Mein Garten',
     icon:        document.getElementById('garden-icon-display').textContent,
@@ -629,6 +724,13 @@ function saveGarden() {
     hasLawn:     document.getElementById('garden-lawn-toggle').checked,
     description: document.getElementById('garden-desc-input').value.trim(),
   };
+  if (state.garden.location !== prevLocation) {
+    // Force re-geocode on next weather fetch
+    state.weatherCoords = null;
+    document.getElementById('weather-bar').classList.add('hidden');
+    updateTabOffset();
+    initWeather();
+  }
   saveState();
   updateHeader();
 
@@ -1095,6 +1197,12 @@ function init() {
 
   // Initial render
   switchView('garten');
+
+  // Set tab offset after header renders (weather may still be loading)
+  updateTabOffset();
+
+  // Fetch weather if location is already saved
+  initWeather();
 }
 
 document.addEventListener('DOMContentLoaded', init);
