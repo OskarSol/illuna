@@ -49,6 +49,7 @@ function loadState() {
 
 function App() {
   const [state, setState] = useState(loadState);
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -59,6 +60,8 @@ function App() {
     [state.events]
   );
 
+  const openTodos = useMemo(() => state.todos.filter((todo) => !todo.done).length, [state.todos]);
+  const nextEvent = sortedEvents.find((event) => event.date >= new Date().toISOString().slice(0, 10));
   const doneToday = state.todos.filter((todo) => todo.done).length;
   const totalTodos = state.todos.length;
   const progress = totalTodos === 0 ? 0 : Math.round((doneToday / totalTodos) * 100);
@@ -106,6 +109,17 @@ function App() {
         <p className="mt-2 text-sm text-garden-muted">Garden playful Theme mit Design Tokens & Tailwind Utilities.</p>
       </header>
 
+      <section className="quick-actions card">
+        <h2>Schnellzugriff</h2>
+        <p>Wichtige Aktionen direkt oben, besonders für Mobilgeräte.</p>
+        <div className="action-row">
+          <button type="button" className="primary" onClick={() => setActiveTab('plants')}>Pflanze hinzufügen</button>
+          <button type="button" className="primary" onClick={() => setActiveTab('events')}>Termin planen</button>
+          <button type="button" className="primary" onClick={() => setActiveTab('tasks')}>Aufgabe erfassen</button>
+        </div>
+      </section>
+
+      <section className="card">
       <motion.section className="card" {...cardMotion}>
         <h2>Standort des Gartens</h2>
       <section className="rounded-3xl border border-garden-line/80 bg-garden-surface p-5 shadow-soft backdrop-blur-sm sm:p-6">
@@ -130,6 +144,105 @@ function App() {
         </div>
       </motion.section>
 
+      <nav className="tabs" aria-label="Hauptbereiche">
+        <button type="button" className={activeTab === 'dashboard' ? 'tab active' : 'tab'} onClick={() => setActiveTab('dashboard')}>Dashboard</button>
+        <button type="button" className={activeTab === 'plants' ? 'tab active' : 'tab'} onClick={() => setActiveTab('plants')}>Pflanzen</button>
+        <button type="button" className={activeTab === 'events' ? 'tab active' : 'tab'} onClick={() => setActiveTab('events')}>Termine</button>
+        <button type="button" className={activeTab === 'tasks' ? 'tab active' : 'tab'} onClick={() => setActiveTab('tasks')}>Aufgaben</button>
+      </nav>
+
+      <section className="layout-grid">
+        {activeTab === 'dashboard' && (
+          <article className="card span-two">
+            <h2>Dashboard-Übersicht</h2>
+            <div className="kpi-grid">
+              <div className="kpi">
+                <span className="kpi-label">Pflanzenzahl</span>
+                <strong>{state.plants.length}</strong>
+              </div>
+              <div className="kpi">
+                <span className="kpi-label">Offene Todos</span>
+                <strong>{openTodos}</strong>
+              </div>
+              <div className="kpi">
+                <span className="kpi-label">Nächster Termin</span>
+                <strong>{nextEvent ? `${nextEvent.date}: ${nextEvent.title}` : 'Kein Termin geplant'}</strong>
+              </div>
+            </div>
+          </article>
+        )}
+
+        {activeTab === 'plants' && (
+          <article className="card">
+            <h2>Pflanzen</h2>
+            <ul>
+              {state.plants.map((plant) => (
+                <li key={plant.id}>
+                  <strong>{plant.name}</strong>
+                  {plant.note && <span> — {plant.note}</span>}
+                </li>
+              ))}
+            </ul>
+            <form onSubmit={addPlant}>
+              <input name="name" placeholder="Pflanzenname" required />
+              <input name="note" placeholder="Notiz" />
+              <button type="submit">Pflanze hinzufügen</button>
+            </form>
+          </article>
+        )}
+
+        {activeTab === 'events' && (
+          <article className="card">
+            <h2>Termine</h2>
+            <ul>
+              {sortedEvents.map((event) => (
+                <li key={event.id}>
+                  <strong>{event.date}</strong>: {event.title}
+                </li>
+              ))}
+            </ul>
+            <form onSubmit={addEvent}>
+              <input name="title" placeholder="Termin" required />
+              <input name="date" type="date" required />
+              <button type="submit">Termin hinzufügen</button>
+            </form>
+          </article>
+        )}
+
+        {activeTab === 'tasks' && (
+          <article className="card">
+            <h2>Aufgaben</h2>
+            <ul>
+              {state.todos.map((todo) => (
+                <li key={todo.id}>
+                  <label>
+                    <input
+                      type="checkbox"
+                      checked={todo.done}
+                      onChange={() =>
+                        setState((prev) => ({
+                          ...prev,
+                          todos: prev.todos.map((t) => (t.id === todo.id ? { ...t, done: !t.done } : t))
+                        }))
+                      }
+                    />{' '}
+                    <span className={todo.done ? 'done' : ''}>
+                      [{todo.type}] {todo.task}
+                    </span>
+                  </label>
+                </li>
+              ))}
+            </ul>
+            <form onSubmit={addTodo}>
+              <input name="task" placeholder="Aufgabe" required />
+              <select name="type" defaultValue="wässern">
+                <option value="wässern">wässern</option>
+                <option value="düngen">düngen</option>
+              </select>
+              <button type="submit">Todo hinzufügen</button>
+            </form>
+          </article>
+        )}
       <section className="grid">
         <motion.article className="card" {...cardMotion} transition={{ ...cardMotion.transition, delay: 0.1 }}>
           <h2>Meine Pflanzen</h2>

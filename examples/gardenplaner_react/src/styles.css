@@ -32,6 +32,65 @@
   overflow: hidden;
 }
 
+.card {
+  background: white;
+  border: 1px solid #d9eadb;
+  border-radius: 12px;
+  padding: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
+}
+
+.quick-actions p {
+  margin-top: 0;
+}
+
+.action-row {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.tab {
+  background: #dceede;
+  color: #20472a;
+}
+
+.tab.active {
+  background: #3a814e;
+  color: white;
+}
+
+.layout-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.kpi {
+  background: #f4fbf5;
+  border: 1px solid #d9eadb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
 .progress-fill {
   background: linear-gradient(90deg, #59b56f, #2f8650);
   height: 100%;
@@ -66,10 +125,35 @@
   color: #1f5f84;
 }
 
+button.primary {
+  font-weight: 700;
+}
+
+.done {
+  text-decoration: line-through;
+  opacity: 0.6;
 .badge-düngen {
   background: #f6e8c6;
   color: #825f1f;
   .btn-primary {
     @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
+  }
+}
+
+@media (min-width: 800px) {
+  .action-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .span-two {
+    grid-column: span 2;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 }
