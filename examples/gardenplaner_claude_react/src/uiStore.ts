@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { liveQuery } from 'dexie'
 import { db, type UiToken } from './db'
 
 export interface UiState {
@@ -22,6 +23,53 @@ function applyCssVariables(tokens: Record<string, string>) {
   })
 }
 
+function buildTokensAndElements(
+  tokenRows: UiToken[],
+  elementRows: { elementKey: string; value: string }[]
+) {
+  const tokens = tokenRows.reduce<Record<string, string>>((acc, token) => {
+    acc[token.tokenPath] = token.value
+    return acc
+  }, {})
+  elementRows.forEach((element) => {
+    if (!element.elementKey.startsWith('text.')) tokens[element.elementKey] = element.value
+  })
+  const elements = elementRows.reduce<Record<string, string>>((acc, element) => {
+    acc[element.elementKey] = element.value
+    return acc
+  }, {})
+  return { tokens, elements }
+}
+
+let uiSyncUnsubscribe: (() => void) | null = null
+
+function ensureUiDbSync(
+  set: (partial: Partial<UiState>) => void,
+  getProfileId: () => string,
+) {
+  if (uiSyncUnsubscribe) return
+
+  const subscription = liveQuery(async () => {
+    const profileId = getProfileId()
+    const [tokenRows, elementRows] = await Promise.all([
+      db.ui_tokens.where('profileId').equals(profileId).toArray(),
+      db.ui_elements.where('profileId').equals(profileId).toArray(),
+    ])
+    return { tokenRows, elementRows }
+  }).subscribe({
+    next: ({ tokenRows, elementRows }) => {
+      const { tokens, elements } = buildTokensAndElements(tokenRows, elementRows)
+      applyCssVariables(tokens)
+      set({ tokens, elements })
+    },
+    error: (error: unknown) => {
+      console.error('Live UI DB sync failed', error)
+    },
+  })
+
+  uiSyncUnsubscribe = () => subscription.unsubscribe()
+}
+
 export const useUiStore = create<UiState>((set, get) => ({
   profileId: 'default',
   tokens: {},
@@ -30,19 +78,11 @@ export const useUiStore = create<UiState>((set, get) => ({
   init: async () => {
     const active = await db.ui_profiles.where('isActive').equals(1).first()
     const profileId = active?.id ?? 'default'
+    set({ profileId })
+    ensureUiDbSync(set, () => get().profileId)
     const tokenRows = await db.ui_tokens.where('profileId').equals(profileId).toArray()
     const elementRows = await db.ui_elements.where('profileId').equals(profileId).toArray()
-    const tokens = tokenRows.reduce<Record<string, string>>((acc, token) => {
-      acc[token.tokenPath] = token.value
-      return acc
-    }, {})
-    elementRows.forEach((element) => {
-      if (!element.elementKey.startsWith('text.')) tokens[element.elementKey] = element.value
-    })
-    const elements = elementRows.reduce<Record<string, string>>((acc, element) => {
-      acc[element.elementKey] = element.value
-      return acc
-    }, {})
+    const { tokens, elements } = buildTokensAndElements(tokenRows, elementRows)
     applyCssVariables(tokens)
     set({ profileId, tokens, elements, ready: true })
   },
