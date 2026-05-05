@@ -1,21 +1,23 @@
 import { useState } from 'react'
-import { Leaf, ListChecks, CalendarDays, Sprout } from 'lucide-react'
+import { Leaf, ListChecks, CalendarDays, Sprout, Settings } from 'lucide-react'
 import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
 import MonthlyCalendar from './components/MonthlyCalendar'
 import WeatherWidget from './components/WeatherWidget'
 import ChatWidget from './components/ChatWidget'
+import SettingsPanel from './components/SettingsPanel'
 import { useGardenStore } from './store'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 import clsx from 'clsx'
 
-type Tab = 'plants' | 'tasks' | 'calendar'
+type Tab = 'plants' | 'tasks' | 'calendar' | 'settings'
 
 const TABS: { id: Tab; label: string; icon: typeof Leaf }[] = [
   { id: 'plants', label: 'Pflanzen', icon: Sprout },
   { id: 'tasks', label: 'Aufgaben', icon: ListChecks },
   { id: 'calendar', label: 'Kalender', icon: CalendarDays },
+  { id: 'settings', label: 'Einstellungen', icon: Settings },
 ]
 
 export default function App() {
@@ -81,6 +83,7 @@ export default function App() {
         {activeTab === 'plants' && <PlantManager />}
         {activeTab === 'tasks' && <TaskList />}
         {activeTab === 'calendar' && <MonthlyCalendar />}
+        {activeTab === 'settings' && <SettingsPanel />}
       </main>
 
       <WeatherWidget />
