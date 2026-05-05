@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { addDays, addWeeks, addMonths, format } from 'date-fns'
 import { db, ensureUiSeedData } from './db'
+import { liveQuery } from 'dexie'
 
 export type TaskType = 'watering' | 'fertilizing' | 'pruning' | 'harvesting' | 'repotting' | 'other'
 
@@ -70,6 +71,27 @@ const SEED_TASKS: Task[] = [
   { id: 't3', plantId: 'p2', title: 'Basilikum gießen', taskType: 'watering', dueDate: today, completed: false, recurring: { type: 'daily', interval: 1 } },
 ]
 
+
+let dbSyncUnsubscribe: (() => void) | null = null
+
+function ensureDbSync(set: (partial: Partial<GardenStore> | ((state: GardenStore) => Partial<GardenStore>)) => void) {
+  if (dbSyncUnsubscribe) return
+
+  const subscription = liveQuery(async () => {
+    const [plants, tasks] = await Promise.all([db.plants.toArray(), db.tasks.toArray()])
+    return { plants, tasks }
+  }).subscribe({
+    next: ({ plants, tasks }: { plants: Plant[]; tasks: Task[] }) => {
+      set({ plants, tasks, initialized: true })
+    },
+    error: (error: unknown) => {
+      console.error('Live DB sync failed', error)
+    },
+  })
+
+  dbSyncUnsubscribe = () => subscription.unsubscribe()
+}
+
 function withTimestamps<T extends { createdAt?: string; updatedAt?: string }>(entity: T): T {
   const ts = now()
   return { ...entity, createdAt: entity.createdAt ?? ts, updatedAt: ts }
@@ -92,6 +114,8 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
     } else {
       set({ plants, tasks, initialized: true })
     }
+
+    ensureDbSync(set)
     await ensureUiSeedData()
   },
 
