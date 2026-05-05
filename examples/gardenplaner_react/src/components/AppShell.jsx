@@ -1,10 +1,11 @@
 import React from 'react';
 
-export function AppShell({ children }) {
+export function AppShell({ header, stickyActions, children }) {
   return (
     <main className="app-shell">
-      <h1>🌱 Gartenplaner (React)</h1>
-      {children}
+      {header && <header className="app-shell-header">{header}</header>}
+      {stickyActions && <div className="app-shell-sticky">{stickyActions}</div>}
+      <div className="app-shell-content">{children}</div>
     </main>
   );
 }

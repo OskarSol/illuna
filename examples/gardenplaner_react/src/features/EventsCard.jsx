@@ -19,7 +19,10 @@ export function EventsCard({ events, setState }) {
 
   return (
     <article className="card-base stack-md">
-      <h2 className="card-header">Kalender</h2>
+      <div className="card-top">
+        <h2 className="card-header"><span aria-hidden="true">📅</span> Kalender</h2>
+        <button className="btn-secondary" type="button">Nächster</button>
+      </div>
       <ul>
         {sortedEvents.map((event) => (
           <li key={event.id}>
