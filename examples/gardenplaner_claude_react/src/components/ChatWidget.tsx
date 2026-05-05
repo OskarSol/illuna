@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { X, Send, Sparkles } from 'lucide-react'
+import { X, Send, Sparkles, MessageCircle } from 'lucide-react'
 import clsx from 'clsx'
 
 type Message = {
@@ -270,7 +270,7 @@ export default function ChatWidget() {
           style={isOpen ? undefined : { animation: 'float 3s ease-in-out infinite' }}
         >
           {isOpen ? (
-            <X className="w-5 h-5 text-white" />
+            <MessageCircle className="w-5 h-5 text-white" />
           ) : (
             <BotAvatar size={38} />
           )}
