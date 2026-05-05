@@ -1,59 +1,19 @@
-:root {
-  font-family: Inter, system-ui, sans-serif;
-  color: #102a1d;
-  background: #eff8f0;
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply m-0 bg-garden-bg font-sans text-garden-text antialiased;
+  }
 }
 
-body {
-  margin: 0;
-}
+@layer components {
+  .field {
+    @apply min-h-field w-full rounded-2xl border border-garden-line/90 bg-white/75 px-4 text-sm text-garden-text shadow-soft/50 outline-none transition focus:border-garden-primary focus:ring-2 focus:ring-garden-primary/30;
+  }
 
-.container {
-  max-width: 1024px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-h1 {
-  margin-bottom: 1rem;
-}
-
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-.card {
-  background: white;
-  border: 1px solid #d9eadb;
-  border-radius: 12px;
-  padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-form {
-  margin-top: 0.75rem;
-  display: grid;
-  gap: 0.5rem;
-}
-
-input,
-select,
-button {
-  padding: 0.5rem;
-  border-radius: 8px;
-  border: 1px solid #bdd6c0;
-}
-
-button {
-  background: #3a814e;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-
-.done {
-  text-decoration: line-through;
-  opacity: 0.6;
+  .btn-primary {
+    @apply min-h-field w-full rounded-2xl bg-garden-primary px-4 text-sm font-semibold text-white shadow-soft transition hover:-translate-y-0.5 hover:bg-garden-primaryDark hover:shadow-lift;
+  }
 }
