@@ -18,18 +18,65 @@ h1 {
   margin-bottom: 1rem;
 }
 
-.grid {
-  display: grid;
-  gap: 1rem;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
 .card {
   background: white;
   border: 1px solid #d9eadb;
   border-radius: 12px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
+}
+
+.quick-actions p {
+  margin-top: 0;
+}
+
+.action-row {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin: 1rem 0;
+  overflow-x: auto;
+}
+
+.tab {
+  background: #dceede;
+  color: #20472a;
+}
+
+.tab.active {
+  background: #3a814e;
+  color: white;
+}
+
+.layout-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+.kpi-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.kpi {
+  background: #f4fbf5;
+  border: 1px solid #d9eadb;
+  border-radius: 10px;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.kpi-label {
+  font-size: 0.85rem;
+  opacity: 0.75;
 }
 
 form {
@@ -53,7 +100,29 @@ button {
   cursor: pointer;
 }
 
+button.primary {
+  font-weight: 700;
+}
+
 .done {
   text-decoration: line-through;
   opacity: 0.6;
+}
+
+@media (min-width: 800px) {
+  .action-row {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .layout-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .span-two {
+    grid-column: span 2;
+  }
+
+  .kpi-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
