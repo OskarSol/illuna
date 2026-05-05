@@ -8,66 +8,6 @@ type Message = {
   text: string
 }
 
-const GARDEN_RESPONSES: Array<{ pattern: RegExp; replies: string[] }> = [
-  {
-    pattern: /hallo|hi|hey|moin|guten/i,
-    replies: [
-      'Hallo! 👋 Schön, dass du da bist! Was möchtest du heute in deinem Garten angehen?',
-      'Hi! 🌻 Ich freue mich, von dir zu hören! Womit kann ich helfen?',
-    ],
-  },
-  {
-    pattern: /wasser|gieß|bewässer/i,
-    replies: [
-      'Gießen ist eine Kunst! 💧 Morgens gießen ist am besten – so haben die Pflanzen den ganzen Tag um Wasser aufzunehmen, bevor es verdunstet.',
-      'Kleiner Trick: Den Finger in die Erde stecken – wenn die ersten 2–3 cm trocken sind, ist es Zeit zum Gießen! 💧',
-    ],
-  },
-  {
-    pattern: /pflanz|säen|samen|wachsen/i,
-    replies: [
-      'Pflanzen sind meine Leidenschaft! 🌱 Schau doch mal im Pflanzen-Tab nach – dort kannst du alles tracken!',
-      'Wann hast du zuletzt neue Pflanzen hinzugefügt? Im Pflanzen-Tab findest du alle deine grünen Schätzchen! 🌿',
-    ],
-  },
-  {
-    pattern: /aufgab|todo|erledigt|heute/i,
-    replies: [
-      'Im Aufgaben-Tab hast du alles im Blick! ✅ Gibt es eine bestimmte Aufgabe, bei der ich helfen kann?',
-      'Aufgaben abhaken ist so befriedigend! 🌟 Deine offenen Aufgaben warten auf dich im Aufgaben-Tab.',
-    ],
-  },
-  {
-    pattern: /wetter|regen|sonne|temperatur|frost/i,
-    replies: [
-      'Das Wetter spielt eine große Rolle! ☀️ Ich habe unten links ein Wetter-Widget für dich – schau mal rein!',
-      'Bei Regen kannst du dir die Gießarbeit sparen! 🌧️ Das Wetter-Widget zeigt dir die aktuelle Lage.',
-    ],
-  },
-  {
-    pattern: /tipp|rat|hilfe|wie|was soll/i,
-    replies: [
-      'Meine Top-Tipps für einen gesunden Garten: 🌿\n1. Morgens gießen\n2. Aufgaben regelmäßig pflegen\n3. Den Kalender für Saisonplanung nutzen!',
-      'Ich helfe dir gerne! 💚 Nutze die Tabs oben um Pflanzen, Aufgaben und deinen Kalender zu verwalten.',
-    ],
-  },
-  {
-    pattern: /düngen|dünger|erde|boden/i,
-    replies: [
-      'Gute Erde ist das A und O! 🪱 Kompost oder hochwertiger Blumenerde gibt deinen Pflanzen den besten Start.',
-      'Düngen nicht vergessen! 🌿 Im Frühling und Sommer alle 2 Wochen – deine Pflanzen werden es dir danken.',
-    ],
-  },
-  {
-    pattern: /danke|toll|super|klasse|gut gemacht|wunderbar/i,
-    replies: [
-      'Oh, das freut mich sehr! 🌸 Dafür bin ich da!',
-      'Gerne! 🌻 Dein Garten wird es dir danken!',
-      'Das macht mich so glücklich! 🌈 Gemeinsam haben wir den grünen Daumen!',
-    ],
-  },
-]
-
 const DEFAULT_REPLIES = [
   'Das ist eine spannende Frage! 🤔 Leider weiß ich das noch nicht, aber ich lerne täglich dazu. Schau dich gerne in den Tabs um!',
   'Hmm, da bin ich überfragt! 🌱 Aber für Pflanzen, Aufgaben und Kalender bin ich dein Ansprechpartner!',
@@ -76,13 +16,6 @@ const DEFAULT_REPLIES = [
 
 function pick<T>(arr: T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]
-}
-
-function getReply(text: string): string {
-  for (const { pattern, replies } of GARDEN_RESPONSES) {
-    if (pattern.test(text)) return pick(replies)
-  }
-  return pick(DEFAULT_REPLIES)
 }
 
 function BotAvatar({ size = 40, className = '' }: { size?: number; className?: string }) {
@@ -136,7 +69,7 @@ export default function ChatWidget() {
     }
   }, [isOpen, messages])
 
-  function sendMessage() {
+  async function sendMessage() {
     const text = input.trim()
     if (!text || isTyping) return
 
@@ -145,14 +78,36 @@ export default function ChatWidget() {
     setInput('')
     setIsTyping(true)
 
-    const delay = 900 + Math.random() * 700
-    setTimeout(() => {
-      setIsTyping(false)
+    try {
+      const response = await fetch(
+        'https://n8n.braveriver-d2333d65.swedencentral.azurecontainerapps.io/webhook/e34bf523-a4ae-482a-951e-7e306e7eb9fc',
+        {
+          method: 'GET',
+          headers: {
+            N8NAuth: '435dfgh7f9a3c2e1b8d4a6f9c0e3b7a1d5f8c2e9a4b6d1c3e7f8a9b',
+          },
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error(`Webhook request failed with status ${response.status}`)
+      }
+
+      const replyText = (await response.text()).trim() || pick(DEFAULT_REPLIES)
+      setMessages((prev) => [...prev, { id: `b-${Date.now()}`, from: 'bot', text: replyText }])
+    } catch (error) {
+      console.error('Webhook call failed:', error)
       setMessages((prev) => [
         ...prev,
-        { id: `b-${Date.now()}`, from: 'bot', text: getReply(text) },
+        {
+          id: `b-${Date.now()}`,
+          from: 'bot',
+          text: 'Entschuldige, ich konnte den Service gerade nicht erreichen. Bitte versuche es gleich noch einmal.',
+        },
       ])
-    }, delay)
+    } finally {
+      setIsTyping(false)
+    }
   }
 
   return (
