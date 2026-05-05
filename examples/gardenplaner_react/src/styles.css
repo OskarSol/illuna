@@ -124,11 +124,36 @@
     @apply flex flex-col gap-3;
   }
 
+
+  .stack-sm {
+    @apply flex flex-col gap-1;
+  }
+
+  .form-segment {
+    @apply rounded-lg border border-garden-neutral-300 bg-garden-neutral-100 p-3;
+  }
+
+  .field-label {
+    @apply text-sm font-medium text-garden-neutral-900;
+  }
+
+  .field-helper {
+    @apply text-xs text-garden-neutral-700;
+  }
+
+  .form-action-row {
+    @apply flex items-center gap-3;
+  }
+
   .field-control {
     @apply min-h-field w-full rounded-lg border border-garden-neutral-300 bg-garden-neutral-100 px-3 text-sm text-garden-neutral-900 outline-none transition duration-200;
   }
 
-  .field-control:focus {
+  .field-control:hover {
+    @apply border-garden-neutral-700;
+  }
+
+  .field-control:focus-visible {
     @apply border-garden-primary shadow-none;
     box-shadow: var(--ring);
   }
@@ -138,7 +163,7 @@
   }
 
   .btn-secondary {
-    @apply min-h-field rounded-lg border border-garden-neutral-300 bg-white px-3 text-sm font-medium text-garden-neutral-700;
+    @apply min-h-field rounded-lg border border-garden-neutral-300 bg-white px-3 text-sm font-medium text-garden-neutral-700 transition duration-200;
   }
 
   .btn-cta:hover {
@@ -186,4 +211,32 @@
   .empty-state {
     @apply rounded-lg border border-dashed border-garden-neutral-300 bg-garden-neutral-100 p-3 text-sm text-garden-neutral-700;
   }
+
+
+  .btn-secondary:hover {
+    @apply border-garden-neutral-700 bg-garden-neutral-100;
+  }
+
+  .btn-secondary:active {
+    @apply bg-garden-neutral-300;
+  }
+
+  .field-control:disabled,
+  .btn-cta:disabled,
+  .btn-secondary:disabled {
+    @apply cursor-not-allowed opacity-60;
+  }
+
+  .btn-cta[aria-busy='true'] {
+    @apply animate-pulse;
+  }
+
+  .success-feedback {
+    @apply text-xs font-medium text-garden-primary-active opacity-0 translate-y-1 transition duration-200;
+  }
+
+  .success-feedback.is-visible {
+    @apply opacity-100 translate-y-0;
+  }
 }
+
