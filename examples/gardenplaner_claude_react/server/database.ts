@@ -95,7 +95,13 @@ db.exec(`
     default_value TEXT NOT NULL,
     value_type    TEXT NOT NULL,
     category      TEXT NOT NULL,
+    skill_level   TEXT NOT NULL DEFAULT 'all',
     updated_at    TEXT NOT NULL,
     UNIQUE(user_id, profile_id, element_key)
   );
 `)
+
+const uiElementCols = db.prepare(`PRAGMA table_info(ui_elements)`).all() as { name: string }[]
+if (!uiElementCols.some(c => c.name === 'skill_level')) {
+  db.exec(`ALTER TABLE ui_elements ADD COLUMN skill_level TEXT NOT NULL DEFAULT 'all'`)
+}

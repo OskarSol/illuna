@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { db } from '../database.js'
-import { DEFAULT_UI_ELEMENTS } from '../seed.js'
+import { DEFAULT_UI_ELEMENTS, ensureUserUiElements } from '../seed.js'
 import type { Request, Response } from 'express'
 
 function now() { return new Date().toISOString() }
@@ -14,18 +14,21 @@ function getActiveProfile(userId: string): { id: string } | undefined {
 
 uiRouter.get('/active-profile', (req: Request, res: Response) => {
   const userId = (req as Request & { userId: string }).userId
+  ensureUserUiElements(userId)
   const profile = getActiveProfile(userId)
   if (!profile) {
     res.status(404).json({ error: 'Kein aktives Profil gefunden' })
     return
   }
   const tokenRows = db.prepare('SELECT token_path, value, value_type FROM ui_tokens WHERE user_id = ? AND profile_id = ?').all(userId, profile.id) as { token_path: string; value: string; value_type: string }[]
-  const elementRows = db.prepare('SELECT element_key, value FROM ui_elements WHERE user_id = ? AND profile_id = ?').all(userId, profile.id) as { element_key: string; value: string }[]
+  const elementRows = db.prepare('SELECT element_key, value, skill_level FROM ui_elements WHERE user_id = ? AND profile_id = ?').all(userId, profile.id) as { element_key: string; value: string; skill_level: string }[]
+  const skillLevelRow = db.prepare(`SELECT value FROM app_settings WHERE user_id = ? AND key = 'ui.skillLevel'`).get(userId) as { value: string } | undefined
 
   res.json({
     profileId: profile.id,
+    skillLevel: skillLevelRow?.value ?? 'beginner',
     tokenRows: tokenRows.map(r => ({ tokenPath: r.token_path, value: r.value, valueType: r.value_type })),
-    elementRows: elementRows.map(r => ({ elementKey: r.element_key, value: r.value })),
+    elementRows: elementRows.map(r => ({ elementKey: r.element_key, value: r.value, skillLevel: r.skill_level })),
   })
 })
 
@@ -40,22 +43,35 @@ uiRouter.get('/elements', (req: Request, res: Response) => {
 uiRouter.put('/elements/:elementKey', (req: Request, res: Response) => {
   const userId = (req as Request & { userId: string }).userId
   const { elementKey } = req.params
-  const { value, valueType } = req.body ?? {}
-  if (value === undefined) { res.status(400).json({ error: 'value erforderlich' }); return }
+  const { value, valueType, skillLevel } = req.body ?? {}
+  if (value === undefined && skillLevel === undefined) {
+    res.status(400).json({ error: 'value oder skillLevel erforderlich' })
+    return
+  }
+  if (skillLevel !== undefined && !['all', 'beginner', 'expert'].includes(String(skillLevel))) {
+    res.status(400).json({ error: 'skillLevel ungültig' })
+    return
+  }
   const profile = getActiveProfile(userId)
   if (!profile) { res.status(404).json({ error: 'Kein aktives Profil' }); return }
   const ts = now()
   const existing = db.prepare('SELECT id FROM ui_elements WHERE user_id = ? AND profile_id = ? AND element_key = ?').get(userId, profile.id, elementKey)
   if (existing) {
-    db.prepare('UPDATE ui_elements SET value = ?, value_type = COALESCE(?, value_type), updated_at = ? WHERE user_id = ? AND profile_id = ? AND element_key = ?')
-      .run(value, valueType ?? null, ts, userId, profile.id, elementKey)
+    db.prepare(`UPDATE ui_elements
+        SET value = COALESCE(?, value),
+            value_type = COALESCE(?, value_type),
+            skill_level = COALESCE(?, skill_level),
+            updated_at = ?
+        WHERE user_id = ? AND profile_id = ? AND element_key = ?`)
+      .run(value ?? null, valueType ?? null, skillLevel ?? null, ts, userId, profile.id, elementKey)
   } else {
     const seed = DEFAULT_UI_ELEMENTS.find(e => e.elementKey === elementKey)
-    db.prepare(`INSERT INTO ui_elements (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .run(uid(), userId, profile.id, elementKey, seed?.label ?? elementKey, seed?.description ?? '', value, seed?.value ?? value, valueType ?? seed?.valueType ?? 'string', seed?.category ?? 'text', ts)
+    const insertedValue = value ?? seed?.value ?? ''
+    db.prepare(`INSERT INTO ui_elements (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, skill_level, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+      .run(uid(), userId, profile.id, elementKey, seed?.label ?? elementKey, seed?.description ?? '', insertedValue, seed?.value ?? insertedValue, valueType ?? seed?.valueType ?? 'string', seed?.category ?? 'text', skillLevel ?? seed?.skillLevel ?? 'all', ts)
   }
-  res.json({ elementKey, value, updatedAt: ts })
+  res.json({ elementKey, value, skillLevel, updatedAt: ts })
 })
 
 uiRouter.get('/tokens', (req: Request, res: Response) => {

@@ -23,7 +23,10 @@ export default function MonthlyCalendar() {
   const [selectedDay, setSelectedDay] = useState<Date | null>(new Date())
 
   const { tasks, toggleTask } = useGardenStore()
-  const { elements } = useUiStore()
+  const { elements, isVisible } = useUiStore()
+  const showHeading = isVisible('calendar.heading')
+  const showLegend = isVisible('calendar.legend')
+  const showDayDetails = isVisible('calendar.dayDetails')
 
   const monthStart = startOfMonth(currentMonth)
   const monthEnd = endOfMonth(currentMonth)
@@ -41,10 +44,12 @@ export default function MonthlyCalendar() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-heading text-green-900 flex items-center gap-2">
-          <CalendarDays className="w-5 h-5 text-green-600" />
-          {elements['text.calendar.heading'] || 'Monatsübersicht'}
-        </h2>
+        {showHeading ? (
+          <h2 className="text-heading text-green-900 flex items-center gap-2">
+            <CalendarDays className="w-5 h-5 text-green-600" />
+            {elements['text.calendar.heading'] || 'Monatsübersicht'}
+          </h2>
+        ) : <span />}
         <div className="flex items-center gap-1">
           <button
             onClick={() => setCurrentMonth(subMonths(currentMonth, 1))}
@@ -135,20 +140,22 @@ export default function MonthlyCalendar() {
       </div>
 
       {/* Legende */}
-      <div className="flex flex-wrap gap-3 px-1">
-        {TASK_TYPES.map((type) => (
-          <span key={type} className="flex items-center gap-1.5 text-xs text-green-600">
-            <span
-              className="w-2 h-2 rounded-full"
-              style={{ backgroundColor: elements[`color.tasktype.${type}.dot`] || '#9ca3af' }}
-            />
-            {elements[`icon.tasktype.${type}`] || ''} {elements[`text.tasktype.${type}`] || type}
-          </span>
-        ))}
-      </div>
+      {showLegend && (
+        <div className="flex flex-wrap gap-3 px-1">
+          {TASK_TYPES.map((type) => (
+            <span key={type} className="flex items-center gap-1.5 text-xs text-green-600">
+              <span
+                className="w-2 h-2 rounded-full"
+                style={{ backgroundColor: elements[`color.tasktype.${type}.dot`] || '#9ca3af' }}
+              />
+              {elements[`icon.tasktype.${type}`] || ''} {elements[`text.tasktype.${type}`] || type}
+            </span>
+          ))}
+        </div>
+      )}
 
       {/* Tagesdetails */}
-      {selectedDay && (
+      {showDayDetails && selectedDay && (
         <div className="card-bg border border-green-100 rounded-xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-green-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-green-900">
