@@ -35,7 +35,7 @@ export default function SettingsPanel() {
   const [saved, setSaved] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
   const [activeCategory, setActiveCategory] = useState<UiElementDefinition['category'] | 'all'>('all')
-  const { setElementValue, init: initUi } = useUiStore()
+  const { setElementValue, init: initUi, elements } = useUiStore()
 
   useEffect(() => {
     initUi()
@@ -46,6 +46,22 @@ export default function SettingsPanel() {
       setUiElements(rows.sort((a, b) => a.element_key.localeCompare(b.element_key)))
     }).catch(() => {})
   }, [initUi])
+
+  // Sync local element values when store changes (e.g. from polling or AI-driven updates)
+  useEffect(() => {
+    setUiElements(prev => {
+      let changed = false
+      const next = prev.map(el => {
+        const storeVal = elements[el.element_key]
+        if (storeVal !== undefined && storeVal !== el.value) {
+          changed = true
+          return { ...el, value: storeVal }
+        }
+        return el
+      })
+      return changed ? next : prev
+    })
+  }, [elements])
 
   async function handleReset() {
     if (!resetConfirm) {

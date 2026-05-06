@@ -37,6 +37,7 @@
   body {
     margin: 0;
     font-family: var(--font-family-base, 'Inter', system-ui, -apple-system, sans-serif);
+    font-size: var(--font-size-base, 14px);
     background-color: #f0fdf4;
     color: var(--color-text-base, #14532d);
     font-weight: var(--font-weight-body, 400);
@@ -54,6 +55,7 @@
   }
   .card-bg {
     background-color: var(--color-card-bg, #ffffff);
+    border-radius: var(--border-radius-card, 1rem);
   }
 }
 

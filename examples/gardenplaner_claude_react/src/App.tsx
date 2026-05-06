@@ -46,12 +46,14 @@ export default function App() {
 function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; username: string }) {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
   const { tasks, plants, init, initialized } = useGardenStore()
-  const { tokens, elements, init: initUi } = useUiStore()
+  const { tokens, elements, init: initUi, startPolling, stopPolling } = useUiStore()
 
   useEffect(() => {
     init()
     initUi()
-  }, [init, initUi])
+    startPolling(3000)
+    return () => stopPolling()
+  }, [init, initUi, startPolling, stopPolling])
 
   const openToday = tasks.filter((t) => !t.completed && t.dueDate <= format(new Date(), 'yyyy-MM-dd')).length
 

@@ -10,6 +10,8 @@ export interface UiState {
   init: () => Promise<void>
   setToken: (tokenPath: string, value: string, valueType?: UiToken['valueType']) => Promise<void>
   setElementValue: (elementKey: string, value: string, valueType?: UiToken['valueType']) => Promise<void>
+  startPolling: (intervalMs?: number) => void
+  stopPolling: () => void
 }
 
 function applyCssVariables(tokens: Record<string, string>) {
@@ -47,6 +49,9 @@ interface ActiveProfileResponse {
   elementRows: { elementKey: string; value: string }[]
 }
 
+// Module-level timer so it survives store re-creation
+let _pollTimer: ReturnType<typeof setInterval> | null = null
+
 export const useUiStore = create<UiState>((set, get) => ({
   profileId: '',
   tokens: {},
@@ -58,6 +63,32 @@ export const useUiStore = create<UiState>((set, get) => ({
     const { tokens, elements } = buildTokensAndElements(data.tokenRows, data.elementRows)
     applyCssVariables(tokens)
     set({ profileId: data.profileId, tokens, elements, ready: true })
+  },
+
+  startPolling: (intervalMs = 3000) => {
+    if (_pollTimer) clearInterval(_pollTimer)
+    _pollTimer = setInterval(async () => {
+      try {
+        const data = await api.get<ActiveProfileResponse>('/api/ui/active-profile')
+        const { tokens: newTokens, elements: newElements } = buildTokensAndElements(data.tokenRows, data.elementRows)
+        const { tokens: curTokens, elements: curElements } = get()
+        const tokensChanged = Object.keys(newTokens).some(k => curTokens[k] !== newTokens[k])
+        const elementsChanged = Object.keys(newElements).some(k => curElements[k] !== newElements[k])
+        if (tokensChanged || elementsChanged) {
+          applyCssVariables(newTokens)
+          set({ tokens: newTokens, elements: newElements })
+        }
+      } catch {
+        // silently ignore poll errors
+      }
+    }, intervalMs)
+  },
+
+  stopPolling: () => {
+    if (_pollTimer) {
+      clearInterval(_pollTimer)
+      _pollTimer = null
+    }
   },
 
   setToken: async (tokenPath, value, valueType = 'string') => {
