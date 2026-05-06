@@ -31,6 +31,11 @@ export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
   // ── Schrift ───────────────────────────────────────────────────────────────
   { elementKey: 'font.family.base', label: 'Schriftfamilie Basis', description: 'Globale Schriftfamilie der Anwendung.', value: 'Inter, system-ui, sans-serif', valueType: 'font', category: 'font' },
   { elementKey: 'font.size.base', label: 'Schriftgröße Basis', description: 'Globale Basis-Schriftgröße.', value: '14px', valueType: 'px', category: 'font' },
+  { elementKey: 'font.size.heading', label: 'Schriftgröße: Überschriften', description: 'Schriftgröße der Abschnitts-Überschriften (z.B. "Meine Pflanzen", "Aufgaben").', value: '1.125rem', valueType: 'string', category: 'font' },
+  { elementKey: 'font.size.label', label: 'Schriftgröße: Labels', description: 'Schriftgröße kleiner Beschriftungen, Badges und Formular-Labels.', value: '0.75rem', valueType: 'string', category: 'font' },
+  { elementKey: 'font.weight.heading', label: 'Schriftstärke: Überschriften', description: 'Schriftstärke der Abschnitts-Überschriften (z.B. 400, 600, 700).', value: '600', valueType: 'string', category: 'font' },
+  { elementKey: 'font.weight.body', label: 'Schriftstärke: Fließtext', description: 'Schriftstärke des normalen Fließtexts (z.B. 400, 500).', value: '400', valueType: 'string', category: 'font' },
+  { elementKey: 'font.style.base', label: 'Schriftstil', description: 'Globaler Schriftstil der App: "normal" oder "italic".', value: 'normal', valueType: 'string', category: 'font' },
 
   // ── Rahmen ────────────────────────────────────────────────────────────────
   { elementKey: 'border.radius.card', label: 'Karten-Radius', description: 'Standard-Rundung für Karten/Container.', value: '16px', valueType: 'px', category: 'border' },
@@ -116,6 +121,22 @@ export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
   { elementKey: 'color.tasktype.harvesting.dot', label: 'Kalender-Punkt: Ernten', description: 'Farbe des Indikator-Punktes im Monatskalender für "Ernten".', value: '#facc15', valueType: 'color', category: 'color' },
   { elementKey: 'color.tasktype.repotting.dot', label: 'Kalender-Punkt: Umtopfen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Umtopfen".', value: '#f59e0b', valueType: 'color', category: 'color' },
   { elementKey: 'color.tasktype.other.dot', label: 'Kalender-Punkt: Sonstiges', description: 'Farbe des Indikator-Punktes im Monatskalender für "Sonstiges".', value: '#9ca3af', valueType: 'color', category: 'color' },
+
+  // ── Schaltflächen ─────────────────────────────────────────────────────────
+  { elementKey: 'color.button.primary.bg', label: 'Button Primär: Hintergrund', description: 'Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#16a34a', valueType: 'color', category: 'color' },
+  { elementKey: 'color.button.primary.hover', label: 'Button Primär: Hover', description: 'Hover-Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#15803d', valueType: 'color', category: 'color' },
+
+  // ── Karten & Container ────────────────────────────────────────────────────
+  { elementKey: 'color.card.bg', label: 'Karten-Hintergrund', description: 'Hintergrundfarbe von Karten und Panel-Containern.', value: '#ffffff', valueType: 'color', category: 'color' },
+  { elementKey: 'color.header.bg', label: 'Header-Hintergrund', description: 'Hintergrundfarbe der oberen Navigationsleiste.', value: '#ffffff', valueType: 'color', category: 'color' },
+  { elementKey: 'color.input.border', label: 'Eingabefeld: Rahmen', description: 'Rahmenfarbe von Eingabefeldern und Dropdowns.', value: '#bbf7d0', valueType: 'color', category: 'color' },
+
+  // ── Chat-Widget ───────────────────────────────────────────────────────────
+  { elementKey: 'text.chat.botName', label: 'Chat: Bot-Name', description: 'Angezeigter Name des Chat-Assistenten im Widget-Header.', value: 'Ivy · Garten-KI', valueType: 'string', category: 'text' },
+  { elementKey: 'text.chat.botStatus', label: 'Chat: Bot-Status', description: 'Statuszeile unterhalb des Bot-Namens im Widget-Header.', value: 'Online · immer für dich da', valueType: 'string', category: 'text' },
+  { elementKey: 'text.chat.greeting', label: 'Chat: Begrüßung', description: 'Erste Bot-Nachricht beim Öffnen des Chats.', value: 'Hallo! 🌿 Wie kann ich dir heute helfen?', valueType: 'string', category: 'text' },
+  { elementKey: 'text.chat.inputPlaceholder', label: 'Chat: Eingabe-Platzhalter', description: 'Platzhaltertext im Chat-Eingabefeld.', value: 'Schreib mir etwas… 🌱', valueType: 'string', category: 'text' },
+  { elementKey: 'text.chat.tooltip', label: 'Chat: Hover-Tooltip', description: 'Tooltip-Text der beim Hovern über den Chat-Button erscheint.', value: 'Wie kann ich helfen? 🌿', valueType: 'string', category: 'text' },
 ]
 
 function isTokenKey(key: string) {

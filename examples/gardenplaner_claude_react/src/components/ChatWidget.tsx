@@ -72,14 +72,20 @@ function BotAvatar({ size = 40, className = '' }: { size?: number; className?: s
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const [messages, setMessages] = useState<Message[]>([
-    { id: '0', from: 'bot', text: 'Hallo! 🌿 Wie kann ich dir heute helfen?' },
-  ])
+  const { elements, setElementValue } = useUiStore()
+  const [messages, setMessages] = useState<Message[]>(() => {
+    const greeting = useUiStore.getState().elements['text.chat.greeting'] || 'Hallo! 🌿 Wie kann ich dir heute helfen?'
+    return [{ id: '0', from: 'bot', text: greeting }]
+  })
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
-  const setElementValue = useUiStore((state) => state.setElementValue)
+
+  const botName = elements['text.chat.botName'] || 'Ivy · Garten-KI'
+  const botStatus = elements['text.chat.botStatus'] || 'Online · immer für dich da'
+  const inputPlaceholder = elements['text.chat.inputPlaceholder'] || 'Schreib mir etwas… 🌱'
+  const tooltip = elements['text.chat.tooltip'] || 'Wie kann ich helfen? 🌿'
 
   useEffect(() => {
     if (isOpen) {
@@ -179,10 +185,10 @@ export default function ChatWidget() {
               <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-300 rounded-full border-2 border-emerald-500" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold text-sm leading-tight">Ivy · Garten-KI</p>
+              <p className="text-white font-semibold text-sm leading-tight">{botName}</p>
               <p className="text-green-200 text-xs flex items-center gap-1 mt-0.5">
                 <span className="w-1.5 h-1.5 bg-green-300 rounded-full inline-block animate-pulse" />
-                Online · immer für dich da
+                {botStatus}
               </p>
             </div>
             <button
@@ -254,7 +260,7 @@ export default function ChatWidget() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-              placeholder="Schreib mir etwas… 🌱"
+              placeholder={inputPlaceholder}
               className="flex-1 text-sm px-3.5 py-2 rounded-xl border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-400/40 focus:border-green-400 bg-green-50/30 placeholder-green-300 text-green-900 transition-all"
             />
             <button
@@ -279,7 +285,7 @@ export default function ChatWidget() {
             className="absolute bottom-full right-0 mb-3 bg-white rounded-2xl rounded-br-sm px-3.5 py-2 shadow-lg border border-green-100 text-sm text-green-800 font-medium whitespace-nowrap pointer-events-none"
             style={{ animation: 'chat-slide-up 0.18s ease-out' }}
           >
-            Wie kann ich helfen? 🌿
+            {tooltip}
             <span className="absolute -bottom-1.5 right-4 w-3 h-3 bg-white border-r border-b border-green-100 rotate-45 block" />
           </div>
         )}
