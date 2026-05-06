@@ -4,6 +4,7 @@ import {
   MapPin, Wind, Droplets, Thermometer, X, RefreshCw,
 } from 'lucide-react'
 import clsx from 'clsx'
+import { api } from '../api/client'
 
 interface WeatherData {
   temperature: number
@@ -29,6 +30,7 @@ interface StoredLocation {
 }
 
 const LOCATION_KEY = 'weather_location'
+const LOCATION_SETTING_KEY = 'weather.location'
 const CACHE_KEY = 'weather_cache'
 const CACHE_TTL = 10 * 60 * 1000
 
@@ -64,7 +66,7 @@ function readLocation(): StoredLocation | null {
 }
 
 export default function WeatherWidget() {
-  const [location, setLocation] = useState<StoredLocation | null>(readLocation)
+  const [location, setLocation] = useState<StoredLocation | null>(null)
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [isHovered, setIsHovered] = useState(false)
   const [isSettingLocation, setIsSettingLocation] = useState(false)
@@ -73,6 +75,37 @@ export default function WeatherWidget() {
   const [isLoading, setIsLoading] = useState(false)
   const [geoLoading, setGeoLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let active = true
+    api.get<Record<string, { value: string }>>('/api/settings')
+      .then((settings) => {
+        if (!active) return
+        const rawLocation = settings[LOCATION_SETTING_KEY]?.value
+        if (!rawLocation) {
+          setLocation(readLocation())
+          return
+        }
+        try {
+          const parsed = JSON.parse(rawLocation) as StoredLocation
+          if (parsed?.name && Number.isFinite(parsed.lat) && Number.isFinite(parsed.lon)) {
+            setLocation(parsed)
+            localStorage.setItem(LOCATION_KEY, rawLocation)
+            return
+          }
+        } catch {
+          // Ignore malformed persisted setting
+        }
+        setLocation(readLocation())
+      })
+      .catch(() => {
+        if (!active) return
+        setLocation(readLocation())
+      })
+    return () => {
+      active = false
+    }
+  }, [])
 
   const fetchWeather = useCallback(async (loc: StoredLocation) => {
     setIsLoading(true)
@@ -135,9 +168,11 @@ export default function WeatherWidget() {
       lat: r.latitude,
       lon: r.longitude,
     }
-    localStorage.setItem(LOCATION_KEY, JSON.stringify(loc))
+    const serialized = JSON.stringify(loc)
+    localStorage.setItem(LOCATION_KEY, serialized)
     localStorage.removeItem(CACHE_KEY)
     setLocation(loc)
+    api.put(`/api/settings/${LOCATION_SETTING_KEY}`, { value: serialized, valueType: 'json' }).catch(() => {})
     setWeather(null)
     setIsSettingLocation(false)
     setGeoResults([])
