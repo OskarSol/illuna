@@ -242,7 +242,10 @@ export default function ChatWidget() {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t border-green-100 bg-white flex gap-2 shrink-0">
+          <div
+            className="p-3 border-t border-green-100 bg-white flex gap-2 shrink-0"
+            onClick={(e) => e.stopPropagation()}
+          >
             <input
               ref={inputRef}
               type="text"
@@ -253,7 +256,10 @@ export default function ChatWidget() {
               className="flex-1 text-sm px-3.5 py-2 rounded-xl border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-400/40 focus:border-green-400 bg-green-50/30 placeholder-green-300 text-green-900 transition-all"
             />
             <button
-              onClick={sendMessage}
+              onClick={(e) => {
+                e.stopPropagation()
+                sendMessage()
+              }}
               disabled={!input.trim() || isTyping}
               className="w-9 h-9 bg-green-600 hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0"
             >
