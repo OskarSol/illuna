@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Leaf, ListChecks, CalendarDays, Sprout, Settings, Database } from 'lucide-react'
+import { Leaf, ListChecks, CalendarDays, Sprout, Settings, Database, LogOut } from 'lucide-react'
 import PlantManager from './components/PlantManager'
 import TaskList from './components/TaskList'
 import MonthlyCalendar from './components/MonthlyCalendar'
@@ -7,8 +7,10 @@ import WeatherWidget from './components/WeatherWidget'
 import ChatWidget from './components/ChatWidget'
 import SettingsPanel from './components/SettingsPanel'
 import DatabaseInspector from './components/DatabaseInspector'
+import { LoginPage } from './components/LoginPage'
 import { useGardenStore } from './store'
 import { useUiStore } from './uiStore'
+import { useAuth } from './contexts/AuthContext'
 import { format } from 'date-fns'
 import { de } from 'date-fns/locale'
 import clsx from 'clsx'
@@ -26,6 +28,22 @@ const TAB_ICONS: Record<Tab, typeof Leaf> = {
 const TAB_KEYS: Tab[] = ['plants', 'tasks', 'calendar', 'settings', 'database']
 
 export default function App() {
+  const { user, loading, logout } = useAuth()
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-50">
+        <div className="text-green-600 text-sm">Lädt…</div>
+      </div>
+    )
+  }
+
+  if (!user) return <LoginPage />
+
+  return <AppContent onLogout={logout} username={user.username} />
+}
+
+function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; username: string }) {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
   const { tasks, plants, init, initialized } = useGardenStore()
   const { tokens, elements, init: initUi } = useUiStore()
@@ -63,10 +81,20 @@ export default function App() {
             </div>
           </div>
 
-          <div className="hidden sm:flex gap-4">
-            <Stat label={elements['text.stats.plants'] || 'Pflanzen'} value={plants.length} color="text-green-600" />
-            <Stat label={elements['text.stats.dueToday'] || 'Heute fällig'} value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
-            <Stat label={elements['text.stats.open'] || 'Offen'} value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
+          <div className="flex items-center gap-4">
+            <div className="hidden sm:flex gap-4">
+              <Stat label={elements['text.stats.plants'] || 'Pflanzen'} value={plants.length} color="text-green-600" />
+              <Stat label={elements['text.stats.dueToday'] || 'Heute fällig'} value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
+              <Stat label={elements['text.stats.open'] || 'Offen'} value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
+            </div>
+            <button
+              onClick={onLogout}
+              title={`Abmelden (${username})`}
+              className="flex items-center gap-1 text-xs text-green-600 hover:text-red-600 transition-colors px-2 py-1 rounded-lg hover:bg-red-50"
+            >
+              <LogOut className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{username}</span>
+            </button>
           </div>
         </div>
 

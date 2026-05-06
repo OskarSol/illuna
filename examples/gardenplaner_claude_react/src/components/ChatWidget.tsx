@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { X, Send, Sparkles, MessageCircle } from 'lucide-react'
 import clsx from 'clsx'
-import { db } from '../db'
+import { api } from '../api/client'
 
 type Message = {
   id: string
@@ -15,22 +15,14 @@ type Settings = {
   apiUrl: string
 }
 
-async function loadSettingsFromDb(): Promise<Settings> {
-  const [apiKey, apiUrl] = await Promise.all([
-    db.app_settings.get('api.key'),
-    db.app_settings.get('api.url'),
-  ])
-  return {
-    apiKey: apiKey?.value ?? '',
-    apiUrl: apiUrl?.value ?? '',
-  }
+async function loadSettingsFromApi(): Promise<Settings> {
+  const s = await api.get<Record<string, { value: string }>>('/api/settings').catch(() => ({} as Record<string, { value: string }>))
+  return { apiKey: s['api.key']?.value ?? '', apiUrl: s['api.url']?.value ?? '' }
 }
 
-async function loadUiElementsFromDb() {
-  const active = await db.ui_profiles.where('isActive').equals(1).first()
-  const profileId = active?.id ?? 'default'
-  const elements = await db.ui_elements.where('profileId').equals(profileId).toArray()
-  return Object.fromEntries(elements.map((element) => [element.elementKey, element.value]))
+async function loadUiElementsFromApi(): Promise<Record<string, string>> {
+  const rows = await api.get<{ element_key: string; value: string }[]>('/api/ui/elements').catch(() => [])
+  return Object.fromEntries(rows.map(e => [e.element_key, e.value]))
 }
 
 const DEFAULT_REPLIES = [
@@ -105,8 +97,8 @@ export default function ChatWidget() {
 
     try {
       const [{ apiUrl, apiKey }, uiElements] = await Promise.all([
-        loadSettingsFromDb(),
-        loadUiElementsFromDb(),
+        loadSettingsFromApi(),
+        loadUiElementsFromApi(),
       ])
 
       if (!apiUrl || !apiKey) {
