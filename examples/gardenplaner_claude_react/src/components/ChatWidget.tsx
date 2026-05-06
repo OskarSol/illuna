@@ -167,7 +167,7 @@ export default function ChatWidget() {
       {/* Chat flyout */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-4 sm:bottom-8 sm:right-6 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-green-100 flex flex-col overflow-hidden z-50"
+          className="fixed bottom-24 right-4 sm:bottom-8 sm:right-6 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-green-100 flex flex-col overflow-hidden z-[51]"
           style={{ maxHeight: 480, animation: 'chat-slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}
         >
           {/* Header */}
@@ -245,7 +245,7 @@ export default function ChatWidget() {
 
           {/* Input */}
           <div
-            className="p-3 border-t border-green-100 bg-white flex gap-2 shrink-0"
+            className="px-4 py-3.5 border-t border-green-100 bg-white flex gap-2.5 shrink-0"
             onClick={(e) => e.stopPropagation()}
           >
             <input
@@ -263,9 +263,9 @@ export default function ChatWidget() {
                 sendMessage()
               }}
               disabled={!input.trim() || isTyping}
-              className="w-9 h-9 bg-green-600 hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0"
+              className="w-8 h-8 bg-green-600 hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0 self-center"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
