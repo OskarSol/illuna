@@ -36,9 +36,21 @@
 
   body {
     margin: 0;
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-family: var(--font-family-base, 'Inter', system-ui, -apple-system, sans-serif);
     background-color: #f0fdf4;
-    color: #14532d;
+    color: var(--color-text-base, #14532d);
     min-height: 100vh;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    background-color: var(--color-button-primary-bg, #16a34a);
+  }
+  .btn-primary:hover {
+    background-color: var(--color-button-primary-hover, #15803d);
+  }
+  .card-bg {
+    background-color: var(--color-card-bg, #ffffff);
   }
 }

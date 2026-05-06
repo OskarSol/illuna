@@ -76,7 +76,7 @@ export default function SettingsPanel() {
   const filtered = activeCategory === 'all' ? uiElements : uiElements.filter(e => e.category === activeCategory)
 
   return (
-    <section className="bg-white border border-green-100 rounded-2xl shadow-sm p-5 sm:p-6 space-y-5">
+    <section className="card-bg border border-green-100 rounded-2xl shadow-sm p-5 sm:p-6 space-y-5">
       <header>
         <h2 className="text-lg font-semibold text-green-900">Einstellungen</h2>
         <p className="text-sm text-green-600 mt-1">Alle UI-Elemente mit Bezeichner, Label, Beschreibung und Wert. Änderungen werden direkt in der UI sichtbar.</p>
@@ -97,9 +97,9 @@ export default function SettingsPanel() {
         <div className="flex items-center justify-between flex-wrap gap-2">
           <h3 className="text-sm font-semibold text-green-900">UI-Elemente ({uiElements.length})</h3>
           <div className="flex flex-wrap gap-1">
-            <button onClick={() => setActiveCategory('all')} className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${activeCategory === 'all' ? 'bg-green-600 text-white border-green-600' : 'border-green-200 text-green-700 hover:bg-green-50'}`}>Alle</button>
+            <button onClick={() => setActiveCategory('all')} className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${activeCategory === 'all' ? 'btn-primary text-white border-transparent' : 'border-green-200 text-green-700 hover:bg-green-50'}`}>Alle</button>
             {categories.map(cat => (
-              <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${activeCategory === cat ? 'bg-green-600 text-white border-green-600' : 'border-green-200 text-green-700 hover:bg-green-50'}`}>
+              <button key={cat} onClick={() => setActiveCategory(cat)} className={`px-2.5 py-1 text-xs rounded-lg border transition-colors ${activeCategory === cat ? 'btn-primary text-white border-transparent' : 'border-green-200 text-green-700 hover:bg-green-50'}`}>
                 {CATEGORY_LABELS[cat] ?? cat}
               </button>
             ))}
@@ -159,7 +159,7 @@ export default function SettingsPanel() {
       </div>
 
       <div className="flex items-center gap-3 flex-wrap">
-        <button onClick={saveSettings} className="px-4 py-2 rounded-xl bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors">Speichern</button>
+        <button onClick={saveSettings} className="px-4 py-2 rounded-xl btn-primary text-white text-sm font-medium transition-colors">Speichern</button>
         {saved && <span className="text-sm text-green-700">Gespeichert ✓</span>}
         <button onClick={handleReset} className={`px-4 py-2 rounded-xl text-sm font-medium transition-colors border ${resetConfirm ? 'bg-red-600 text-white border-red-600 hover:bg-red-700' : 'border-red-200 text-red-600 hover:bg-red-50'}`}>
           {resetConfirm ? 'Wirklich zurücksetzen?' : 'Auf Standard zurücksetzen'}

@@ -114,7 +114,7 @@ export default function TaskList() {
           </select>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+            className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-white text-sm font-medium rounded-lg transition-colors"
           >
             <Plus className="w-4 h-4" />
             {elements['text.tasks.addButton'] || 'Aufgabe'}
@@ -123,7 +123,7 @@ export default function TaskList() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
+        <form onSubmit={handleSubmit} className="card-bg border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
           <p className="text-sm font-medium text-green-800">{elements['text.tasks.formTitle'] || 'Neue Aufgabe'}</p>
 
           <div className="grid grid-cols-2 gap-3">
@@ -225,7 +225,7 @@ export default function TaskList() {
           </div>
 
           <div className="flex gap-2 pt-1">
-            <button type="submit" className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 rounded-lg transition-colors">
+            <button type="submit" className="flex-1 btn-primary text-white text-sm font-medium py-2 rounded-lg transition-colors">
               Hinzufügen
             </button>
             <button type="button" onClick={() => { setShowForm(false); setForm(EMPTY_TASK_FORM) }} className="px-4 text-sm text-green-700 hover:bg-green-50 rounded-lg transition-colors">
@@ -243,7 +243,7 @@ export default function TaskList() {
           const color = elements[`color.tasks.group.${key}`]
           const collapsed = collapsedGroups.has(key)
           return (
-            <div key={key} className="bg-white border border-green-100 rounded-xl overflow-hidden shadow-sm">
+            <div key={key} className="card-bg border border-green-100 rounded-xl overflow-hidden shadow-sm">
               <button
                 onClick={() => toggleGroup(key)}
                 className="w-full flex items-center justify-between px-4 py-3 hover:bg-green-50 transition-colors"
@@ -268,7 +268,7 @@ export default function TaskList() {
         })}
 
         {tasks.length === 0 && (
-          <div className="text-center py-10 text-green-500 bg-white rounded-xl border border-green-100">
+          <div className="text-center py-10 text-green-500 card-bg rounded-xl border border-green-100">
             <p className="text-3xl mb-2">📋</p>
             <p className="text-sm">{elements['text.tasks.emptyState'] || 'Noch keine Aufgaben. Füge deine erste hinzu!'}</p>
           </div>

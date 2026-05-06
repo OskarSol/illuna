@@ -69,7 +69,7 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
 
   return (
     <div className="min-h-screen" style={appStyle}>
-      <header className="bg-white border-b border-green-100 shadow-sm sticky top-0 z-10">
+      <header className="border-b border-green-100 shadow-sm sticky top-0 z-10" style={{ backgroundColor: elements['color.header.bg'] || '#ffffff' }}>
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: iconBg }}>
@@ -77,7 +77,10 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
             </div>
             <div>
               <h1 className="text-base font-bold text-green-900 leading-tight">{elements['text.header.title'] || 'Gartenplaner'}</h1>
-              <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
+              {elements['text.header.subtitle']
+                ? <p className="text-xs text-green-500">{elements['text.header.subtitle']}</p>
+                : <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
+              }
             </div>
           </div>
 

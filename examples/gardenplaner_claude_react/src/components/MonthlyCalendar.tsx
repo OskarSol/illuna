@@ -67,7 +67,7 @@ export default function MonthlyCalendar() {
         </div>
       </div>
 
-      <div className="bg-white border border-green-100 rounded-xl shadow-sm overflow-hidden">
+      <div className="card-bg border border-green-100 rounded-xl shadow-sm overflow-hidden">
         <div className="grid grid-cols-7 border-b border-green-100">
           {WEEKDAYS.map((d) => (
             <div key={d} className="py-2 text-center text-xs font-semibold text-green-600 uppercase tracking-wide">
@@ -149,7 +149,7 @@ export default function MonthlyCalendar() {
 
       {/* Tagesdetails */}
       {selectedDay && (
-        <div className="bg-white border border-green-100 rounded-xl shadow-sm overflow-hidden">
+        <div className="card-bg border border-green-100 rounded-xl shadow-sm overflow-hidden">
           <div className="px-4 py-3 border-b border-green-100 flex items-center justify-between">
             <h3 className="text-sm font-semibold text-green-900">
               {format(selectedDay, 'EEEE, d. MMMM yyyy', { locale: de })}

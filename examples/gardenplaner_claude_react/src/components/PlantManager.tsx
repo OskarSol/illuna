@@ -56,7 +56,7 @@ export default function PlantManager() {
         </h2>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600 hover:bg-green-700 text-white text-sm font-medium rounded-lg transition-colors"
+          className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-white text-sm font-medium rounded-lg transition-colors"
         >
           <Plus className="w-4 h-4" />
           {elements['text.plants.addButton'] || 'Pflanze hinzufügen'}
@@ -64,7 +64,7 @@ export default function PlantManager() {
       </div>
 
       {showForm && (
-        <form onSubmit={handleSubmit} className="bg-white border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
+        <form onSubmit={handleSubmit} className="card-bg border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
           <p className="text-sm font-medium text-green-800">{elements['text.plants.formTitle'] || 'Neue Pflanze'}</p>
 
           <div className="flex gap-2">
@@ -122,7 +122,7 @@ export default function PlantManager() {
           <div className="flex gap-2 pt-1">
             <button
               type="submit"
-              className="flex-1 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 rounded-lg transition-colors"
+              className="flex-1 btn-primary text-white text-sm font-medium py-2 rounded-lg transition-colors"
             >
               Hinzufügen
             </button>
@@ -162,7 +162,7 @@ function PlantCard({ plant, deleteConfirm, onDelete }: { plant: Plant; deleteCon
   const { elements } = useUiStore()
 
   return (
-    <div className="bg-white border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
+    <div className="card-bg border border-green-100 rounded-xl p-4 shadow-sm hover:shadow-md transition-shadow">
       <div className="flex items-start justify-between">
         <div className="flex items-center gap-3">
           <span className="text-3xl">{plant.emoji}</span>
