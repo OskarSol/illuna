@@ -78,7 +78,7 @@ export default function SettingsPanel() {
   return (
     <section className="card-bg border border-green-100 rounded-2xl shadow-sm p-5 sm:p-6 space-y-5">
       <header>
-        <h2 className="text-lg font-semibold text-green-900">Einstellungen</h2>
+        <h2 className="text-heading text-green-900">Einstellungen</h2>
         <p className="text-sm text-green-600 mt-1">Alle UI-Elemente mit Bezeichner, Label, Beschreibung und Wert. Änderungen werden direkt in der UI sichtbar.</p>
       </header>
 
@@ -114,13 +114,13 @@ export default function SettingsPanel() {
             </div>
             {element.description && <p className="text-xs text-green-500">{element.description}</p>}
             <label className="block">
-              <span className="text-xs font-medium text-green-800">Label</span>
+              <span className="text-label-sm font-medium text-green-800">Label</span>
               <input type="text" value={element.label}
                 onChange={e => setUiElements(prev => prev.map((row, i) => i === globalIndex ? { ...row, label: e.target.value } : row))}
                 className="mt-1 w-full rounded-lg border border-green-200 px-2.5 py-1.5 text-sm" />
             </label>
             <label className="block">
-              <span className="text-xs font-medium text-green-800">Wert</span>
+              <span className="text-label-sm font-medium text-green-800">Wert</span>
               {element.value_type === 'color' ? (
                 <div className="flex items-center gap-2 mt-1">
                   <input type="color" value={element.value}
@@ -149,7 +149,7 @@ export default function SettingsPanel() {
               )}
             </label>
             <label className="block">
-              <span className="text-xs font-medium text-green-800">Beschreibung</span>
+              <span className="text-label-sm font-medium text-green-800">Beschreibung</span>
               <input type="text" value={element.description}
                 onChange={e => setUiElements(prev => prev.map((row, i) => i === globalIndex ? { ...row, description: e.target.value } : row))}
                 className="mt-1 w-full rounded-lg border border-green-200 px-2.5 py-1.5 text-sm text-green-600" />

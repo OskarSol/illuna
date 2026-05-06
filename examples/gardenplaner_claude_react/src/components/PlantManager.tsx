@@ -47,7 +47,7 @@ export default function PlantManager() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg font-semibold text-green-900 flex items-center gap-2">
+        <h2 className="text-heading text-green-900 flex items-center gap-2">
           <Leaf className="w-5 h-5 text-green-600" />
           {elements['text.plants.heading'] || 'Meine Pflanzen'}
           <span className="ml-1 text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
@@ -69,7 +69,7 @@ export default function PlantManager() {
 
           <div className="flex gap-2">
             <div className="flex-1">
-              <label className="block text-xs text-green-700 mb-1">Name *</label>
+              <label className="block text-label-sm text-green-700 mb-1">Name *</label>
               <input
                 type="text"
                 value={form.name}
@@ -82,7 +82,7 @@ export default function PlantManager() {
           </div>
 
           <div>
-            <label className="block text-xs text-green-700 mb-1">Emoji</label>
+            <label className="block text-label-sm text-green-700 mb-1">Emoji</label>
             <div className="flex flex-wrap gap-1.5">
               {plantEmojis.map((e) => (
                 <button
@@ -98,7 +98,7 @@ export default function PlantManager() {
           </div>
 
           <div>
-            <label className="block text-xs text-green-700 mb-1">Standort</label>
+            <label className="block text-label-sm text-green-700 mb-1">Standort</label>
             <input
               type="text"
               value={form.location}
@@ -109,7 +109,7 @@ export default function PlantManager() {
           </div>
 
           <div>
-            <label className="block text-xs text-green-700 mb-1">Notizen</label>
+            <label className="block text-label-sm text-green-700 mb-1">Notizen</label>
             <input
               type="text"
               value={form.notes}

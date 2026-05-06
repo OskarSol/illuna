@@ -31,6 +31,11 @@ export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
   // ── Schrift ───────────────────────────────────────────────────────────────
   { elementKey: 'font.family.base', label: 'Schriftfamilie Basis', description: 'Globale Schriftfamilie der Anwendung.', value: 'Inter, system-ui, sans-serif', valueType: 'font', category: 'font' },
   { elementKey: 'font.size.base', label: 'Schriftgröße Basis', description: 'Globale Basis-Schriftgröße.', value: '14px', valueType: 'px', category: 'font' },
+  { elementKey: 'font.size.heading', label: 'Schriftgröße: Überschriften', description: 'Schriftgröße der Abschnitts-Überschriften (z.B. "Meine Pflanzen", "Aufgaben").', value: '1.125rem', valueType: 'string', category: 'font' },
+  { elementKey: 'font.size.label', label: 'Schriftgröße: Labels', description: 'Schriftgröße kleiner Beschriftungen, Badges und Formular-Labels.', value: '0.75rem', valueType: 'string', category: 'font' },
+  { elementKey: 'font.weight.heading', label: 'Schriftstärke: Überschriften', description: 'Schriftstärke der Abschnitts-Überschriften (z.B. 400, 600, 700).', value: '600', valueType: 'string', category: 'font' },
+  { elementKey: 'font.weight.body', label: 'Schriftstärke: Fließtext', description: 'Schriftstärke des normalen Fließtexts (z.B. 400, 500).', value: '400', valueType: 'string', category: 'font' },
+  { elementKey: 'font.style.base', label: 'Schriftstil', description: 'Globaler Schriftstil der App: "normal" oder "italic".', value: 'normal', valueType: 'string', category: 'font' },
 
   // ── Rahmen ────────────────────────────────────────────────────────────────
   { elementKey: 'border.radius.card', label: 'Karten-Radius', description: 'Standard-Rundung für Karten/Container.', value: '16px', valueType: 'px', category: 'border' },

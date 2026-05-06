@@ -94,7 +94,7 @@ export default function TaskList() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="text-lg font-semibold text-green-900 flex items-center gap-2">
+        <h2 className="text-heading text-green-900 flex items-center gap-2">
           <CalendarDays className="w-5 h-5 text-green-600" />
           {elements['text.tasks.heading'] || 'Aufgaben'}
           <span className="text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
@@ -128,7 +128,7 @@ export default function TaskList() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-green-700 mb-1">Pflanze *</label>
+              <label className="block text-label-sm text-green-700 mb-1">Pflanze *</label>
               <select
                 value={form.plantId}
                 onChange={(e) => setForm({ ...form, plantId: e.target.value })}
@@ -142,7 +142,7 @@ export default function TaskList() {
               </select>
             </div>
             <div>
-              <label className="block text-xs text-green-700 mb-1">Typ</label>
+              <label className="block text-label-sm text-green-700 mb-1">Typ</label>
               <select
                 value={form.taskType}
                 onChange={(e) => setForm({ ...form, taskType: e.target.value as TaskType })}
@@ -169,7 +169,7 @@ export default function TaskList() {
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs text-green-700 mb-1">Fällig am</label>
+              <label className="block text-label-sm text-green-700 mb-1">Fällig am</label>
               <input
                 type="date"
                 value={form.dueDate}
@@ -178,7 +178,7 @@ export default function TaskList() {
               />
             </div>
             <div>
-              <label className="block text-xs text-green-700 mb-1">Notiz</label>
+              <label className="block text-label-sm text-green-700 mb-1">Notiz</label>
               <input
                 type="text"
                 value={form.notes}

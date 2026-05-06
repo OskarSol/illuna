@@ -39,6 +39,8 @@
     font-family: var(--font-family-base, 'Inter', system-ui, -apple-system, sans-serif);
     background-color: #f0fdf4;
     color: var(--color-text-base, #14532d);
+    font-weight: var(--font-weight-body, 400);
+    font-style: var(--font-style-base, normal);
     min-height: 100vh;
   }
 }
@@ -52,5 +54,17 @@
   }
   .card-bg {
     background-color: var(--color-card-bg, #ffffff);
+  }
+}
+
+/* Kommen nach @import "tailwindcss" → überschreiben Tailwind-Utilities bei gleicher Spezifität */
+@layer utilities {
+  .text-heading {
+    font-size: var(--font-size-heading, 1.125rem);
+    font-weight: var(--font-weight-heading, 600);
+    line-height: 1.75rem;
+  }
+  .text-label-sm {
+    font-size: var(--font-size-label, 0.75rem);
   }
 }
