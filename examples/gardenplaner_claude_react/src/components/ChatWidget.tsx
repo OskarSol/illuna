@@ -122,7 +122,28 @@ export default function ChatWidget() {
         throw new Error(`Webhook request failed with status ${response.status}`)
       }
 
-      const replyText = (await response.text()).trim() || pick(DEFAULT_REPLIES)
+      const rawReply = (await response.text()).trim()
+      let replyText = rawReply || pick(DEFAULT_REPLIES)
+
+      if (rawReply) {
+        try {
+          const parsed = JSON.parse(rawReply) as { message?: unknown; updates?: Array<{ id?: unknown; new_value?: unknown }> }
+          if (typeof parsed.message === 'string' && parsed.message.trim()) {
+            replyText = parsed.message
+          }
+
+          if (Array.isArray(parsed.updates) && parsed.updates.length > 0) {
+            await Promise.all(
+              parsed.updates
+                .filter((u): u is { id: string; new_value: string } => typeof u?.id === 'string' && typeof u?.new_value === 'string')
+                .map((u) => api.put(`/api/ui/elements/${encodeURIComponent(u.id)}`, { value: u.new_value }))
+            )
+          }
+        } catch {
+          // keep plain text response
+        }
+      }
+
       setMessages((prev) => [...prev, { id: `b-${Date.now()}`, from: 'bot', text: replyText }])
     } catch (error) {
       console.error('Webhook call failed:', error)
