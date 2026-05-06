@@ -61,19 +61,19 @@ export const useUiStore = create<UiState>((set, get) => ({
   },
 
   setToken: async (tokenPath, value, valueType = 'string') => {
-    const { tokens } = get()
     await api.put(`/api/ui/tokens/${encodeURIComponent(tokenPath)}`, { value, valueType })
-    const nextTokens = { ...tokens, [tokenPath]: value }
-    applyCssVariables(nextTokens)
-    set({ tokens: nextTokens })
+    set((state) => {
+      const nextTokens = { ...state.tokens, [tokenPath]: value }
+      applyCssVariables(nextTokens)
+      return { tokens: nextTokens }
+    })
   },
 
   setElementValue: async (elementKey, value, valueType = 'string') => {
-    const { elements } = get()
     await api.put(`/api/ui/elements/${encodeURIComponent(elementKey)}`, { value, valueType })
     if (isTokenKey(elementKey)) {
       await get().setToken(elementKey, value, valueType)
     }
-    set({ elements: { ...elements, [elementKey]: value } })
+    set((state) => ({ elements: { ...state.elements, [elementKey]: value } }))
   },
 }))
