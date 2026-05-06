@@ -61,8 +61,19 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
     backgroundImage: tokens['bg.app.imageUrl']
       ? `url(${tokens['bg.app.imageUrl']}), linear-gradient(to bottom right, var(--bg-app-gradientFrom), var(--bg-app-gradientTo))`
       : 'linear-gradient(to bottom right, var(--bg-app-gradientFrom), var(--bg-app-gradientTo))',
-    fontSize: tokens['font.size.base'] || undefined,
   } as const
+
+
+  useEffect(() => {
+    const baseFontSize = tokens['font.size.base']
+    if (!baseFontSize) return
+
+    document.documentElement.style.setProperty('--font-size-base', baseFontSize)
+
+    return () => {
+      document.documentElement.style.removeProperty('--font-size-base')
+    }
+  }, [tokens])
 
   const iconBg = elements['color.header.iconBg'] || '#16a34a'
   const navActive = elements['color.nav.active'] || '#16a34a'
