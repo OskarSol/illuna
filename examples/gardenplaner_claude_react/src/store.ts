@@ -122,7 +122,6 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
   addPlant: async (plant) => {
     const created = withTimestamps({ ...plant, id: uid() })
     await db.plants.add(created)
-    set((s) => ({ plants: [...s.plants, created] }))
   },
 
   removePlant: async (id) => {
@@ -143,7 +142,6 @@ export const useGardenStore = create<GardenStore>((set, get) => ({
   addTask: async (task) => {
     const created = withTimestamps({ ...task, id: uid(), completed: false })
     await db.tasks.add(created)
-    set((s) => ({ tasks: [...s.tasks, created] }))
   },
 
   removeTask: async (id) => {
