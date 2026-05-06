@@ -73,4 +73,21 @@
   .text-label-sm {
     font-size: var(--font-size-label, 0.75rem);
   }
+
+  /* Normalize Tailwind text utility colors to theme variables so color updates apply globally. */
+  .text-green-900, .text-green-800, .text-green-700, .text-green-600, .text-green-500,
+  .text-slate-500, .text-slate-400, .text-slate-300, .text-slate-200,
+  .text-blue-500, .text-sky-500, .text-sky-400, .text-sky-300, .text-sky-200,
+  .text-amber-600, .text-amber-400, .text-orange-400, .text-teal-400 {
+    color: var(--color-text-base, #14532d);
+  }
+
+  .text-green-400, .text-green-300, .text-green-200, .text-green-100,
+  .text-slate-100, .text-slate-50 {
+    color: color-mix(in srgb, var(--color-text-base, #14532d) 70%, white);
+  }
+
+  .text-red-600, .text-red-500, .text-red-400 {
+    color: var(--color-text-danger, #dc2626);
+  }
 }
