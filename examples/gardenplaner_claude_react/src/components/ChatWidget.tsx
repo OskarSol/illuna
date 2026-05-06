@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { X, Send, Sparkles, MessageCircle } from 'lucide-react'
 import clsx from 'clsx'
 import { api } from '../api/client'
+import { useUiStore } from '../uiStore'
 
 type Message = {
   id: string
@@ -78,6 +79,7 @@ export default function ChatWidget() {
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+  const setElementValue = useUiStore((state) => state.setElementValue)
 
   useEffect(() => {
     if (isOpen) {
@@ -136,7 +138,7 @@ export default function ChatWidget() {
             await Promise.all(
               parsed.updates
                 .filter((u): u is { id: string; new_value: string } => typeof u?.id === 'string' && typeof u?.new_value === 'string')
-                .map((u) => api.put(`/api/ui/elements/${encodeURIComponent(u.id)}`, { value: u.new_value }))
+                .map((u) => setElementValue(u.id, u.new_value))
             )
           }
         } catch {
