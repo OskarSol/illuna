@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react'
 import { X, Send, Sparkles, MessageCircle } from 'lucide-react'
 import clsx from 'clsx'
+import { db } from '../db'
 
 type Message = {
   id: string
@@ -14,20 +15,22 @@ type Settings = {
   apiUrl: string
 }
 
-const SETTINGS_STORAGE_KEY = 'gardenplanner-settings'
-
-function loadSettings(): Settings {
-  try {
-    const raw = localStorage.getItem(SETTINGS_STORAGE_KEY)
-    if (!raw) return { apiKey: '', apiUrl: '' }
-    const parsed = JSON.parse(raw) as Partial<Settings>
-    return {
-      apiKey: parsed.apiKey ?? '',
-      apiUrl: parsed.apiUrl ?? '',
-    }
-  } catch {
-    return { apiKey: '', apiUrl: '' }
+async function loadSettingsFromDb(): Promise<Settings> {
+  const [apiKey, apiUrl] = await Promise.all([
+    db.app_settings.get('api.key'),
+    db.app_settings.get('api.url'),
+  ])
+  return {
+    apiKey: apiKey?.value ?? '',
+    apiUrl: apiUrl?.value ?? '',
   }
+}
+
+async function loadUiElementsFromDb() {
+  const active = await db.ui_profiles.where('isActive').equals(1).first()
+  const profileId = active?.id ?? 'default'
+  const elements = await db.ui_elements.where('profileId').equals(profileId).toArray()
+  return Object.fromEntries(elements.map((element) => [element.elementKey, element.value]))
 }
 
 const DEFAULT_REPLIES = [
@@ -101,7 +104,10 @@ export default function ChatWidget() {
     setIsTyping(true)
 
     try {
-      const { apiUrl, apiKey } = loadSettings()
+      const [{ apiUrl, apiKey }, uiElements] = await Promise.all([
+        loadSettingsFromDb(),
+        loadUiElementsFromDb(),
+      ])
 
       if (!apiUrl || !apiKey) {
         throw new Error('Missing API settings')
@@ -116,6 +122,7 @@ export default function ChatWidget() {
         },
         body: JSON.stringify({
           message: text,
+          ui_elements: uiElements,
         }),
       })
 
