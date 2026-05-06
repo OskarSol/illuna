@@ -1,3 +1,6 @@
+// .env laden (falls vorhanden) – Umgebungsvariablen werden lazy in Hilfsfunktionen gelesen
+try { process.loadEnvFile(new URL('../.env', import.meta.url)) } catch { /* .env optional */ }
+
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
