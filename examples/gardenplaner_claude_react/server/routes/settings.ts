@@ -13,9 +13,15 @@ settingsRouter.get('/', (req: Request, res: Response) => {
   const userId = (req as Request & { userId: string }).userId
   const rows = db.prepare('SELECT key, value, value_type, updated_at FROM app_settings WHERE user_id = ?').all(userId) as { key: string; value: string; value_type: string; updated_at: string }[]
   const settings: Record<string, { value: string; valueType: string; updatedAt: string }> = {}
-  for (const row of rows) {
-    const value = ENCRYPTED_KEYS.has(row.key) ? decrypt(row.value) : row.value
-    settings[row.key] = { value, valueType: row.value_type, updatedAt: row.updated_at }
+  try {
+    for (const row of rows) {
+      const value = ENCRYPTED_KEYS.has(row.key) ? decrypt(row.value) : row.value
+      settings[row.key] = { value, valueType: row.value_type, updatedAt: row.updated_at }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Fehler beim Entschlüsseln von Einstellungen'
+    res.status(500).json({ error: message })
+    return
   }
   res.json(settings)
 })
@@ -29,7 +35,16 @@ settingsRouter.put('/:key', (req: Request, res: Response) => {
     return
   }
   const plainValue = String(value)
-  const storedValue = ENCRYPTED_KEYS.has(key) ? encrypt(plainValue) : plainValue
+  let storedValue = plainValue
+  if (ENCRYPTED_KEYS.has(key)) {
+    try {
+      storedValue = encrypt(plainValue)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Fehler beim Verschlüsseln von Einstellungen'
+      res.status(500).json({ error: message })
+      return
+    }
+  }
   const ts = now()
   db.prepare(`INSERT INTO app_settings (user_id, key, value, value_type, updated_at) VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value, value_type = excluded.value_type, updated_at = excluded.updated_at`)
