@@ -93,7 +93,7 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
 
   return (
     <div className="min-h-screen" style={appStyle}>
-      <header className="border-b border-green-100 shadow-sm sticky top-0 z-10" style={{ backgroundColor: elements['color.header.bg'] || '#ffffff' }}>
+      <header className="border-b shadow-sm sticky top-0 z-10" style={{ backgroundColor: elements['color.header.bg'] || '#ffffff', borderColor: elements['border.color.default'] || 'var(--border-color-default, #bbf7d0)' }}>
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             {showHeaderIcon && (
@@ -141,10 +141,10 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
                 className={clsx(
                   'flex items-center gap-1.5 px-4 py-2 text-sm font-medium rounded-t-lg border-b-2 transition-all',
                   activeTab === id
-                    ? 'bg-green-50'
-                    : 'border-transparent text-green-500 hover:text-green-700 hover:bg-green-50/50'
+                    ? ''
+                    : 'border-transparent nav-tab-inactive'
                 )}
-                style={activeTab === id ? { borderBottomColor: navActive, color: navActive } : undefined}
+                style={activeTab === id ? { borderBottomColor: navActive, color: navActive, backgroundColor: navActive + '1a' } : undefined}
               >
                 <Icon className="w-4 h-4" />
                 {label}

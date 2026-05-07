@@ -173,16 +173,16 @@ export default function ChatWidget() {
       {/* Chat flyout */}
       {isOpen && (
         <div
-          className="fixed bottom-24 right-4 sm:bottom-8 sm:right-6 w-80 sm:w-96 bg-white rounded-3xl shadow-2xl border border-green-100 flex flex-col overflow-hidden z-[51]"
+          className="fixed bottom-24 right-4 sm:bottom-8 sm:right-6 w-80 sm:w-96 chat-container rounded-3xl shadow-2xl border flex flex-col overflow-hidden z-[51]"
           style={{ maxHeight: 480, animation: 'chat-slide-up 0.3s cubic-bezier(0.34,1.56,0.64,1)' }}
         >
           {/* Header */}
-          <div className="bg-gradient-to-r from-green-600 to-emerald-500 px-4 py-3.5 flex items-center gap-3 shrink-0">
+          <div className="chat-header px-4 py-3.5 flex items-center gap-3 shrink-0">
             <div className="relative shrink-0">
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center ring-2 ring-white/30">
                 <BotAvatar size={36} />
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-300 rounded-full border-2 border-emerald-500" />
+              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2" style={{ backgroundColor: 'var(--color-primary, #22c55e)', borderColor: 'var(--color-secondary, #059669)' }} />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-semibold text-sm leading-tight">{botName}</p>
@@ -201,7 +201,7 @@ export default function ChatWidget() {
 
           {/* Messages */}
           <div
-            className="flex-1 overflow-y-auto p-4 space-y-3 bg-gradient-to-b from-green-50/40 to-white"
+            className="flex-1 overflow-y-auto p-4 space-y-3 chat-messages-area"
             style={{ minHeight: 0 }}
           >
             {messages.map((msg) => (
@@ -211,7 +211,7 @@ export default function ChatWidget() {
                 style={{ animation: 'msg-pop 0.22s ease-out' }}
               >
                 {msg.from === 'bot' && (
-                  <div className="w-7 h-7 shrink-0 mt-0.5 rounded-full bg-green-100 flex items-center justify-center">
+                  <div className="w-7 h-7 shrink-0 mt-0.5 rounded-full chat-avatar-bg flex items-center justify-center">
                     <BotAvatar size={26} />
                   </div>
                 )}
@@ -219,8 +219,8 @@ export default function ChatWidget() {
                   className={clsx(
                     'max-w-[76%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-line',
                     msg.from === 'bot'
-                      ? 'bg-white border border-green-100 text-green-900 rounded-tl-sm shadow-sm'
-                      : 'bg-green-600 text-white rounded-tr-sm'
+                      ? 'chat-message-bot border rounded-tl-sm shadow-sm'
+                      : 'chat-message-user rounded-tr-sm'
                   )}
                 >
                   {msg.text}
@@ -230,15 +230,15 @@ export default function ChatWidget() {
 
             {isTyping && (
               <div className="flex gap-2 items-center" style={{ animation: 'msg-pop 0.2s ease-out' }}>
-                <div className="w-7 h-7 shrink-0 rounded-full bg-green-100 flex items-center justify-center">
+                <div className="w-7 h-7 shrink-0 rounded-full chat-avatar-bg flex items-center justify-center">
                   <BotAvatar size={26} />
                 </div>
-                <div className="bg-white border border-green-100 rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
+                <div className="chat-message-bot border rounded-2xl rounded-tl-sm px-4 py-3 shadow-sm">
                   <div className="flex gap-1 items-center h-4">
                     {[0, 1, 2].map((i) => (
                       <span
                         key={i}
-                        className="w-2 h-2 bg-green-400 rounded-full block"
+                        className="w-2 h-2 chat-typing-dot rounded-full block"
                         style={{ animation: `typing-dot 1.2s ease-in-out ${i * 0.2}s infinite` }}
                       />
                     ))}
@@ -251,7 +251,7 @@ export default function ChatWidget() {
 
           {/* Input */}
           <div
-            className="px-4 py-3.5 border-t border-green-100 bg-white flex gap-2.5 shrink-0"
+            className="px-4 py-3.5 border-t chat-input-area flex gap-2.5 shrink-0"
             onClick={(e) => e.stopPropagation()}
           >
             <input
@@ -261,7 +261,7 @@ export default function ChatWidget() {
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
               placeholder={inputPlaceholder}
-              className="flex-1 text-sm px-3.5 py-2 rounded-xl border border-green-200 focus:outline-none focus:ring-2 focus:ring-green-400/40 focus:border-green-400 bg-green-50/30 placeholder-green-300 text-green-900 transition-all"
+              className="flex-1 text-sm px-3.5 py-2 rounded-xl border focus:outline-none chat-input transition-all"
             />
             <button
               onClick={(e) => {
@@ -269,7 +269,7 @@ export default function ChatWidget() {
                 sendMessage()
               }}
               disabled={!input.trim() || isTyping}
-              className="w-8 h-8 bg-green-600 hover:bg-green-700 disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0 self-center"
+              className="w-8 h-8 chat-send-btn disabled:opacity-40 disabled:cursor-not-allowed text-white rounded-lg flex items-center justify-center transition-all hover:scale-105 active:scale-95 shrink-0 self-center"
             >
               <Send className="w-3.5 h-3.5" />
             </button>
@@ -282,11 +282,11 @@ export default function ChatWidget() {
         {/* Hover tooltip */}
         {isHovered && !isOpen && (
           <div
-            className="absolute bottom-full right-0 mb-3 bg-white rounded-2xl rounded-br-sm px-3.5 py-2 shadow-lg border border-green-100 text-sm text-green-800 font-medium whitespace-nowrap pointer-events-none"
+            className="absolute bottom-full right-0 mb-3 chat-tooltip rounded-2xl rounded-br-sm px-3.5 py-2 shadow-lg border text-sm font-medium whitespace-nowrap pointer-events-none"
             style={{ animation: 'chat-slide-up 0.18s ease-out' }}
           >
             {tooltip}
-            <span className="absolute -bottom-1.5 right-4 w-3 h-3 bg-white border-r border-b border-green-100 rotate-45 block" />
+            <span className="absolute -bottom-1.5 right-4 w-3 h-3 chat-tooltip-caret border-r border-b rotate-45 block" />
           </div>
         )}
 
@@ -298,8 +298,8 @@ export default function ChatWidget() {
           className={clsx(
             'relative w-14 h-14 rounded-full shadow-lg flex items-center justify-center transition-all duration-200',
             isOpen
-              ? 'bg-green-700 scale-95 shadow-md'
-              : 'bg-gradient-to-br from-green-500 to-emerald-600 hover:scale-110 hover:shadow-xl hover:shadow-green-300/40'
+              ? 'chat-fab-open scale-95 shadow-md'
+              : 'chat-fab hover:scale-110 hover:shadow-xl'
           )}
           style={isOpen ? undefined : { animation: 'float 3s ease-in-out infinite' }}
         >
