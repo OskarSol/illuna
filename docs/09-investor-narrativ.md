@@ -97,4 +97,248 @@ The result is an adaptive application layer.
 
 Every personalization request can become a structured product signal.
 
-Illuna helps applications not only adapt to individual users, but also identif
+Illuna helps applications not only adapt to individual users, but also identify recurring UX friction, emerging workflow patterns, and frequently requested changes across the product experience.
+
+Illuna helps apps answer the deeper question:
+
+Given what the user means, what context matters, and what the product allows — how should the experience adapt?
+
+---
+
+# Why This Matters Now
+
+The market is moving from AI as a feature to AI as part of the product experience.
+
+Early AI adoption focused on adding assistants, chat windows, copilots, and automation features. These are useful, but they often sit next to the application instead of changing the application itself.
+
+The next wave will be different.
+
+Applications will be expected to:
+
+* understand natural language as product input,
+* remember user preferences safely,
+* adapt workflows dynamically,
+* personalize guidance and complexity,
+* and remain explainable, testable, and controllable.
+
+Illuna is positioned for this shift.
+
+At the same time, personalization is becoming increasingly expensive for modern product teams.
+
+Many adaptive experiences still require manually implemented UX variants, onboarding paths, localization layers, accessibility modes, and segmented workflows.
+
+Illuna reduces this complexity by moving controlled personalization into a reusable adaptation layer instead of hardcoded product logic.
+
+It does not replace product teams. It gives them a framework to define what can adapt, what must stay fixed, and how personalization should behave.
+
+---
+
+# Product Thesis
+
+The winning apps of the next decade will not only be intelligent.
+
+They will be adaptive, context-aware, and product-aware.
+
+Illuna is built around three beliefs:
+
+## 1. Personalization must move beyond settings
+
+Users should not have to configure every detail manually. They should be able to express what they need naturally, and the application should translate that into useful product behavior.
+
+## 2. Memory must be controlled and transparent
+
+An adaptive app should remember meaningful preferences, not collect everything blindly. Memory must be scoped, reversible, explainable, and governed by product rules.
+
+But memory is not only valuable for the individual user.
+
+When aggregated safely and within developer-defined boundaries, personalization signals can help product teams understand recurring friction, emerging preferences, and which adaptations should become future product defaults.
+
+## 3. AI must work within product boundaries
+
+Illuna is not about uncontrolled AI-generated UI. Product teams define the design system, allowed adaptation areas, safety rules, and business logic. AI helps decide what is appropriate within those boundaries.
+
+---
+
+# Product Example: GardenMate
+
+GardenMate is the first product example built around the Illuna concept.
+
+It is a personal gardening companion that helps users plan, understand, and care for their garden.
+
+But strategically, GardenMate is more than a gardening app.
+
+It is the first proof point for the Illuna framework.
+
+A beginner might say:
+
+> “I am new to gardening and only have 20 minutes per week.”
+
+GardenMate can interpret this as a context and preference signal. The experience can shift toward simple language, weekly priorities, fewer advanced options, and supportive guidance.
+
+An experienced user might say:
+
+> “Give me the expert view with pruning windows, soil details, and risk factors.”
+
+The same product can expose denser information, advanced care logic, and expert workflows.
+
+Same application. Same product boundaries. Different level of guidance.
+
+That is Illuna.
+
+---
+
+# Developer Value
+
+Illuna is not only valuable for end users.
+
+It also reduces repetitive personalization work for developers and product teams.
+
+Today, teams often need to manually implement many variations:
+
+* beginner mode vs. expert mode,
+* short vs. detailed explanations,
+* different onboarding paths,
+* feature visibility rules,
+* UI density preferences,
+* language and tone variants,
+* accessibility adjustments,
+* and domain-specific guidance flows.
+
+These personalization requirements often create significant implementation and maintenance overhead across product, UX, localization, and engineering teams.
+
+Illuna reduces repetitive personalization work by handling many adaptive behaviors dynamically within controlled product boundaries.
+
+Illuna provides a structured way to handle this through a controlled adaptation layer.
+
+Developers define the boundaries. Illuna handles the personalization logic inside those boundaries.
+
+This allows teams to ship adaptive experiences faster without multiplying static UX variants and configuration complexity.
+
+This keeps products flexible without turning the codebase into a drawer full of mystery switches.
+
+---
+
+# Differentiation
+
+Illuna is different from common AI app approaches.
+
+## Not just a chatbot
+
+A chatbot answers. Illuna adapts the product experience.
+
+## Not a no-code app builder
+
+Illuna does not primarily build apps. It helps existing and new apps become adaptive.
+
+## Not a theme engine
+
+Changing colors is not enough. Illuna focuses on behavior, guidance, workflow support, context, and preference memory.
+
+## Not uncontrolled AI-generated UI
+
+Adaptation happens within product-defined rules, design systems, and safety boundaries.
+
+## Not a generic assistant layer
+
+Illuna is domain-aware and product-aware. It connects user intent to application behavior.
+
+## Not just analytics
+
+Traditional products collect clicks and events. Illuna captures structured adaptation intent directly from user interaction — turning personalization into product intelligence.
+
+---
+
+# Business Model Direction
+
+Illuna is designed as a framework-as-a-service for adaptive applications.
+
+Potential revenue streams include:
+
+* developer framework subscriptions,
+* usage-based AI and personalization processing,
+* hosted personalization and context services,
+* product intelligence and adaptation analytics,
+* SDK and API access,
+* premium product-rule and observability tooling,
+* and future marketplaces for domain templates, adaptation profiles, and extensions.
+
+The initial focus is not to build a horizontal consumer assistant.
+
+The focus is to build the adaptive layer that many products can use.
+
+---
+
+# Roadmap
+
+## Phase 1 — Product Proof
+
+Use GardenMate to demonstrate adaptive interaction, context handling, preference memory, and controlled experience changes in a real product scenario.
+
+## Phase 2 — Framework PoC
+
+Extract the reusable components behind GardenMate:
+
+* intent classification,
+* context resolution,
+* personalization engine,
+* preference memory,
+* adaptation decisions,
+* and product rules.
+
+## Phase 3 — Developer Framework
+
+Provide SDKs, APIs, documentation, and hosted services that allow developers to integrate Illuna into other applications.
+
+## Phase 4 — Commercial Platform
+
+Build Illuna into a scalable framework-as-a-service for adaptive application experiences.
+
+---
+
+# Why Illuna Can Win
+
+Illuna is positioned between four major movements:
+
+* Users expecting more personal AI experiences
+* Developers needing reusable AI personalization infrastructure
+* Product teams needing control, safety, and predictable adaptation
+* Organizations looking to reduce personalization and UX iteration costs
+
+The key insight is simple:
+
+The future is not every app having a chatbot. The future is every app understanding the user better.
+
+And every user interaction becoming a signal for how the product itself should evolve.
+
+Illuna turns that insight into a framework.
+
+---
+
+# Funding Narrative
+
+Illuna is seeking early-stage funding to move from product proof to reusable framework core.
+
+The funding focus is to:
+
+* build the standalone framework backend,
+* develop the personalization and context engine,
+* create SDK and API interfaces,
+* improve observability and product-rule tooling,
+* validate GardenMate as the first proof point,
+* and prepare additional cross-domain examples.
+
+The goal is to prove that adaptive applications can be implemented in a structured, safe, and developer-friendly way.
+
+---
+
+# Investor Closing
+
+AI assistants have shown users what context-aware software can feel like.
+
+Illuna brings that expectation into the application layer.
+
+We are building the framework for apps that do not just respond — but understand, remember, adapt, and continuously learn from user interaction.
+
+Because the future of software is not only intelligent.
+
+It is personal, adaptive, and product-aware.
