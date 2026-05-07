@@ -1,5 +1,4 @@
 ![Illuna Vision](assets/illuna_vision.png)
-![Illuna Vision](assets/illuna_vision.png)
 
 # 01 — Vision
 
