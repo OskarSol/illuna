@@ -132,7 +132,7 @@ export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
   const { elements, setElementValue, setSkillLevel, init: initUi } = useUiStore()
-  const { logout } = useAuth()
+  const { logout, user } = useAuth()
   const { addPlant, addTask, plants } = useGardenStore()
   const [messages, setMessages] = useState<Message[]>(() => {
     const greeting =
@@ -141,10 +141,16 @@ export default function ChatWidget() {
     return [{ id: '0', from: 'bot', text: greeting }]
   })
   const [chatHistory, setChatHistory] = useState<ChatHistoryEntry[]>([])
+  const [appId, setAppId] = useState('')
+  const sessionId = useRef(crypto.randomUUID())
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    api.get<{ appId: string }>('/api/config').then(c => setAppId(c.appId)).catch(() => {})
+  }, [])
 
   const botName = elements['text.chat.botName'] || 'Ivy · Garten-KI'
   const botStatus = elements['text.chat.botStatus'] || 'Online · immer für dich da'
@@ -235,6 +241,9 @@ export default function ChatWidget() {
           chat_history: chatHistory,
           ui_elements: uiElements,
           system_context: systemContext,
+          user_id: user?.id ?? '',
+          app_id: appId,
+          session_id: sessionId.current,
         }),
       })
 
