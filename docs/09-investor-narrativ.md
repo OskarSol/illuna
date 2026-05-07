@@ -1,7 +1,5 @@
 # 09 · Investor Narrative
 
-# Illuna Investor Pitch
-
 ## One-Line Summary
 
 Illuna is building the application layer for context-aware, adaptive software — enabling apps to understand user intent, remember meaningful preferences, adapt experiences within product-defined boundaries, and turn personalization signals into structured product intelligence.
@@ -95,7 +93,27 @@ The result is not a chatbot wrapper.
 
 The result is an adaptive application layer.
 
+Illuna does not only personalize applications for individual users.
+
+It turns personalization signals into structured product intelligence.
+
 Every personalization request can become a structured product signal.
+
+Users do not just use the application.
+They continuously teach the product how it should improve.
+
+Illuna captures these signals structurally:
+
+* requested UI changes
+* workflow preferences
+* communication style preferences
+* recurring friction
+* missing functionality
+* adaptation patterns by user segment
+
+This creates a continuous feedback loop:
+
+User request → instant adaptation → structured memory → aggregated insight → better product decisions
 
 Illuna helps applications not only adapt to individual users, but also identify recurring UX friction, emerging workflow patterns, and frequently requested changes across the product experience.
 
@@ -129,6 +147,8 @@ Many adaptive experiences still require manually implemented UX variants, onboar
 
 Illuna reduces this complexity by moving controlled personalization into a reusable adaptation layer instead of hardcoded product logic.
 
+One adaptive system replaces dozens of static UX decisions.
+
 It does not replace product teams. It gives them a framework to define what can adapt, what must stay fixed, and how personalization should behave.
 
 ---
@@ -152,6 +172,8 @@ An adaptive app should remember meaningful preferences, not collect everything b
 But memory is not only valuable for the individual user.
 
 When aggregated safely and within developer-defined boundaries, personalization signals can help product teams understand recurring friction, emerging preferences, and which adaptations should become future product defaults.
+
+Illuna captures structured product and preference signals with clear user consent, anonymization options, and developer-defined adaptation boundaries.
 
 ## 3. AI must work within product boundaries
 
@@ -246,6 +268,12 @@ Illuna is domain-aware and product-aware. It connects user intent to application
 
 Traditional products collect clicks and events. Illuna captures structured adaptation intent directly from user interaction — turning personalization into product intelligence.
 
+## Not just personalization
+
+Illuna creates a continuous feedback loop between users, applications, and product teams.
+
+Individual users receive better experiences instantly, while product teams gain aggregated insights into what users actually want changed.
+
 ---
 
 # Business Model Direction
@@ -283,6 +311,7 @@ Extract the reusable components behind GardenMate:
 * personalization engine,
 * preference memory,
 * adaptation decisions,
+* product intelligence aggregation,
 * and product rules.
 
 ## Phase 3 — Developer Framework
@@ -306,28 +335,15 @@ Illuna is positioned between four major movements:
 
 The key insight is simple:
 
-The future is not every app having a chatbot. The future is every app understanding the user better.
+The future is not every app having a chatbot.
+
+The future is every app understanding the user better.
 
 And every user interaction becoming a signal for how the product itself should evolve.
 
 Illuna turns that insight into a framework.
 
----
-
-# Funding Narrative
-
-Illuna is seeking early-stage funding to move from product proof to reusable framework core.
-
-The funding focus is to:
-
-* build the standalone framework backend,
-* develop the personalization and context engine,
-* create SDK and API interfaces,
-* improve observability and product-rule tooling,
-* validate GardenMate as the first proof point,
-* and prepare additional cross-domain examples.
-
-The goal is to prove that adaptive applications can be implemented in a structured, safe, and developer-friendly way.
+Illuna helps applications adapt to individuals today — and helps product teams understand what should change for everyone tomorrow.
 
 ---
 
