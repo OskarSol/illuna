@@ -42,7 +42,7 @@
     margin: 0;
     font-family: var(--font-family-base, 'Inter', system-ui, -apple-system, sans-serif);
     font-size: 1rem;
-    background-color: #f0fdf4;
+    background-color: var(--bg-app-gradientFrom, #f0fdf4);
     color: var(--color-text-base, #14532d);
     font-weight: var(--font-weight-body, 400);
     font-style: var(--font-style-base, normal);
@@ -61,6 +61,71 @@
     background-color: var(--color-card-bg, #ffffff);
     border-radius: var(--border-radius-card, 1rem);
   }
+}
+
+/* Chat Widget Theme – uses CSS variables set by uiStore */
+.chat-container {
+  background-color: var(--color-card-bg, #ffffff);
+  border-color: var(--border-color-default, #bbf7d0);
+}
+.chat-header {
+  background: linear-gradient(to right, var(--color-button-primary-bg, #16a34a), var(--color-secondary, #059669));
+}
+.chat-messages-area {
+  background-color: color-mix(in srgb, var(--color-card-bg, #ffffff) 95%, black);
+}
+.chat-message-bot {
+  background-color: var(--color-card-bg, #ffffff);
+  border-color: var(--border-color-default, #bbf7d0);
+}
+.chat-message-user {
+  background-color: var(--color-button-primary-bg, #16a34a);
+  color: white;
+}
+.chat-avatar-bg {
+  background-color: color-mix(in srgb, var(--color-primary, #22c55e) 20%, var(--color-card-bg, #ffffff));
+}
+.chat-typing-dot {
+  background-color: var(--color-primary, #22c55e);
+}
+.chat-input-area {
+  background-color: var(--color-card-bg, #ffffff);
+  border-top-color: var(--border-color-default, #bbf7d0);
+}
+.chat-input {
+  background-color: color-mix(in srgb, var(--color-card-bg, #ffffff) 90%, black);
+  border-color: var(--color-input-border, #bbf7d0);
+  color: var(--color-text-base, #14532d);
+}
+.chat-input::placeholder {
+  color: color-mix(in srgb, var(--color-text-base, #14532d) 50%, transparent);
+}
+.chat-input:focus {
+  border-color: var(--color-primary, #22c55e);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-primary, #22c55e) 30%, transparent);
+}
+.chat-send-btn {
+  background-color: var(--color-button-primary-bg, #16a34a);
+}
+.chat-send-btn:hover:not(:disabled) {
+  background-color: var(--color-button-primary-hover, #15803d);
+}
+.chat-tooltip {
+  background-color: var(--color-card-bg, #ffffff);
+  border-color: var(--border-color-default, #bbf7d0);
+}
+.chat-tooltip-caret {
+  background-color: var(--color-card-bg, #ffffff);
+  border-color: var(--border-color-default, #bbf7d0);
+}
+.chat-fab {
+  background: linear-gradient(to bottom right, var(--color-primary, #22c55e), var(--color-secondary, #059669));
+}
+.chat-fab-open {
+  background-color: var(--color-button-primary-hover, #15803d);
+}
+.nav-tab-inactive:hover {
+  background-color: color-mix(in srgb, var(--color-nav-active, #22c55e) 10%, transparent);
 }
 
 /* Kommen nach @import "tailwindcss" → überschreiben Tailwind-Utilities bei gleicher Spezifität */
