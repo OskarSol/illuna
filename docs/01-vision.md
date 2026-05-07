@@ -1,4 +1,6 @@
 ![Illuna Vision](assets/illuna_vision.png)
+![Illuna Vision](assets/illuna_vision.png)
+
 # 01 — Vision
 
 # Every App Should Feel Like It Was Made for You
@@ -9,9 +11,11 @@ They offer the same interface, the same workflows, the same tone, and the same a
 
 Illuna starts from a different belief:
 
-**The next generation of applications will not only be functional. They will be adaptive, conversational, and personal.**
+**The next generation of applications will not only be functional. They will be adaptive, conversational, context-aware, and personal.**
 
-Software should be able to understand how people express intent, how they prefer to interact, and how their needs change over time.
+Software should be able to understand how people express intent, how they prefer to interact, what context matters to them, and how their needs change over time.
+
+The next generation of applications will not start from a blank slate every time. They will remember meaningful preferences, understand user context, and adapt the experience accordingly.
 
 Instead of forcing users into fixed forms, static menus, and predefined flows, applications should be able to listen, interpret, adapt, and evolve — within clear product-defined boundaries.
 
@@ -38,6 +42,8 @@ Some are beginners.
 Some are experts.
 
 Traditional applications rarely adapt to these differences in a meaningful way.
+
+AI assistants are already changing user expectations. People are becoming used to software that understands context, remembers preferences, and responds in a way that feels personal. But most applications still behave as if every interaction starts from zero.
 
 Personalization is often limited to settings, dashboards, saved preferences, recommendations, themes, or visual appearance. These can be useful, but the core experience usually stays the same.
 
@@ -83,10 +89,11 @@ But as a signal for adaptation.
 Illuna is a framework for applications that can:
 
 * understand user intent,
-* detect style and preference signals,
+* detect style, preference, and context signals,
 * adapt tone and interface behavior,
 * personalize workflows,
 * remember meaningful preferences,
+* use context to reduce repeated friction,
 * operate within product-defined boundaries,
 * and evolve over time.
 
@@ -104,7 +111,7 @@ Illuna is an open concept and reference architecture for adaptive, AI-personaliz
 
 It explores how modern apps can move from static user experience to dynamic, intent-aware experience.
 
-At its core, Illuna connects four ideas:
+At its core, Illuna connects five core ideas:
 
 ---
 
@@ -210,7 +217,11 @@ Illuna helps the application respond to these needs without requiring developers
 
 ---
 
-## 5. Continuous Personalization
+## 5. User Context & Continuous Personalization
+
+Illuna-enabled applications should not treat every interaction as isolated.
+
+When appropriate, and with user control, meaningful signals can become part of a user context layer: preferred tone, skill level, explanation depth, accessibility needs, workflow habits, and recurring goals.
 
 Every meaningful interaction can become a signal — if the user allows it and if the product rules support it.
 
@@ -367,6 +378,7 @@ Developers should be able to integrate Illuna into their products and enable:
 * personalized workflows,
 * app-specific AI agents,
 * user preference memory,
+* user context layers,
 * dynamic feature experiences,
 * product boundary definitions,
 * testing support,
@@ -377,3 +389,4 @@ The future of software is not only intelligent.
 It is adaptive, personal, and product-aware.
 
 Illuna exists to help build that future.
+
