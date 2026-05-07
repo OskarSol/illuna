@@ -6,7 +6,6 @@ An AI-powered garden planner built with React, TypeScript, Vite, and an Express 
 
 - [Node.js](https://nodejs.org/) v18 or newer
 - npm (included with Node.js)
-- An Anthropic API key (for Claude)
 
 ## 1. Configure environment variables
 
