@@ -3,6 +3,8 @@ import { X, Send, Sparkles, MessageCircle } from 'lucide-react'
 import clsx from 'clsx'
 import { api } from '../api/client'
 import { useUiStore } from '../uiStore'
+import { useAuth } from '../contexts/AuthContext'
+import { useGardenStore, type TaskType } from '../store'
 
 type Message = {
   id: string
@@ -10,20 +12,77 @@ type Message = {
   text: string
 }
 
+type ChatHistoryEntry = {
+  role: 'user' | 'assistant'
+  content: string
+}
+
+type SystemMessage = {
+  action: string
+  data?: Record<string, unknown>
+}
 
 type Settings = {
   apiKey: string
   apiUrl: string
+  systemContext: Record<string, unknown>
+}
+
+const DEFAULT_SYSTEM_CONTEXT = {
+  instructions:
+    'Du bist ein Gartenhelfer-KI. Wenn der Benutzer explizit eine der folgenden App-Aktionen wünscht, füge sie in system_messages ein.',
+  available_actions: [
+    { name: 'logout', description: 'Benutzer ausloggen' },
+    {
+      name: 'set_skill_level',
+      description: 'App-Modus wechseln',
+      params: { level: 'beginner | expert' },
+    },
+    { name: 'reset_ui', description: 'Alle UI-Einstellungen auf Standard zurücksetzen' },
+    {
+      name: 'add_plant',
+      description: 'Neue Pflanze hinzufügen',
+      params: { name: 'string', emoji: 'string', location: 'string', notes: 'string (optional)' },
+    },
+    {
+      name: 'add_task',
+      description: 'Neue Gartenaufgabe hinzufügen',
+      params: {
+        plantId: 'string (Pflanzen-ID aus dem Kontext)',
+        title: 'string',
+        taskType: 'watering | fertilizing | pruning | harvesting | repotting | other',
+        dueDate: 'yyyy-MM-dd',
+        notes: 'string (optional)',
+      },
+    },
+  ],
 }
 
 async function loadSettingsFromApi(): Promise<Settings> {
-  const s = await api.get<Record<string, { value: string }>>('/api/settings').catch(() => ({} as Record<string, { value: string }>))
-  return { apiKey: s['api.key']?.value ?? '', apiUrl: s['api.url']?.value ?? '' }
+  const s = await api
+    .get<Record<string, { value: string }>>('/api/settings')
+    .catch(() => ({}) as Record<string, { value: string }>)
+  let systemContext: Record<string, unknown> = DEFAULT_SYSTEM_CONTEXT
+  const raw = s['api.system_context']?.value
+  if (raw) {
+    try {
+      systemContext = JSON.parse(raw) as Record<string, unknown>
+    } catch {
+      // use default
+    }
+  }
+  return {
+    apiKey: s['api.key']?.value ?? '',
+    apiUrl: s['api.url']?.value ?? '',
+    systemContext,
+  }
 }
 
 async function loadUiElementsFromApi(): Promise<Record<string, string>> {
-  const rows = await api.get<{ element_key: string; value: string }[]>('/api/ui/elements').catch(() => [])
-  return Object.fromEntries(rows.map(e => [e.element_key, e.value]))
+  const rows = await api
+    .get<{ element_key: string; value: string }[]>('/api/ui/elements')
+    .catch(() => [])
+  return Object.fromEntries(rows.map((e) => [e.element_key, e.value]))
 }
 
 const DEFAULT_REPLIES = [
@@ -72,11 +131,16 @@ function BotAvatar({ size = 40, className = '' }: { size?: number; className?: s
 export default function ChatWidget() {
   const [isOpen, setIsOpen] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
-  const { elements, setElementValue } = useUiStore()
+  const { elements, setElementValue, setSkillLevel, init: initUi } = useUiStore()
+  const { logout } = useAuth()
+  const { addPlant, addTask, plants } = useGardenStore()
   const [messages, setMessages] = useState<Message[]>(() => {
-    const greeting = useUiStore.getState().elements['text.chat.greeting'] || 'Hallo! 🌿 Wie kann ich dir heute helfen?'
+    const greeting =
+      useUiStore.getState().elements['text.chat.greeting'] ||
+      'Hallo! 🌿 Wie kann ich dir heute helfen?'
     return [{ id: '0', from: 'bot', text: greeting }]
   })
+  const [chatHistory, setChatHistory] = useState<ChatHistoryEntry[]>([])
   const [input, setInput] = useState('')
   const [isTyping, setIsTyping] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
@@ -94,6 +158,52 @@ export default function ChatWidget() {
     }
   }, [isOpen, messages])
 
+  async function handleSystemMessages(systemMessages: SystemMessage[]) {
+    for (const msg of systemMessages) {
+      try {
+        switch (msg.action) {
+          case 'logout':
+            await logout()
+            break
+          case 'set_skill_level':
+            if (msg.data?.level === 'beginner' || msg.data?.level === 'expert') {
+              await setSkillLevel(msg.data.level as 'beginner' | 'expert')
+            }
+            break
+          case 'reset_ui':
+            await api.post('/api/ui/reset-to-default', {})
+            await initUi()
+            break
+          case 'add_plant':
+            if (msg.data) {
+              await addPlant({
+                name: String(msg.data.name ?? 'Neue Pflanze'),
+                emoji: String(msg.data.emoji ?? '🌱'),
+                location: String(msg.data.location ?? ''),
+                notes: msg.data.notes ? String(msg.data.notes) : undefined,
+              })
+            }
+            break
+          case 'add_task':
+            if (msg.data) {
+              await addTask({
+                plantId: String(msg.data.plantId ?? plants[0]?.id ?? ''),
+                title: String(msg.data.title ?? 'Neue Aufgabe'),
+                taskType: (msg.data.taskType as TaskType) ?? 'other',
+                dueDate: String(msg.data.dueDate ?? new Date().toISOString().slice(0, 10)),
+                notes: msg.data.notes ? String(msg.data.notes) : undefined,
+              })
+            }
+            break
+          default:
+            console.warn(`Unbekannte System-Aktion: ${msg.action}`)
+        }
+      } catch (e) {
+        console.error(`System-Aktion '${msg.action}' fehlgeschlagen:`, e)
+      }
+    }
+  }
+
   async function sendMessage() {
     const text = input.trim()
     if (!text || isTyping) return
@@ -104,7 +214,7 @@ export default function ChatWidget() {
     setIsTyping(true)
 
     try {
-      const [{ apiUrl, apiKey }, uiElements] = await Promise.all([
+      const [{ apiUrl, apiKey, systemContext }, uiElements] = await Promise.all([
         loadSettingsFromApi(),
         loadUiElementsFromApi(),
       ])
@@ -122,7 +232,9 @@ export default function ChatWidget() {
         },
         body: JSON.stringify({
           message: text,
+          chat_history: chatHistory,
           ui_elements: uiElements,
+          system_context: systemContext,
         }),
       })
 
@@ -135,7 +247,11 @@ export default function ChatWidget() {
 
       if (rawReply) {
         try {
-          const parsed = JSON.parse(rawReply) as { message?: unknown; updates?: Array<{ id?: unknown; new_value?: unknown }> }
+          const parsed = JSON.parse(rawReply) as {
+            message?: unknown
+            updates?: Array<{ id?: unknown; new_value?: unknown }>
+            system_messages?: Array<{ action?: unknown; data?: unknown }>
+          }
           if (typeof parsed.message === 'string' && parsed.message.trim()) {
             replyText = parsed.message
           }
@@ -143,15 +259,30 @@ export default function ChatWidget() {
           if (Array.isArray(parsed.updates) && parsed.updates.length > 0) {
             await Promise.all(
               parsed.updates
-                .filter((u): u is { id: string; new_value: string } => typeof u?.id === 'string' && typeof u?.new_value === 'string')
+                .filter(
+                  (u): u is { id: string; new_value: string } =>
+                    typeof u?.id === 'string' && typeof u?.new_value === 'string'
+                )
                 .map((u) => setElementValue(u.id, u.new_value))
             )
+          }
+
+          if (Array.isArray(parsed.system_messages) && parsed.system_messages.length > 0) {
+            const validMsgs = parsed.system_messages.filter(
+              (sm): sm is SystemMessage => typeof sm?.action === 'string'
+            )
+            await handleSystemMessages(validMsgs)
           }
         } catch {
           // keep plain text response
         }
       }
 
+      setChatHistory((prev) => [
+        ...prev,
+        { role: 'user', content: text },
+        { role: 'assistant', content: replyText },
+      ])
       setMessages((prev) => [...prev, { id: `b-${Date.now()}`, from: 'bot', text: replyText }])
     } catch (error) {
       console.error('Webhook call failed:', error)
@@ -182,7 +313,13 @@ export default function ChatWidget() {
               <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center ring-2 ring-white/30">
                 <BotAvatar size={36} />
               </div>
-              <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2" style={{ backgroundColor: 'var(--color-primary, #22c55e)', borderColor: 'var(--color-secondary, #059669)' }} />
+              <span
+                className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2"
+                style={{
+                  backgroundColor: 'var(--color-primary, #22c55e)',
+                  borderColor: 'var(--color-secondary, #059669)',
+                }}
+              />
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-white font-semibold text-sm leading-tight">{botName}</p>

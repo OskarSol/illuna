@@ -6,6 +6,7 @@ import type { SkillLevel, UiElementDefinition } from '../db'
 type Settings = {
   apiKey: string
   apiUrl: string
+  systemContextJson: string
 }
 
 const CATEGORY_LABELS: Record<UiElementDefinition['category'], string> = {
@@ -38,7 +39,7 @@ interface ApiElement {
 }
 
 export default function SettingsPanel() {
-  const [settings, setSettings] = useState<Settings>({ apiKey: '', apiUrl: '' })
+  const [settings, setSettings] = useState<Settings>({ apiKey: '', apiUrl: '', systemContextJson: '' })
   const [uiElements, setUiElements] = useState<ApiElement[]>([])
   const [saved, setSaved] = useState(false)
   const [resetConfirm, setResetConfirm] = useState(false)
@@ -56,7 +57,11 @@ export default function SettingsPanel() {
   useEffect(() => {
     initUi()
     api.get<Record<string, { value: string }>>('/api/settings').then(s => {
-      setSettings({ apiKey: s['api.key']?.value ?? '', apiUrl: s['api.url']?.value ?? '' })
+      setSettings({
+        apiKey: s['api.key']?.value ?? '',
+        apiUrl: s['api.url']?.value ?? '',
+        systemContextJson: s['api.system_context']?.value ?? '',
+      })
     }).catch(() => {})
     api.get<ApiElement[]>('/api/ui/elements').then(rows => {
       setUiElements(rows.sort((a, b) => a.element_key.localeCompare(b.element_key)))
@@ -99,10 +104,14 @@ export default function SettingsPanel() {
   }
 
   async function saveSettings() {
-    await Promise.all([
+    const saves: Promise<unknown>[] = [
       api.put('/api/settings/api.key', { value: settings.apiKey, valueType: 'string' }),
       api.put('/api/settings/api.url', { value: settings.apiUrl, valueType: 'string' }),
-    ])
+    ]
+    if (settings.systemContextJson.trim()) {
+      saves.push(api.put('/api/settings/api.system_context', { value: settings.systemContextJson.trim(), valueType: 'json' }))
+    }
+    await Promise.all(saves)
     for (const element of uiElements) {
       await setElementValue(element.element_key, element.value, element.value_type)
     }
@@ -151,6 +160,19 @@ export default function SettingsPanel() {
           <label className="block">
             <span className="text-sm font-medium text-green-800">API URL</span>
             <input type="text" value={settings.apiUrl} onChange={(e) => setSettings(prev => ({ ...prev, apiUrl: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-green-200 px-3.5 py-2.5 text-sm" />
+          </label>
+          <label className="block">
+            <span className="text-sm font-medium text-green-800">System-Kontext (JSON)</span>
+            <p className="text-xs text-green-600 mt-0.5 mb-1.5">
+              Definiert welche App-Aktionen der KI zur Verfügung stehen. Leer lassen = App-Standard wird verwendet.
+            </p>
+            <textarea
+              value={settings.systemContextJson}
+              onChange={(e) => setSettings(prev => ({ ...prev, systemContextJson: e.target.value }))}
+              placeholder={'{\n  "instructions": "...",\n  "available_actions": [...]\n}'}
+              rows={10}
+              className="mt-1 w-full rounded-xl border border-green-200 px-3.5 py-2.5 text-xs font-mono resize-y"
+            />
           </label>
         </div>
       )}
