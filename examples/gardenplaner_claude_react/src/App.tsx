@@ -46,7 +46,7 @@ export default function App() {
 function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; username: string }) {
   const [activeTab, setActiveTab] = useState<Tab>('tasks')
   const { tasks, plants, init, initialized } = useGardenStore()
-  const { tokens, elements, init: initUi, startPolling, stopPolling } = useUiStore()
+  const { tokens, elements, init: initUi, startPolling, stopPolling, isVisible } = useUiStore()
 
   useEffect(() => {
     init()
@@ -78,6 +78,17 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
   const iconBg = elements['color.header.iconBg'] || '#16a34a'
   const navActive = elements['color.nav.active'] || '#16a34a'
 
+  const visibleTabs = TAB_KEYS.filter(id => isVisible(`tab.${id}`))
+  const showHeaderStats = isVisible('header.stats')
+  const showHeaderSubtitle = isVisible('header.subtitle')
+  const showHeaderIcon = isVisible('header.icon')
+
+  useEffect(() => {
+    if (visibleTabs.length > 0 && !visibleTabs.includes(activeTab)) {
+      setActiveTab(visibleTabs[0])
+    }
+  }, [visibleTabs, activeTab])
+
   if (!initialized) return null
 
   return (
@@ -85,24 +96,29 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
       <header className="border-b border-green-100 shadow-sm sticky top-0 z-10" style={{ backgroundColor: elements['color.header.bg'] || '#ffffff' }}>
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: iconBg }}>
-              <Leaf className="w-5 h-5 text-white" />
-            </div>
+            {showHeaderIcon && (
+              <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-sm" style={{ backgroundColor: iconBg }}>
+                <Leaf className="w-5 h-5 text-white" />
+              </div>
+            )}
             <div>
               <h1 className="text-base font-bold text-green-900 leading-tight">{elements['text.header.title'] || 'Gartenplaner'}</h1>
-              {elements['text.header.subtitle']
-                ? <p className="text-xs text-green-500">{elements['text.header.subtitle']}</p>
-                : <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
-              }
+              {showHeaderSubtitle && (
+                elements['text.header.subtitle']
+                  ? <p className="text-xs text-green-500">{elements['text.header.subtitle']}</p>
+                  : <p className="text-xs text-green-500">{format(new Date(), 'EEEE, d. MMMM', { locale: de })}</p>
+              )}
             </div>
           </div>
 
           <div className="flex items-center gap-4">
-            <div className="hidden sm:flex gap-4">
-              <Stat label={elements['text.stats.plants'] || 'Pflanzen'} value={plants.length} color="text-green-600" />
-              <Stat label={elements['text.stats.dueToday'] || 'Heute fällig'} value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
-              <Stat label={elements['text.stats.open'] || 'Offen'} value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
-            </div>
+            {showHeaderStats && (
+              <div className="hidden sm:flex gap-4">
+                <Stat label={elements['text.stats.plants'] || 'Pflanzen'} value={plants.length} color="text-green-600" />
+                <Stat label={elements['text.stats.dueToday'] || 'Heute fällig'} value={openToday} color={openToday > 0 ? 'text-amber-600' : 'text-green-600'} />
+                <Stat label={elements['text.stats.open'] || 'Offen'} value={tasks.filter((t) => !t.completed).length} color="text-green-600" />
+              </div>
+            )}
             <button
               onClick={onLogout}
               title={`Abmelden (${username})`}
@@ -115,7 +131,7 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
         </div>
 
         <div className="max-w-3xl mx-auto px-4 flex gap-1 pb-0 pt-1">
-          {TAB_KEYS.map((id) => {
+          {visibleTabs.map((id) => {
             const Icon = TAB_ICONS[id]
             const label = elements[`text.nav.tab.${id}`] || id
             return (
@@ -139,15 +155,15 @@ function AppContent({ onLogout, username }: { onLogout: () => Promise<void>; use
       </header>
 
       <main className="max-w-3xl mx-auto px-4 py-6 pb-24 sm:pb-6">
-        {activeTab === 'plants' && <PlantManager />}
-        {activeTab === 'tasks' && <TaskList />}
-        {activeTab === 'calendar' && <MonthlyCalendar />}
-        {activeTab === 'settings' && <SettingsPanel />}
-        {activeTab === 'database' && <DatabaseInspector />}
+        {activeTab === 'plants' && visibleTabs.includes('plants') && <PlantManager />}
+        {activeTab === 'tasks' && visibleTabs.includes('tasks') && <TaskList />}
+        {activeTab === 'calendar' && visibleTabs.includes('calendar') && <MonthlyCalendar />}
+        {activeTab === 'settings' && visibleTabs.includes('settings') && <SettingsPanel />}
+        {activeTab === 'database' && visibleTabs.includes('database') && <DatabaseInspector />}
       </main>
 
-      <WeatherWidget />
-      <ChatWidget />
+      {isVisible('widget.weather') && <WeatherWidget />}
+      {isVisible('widget.chat') && <ChatWidget />}
     </div>
   )
 }

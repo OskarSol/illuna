@@ -11,6 +11,7 @@ interface UiElementSeed {
   value: string
   valueType: string
   category: string
+  skillLevel?: 'all' | 'beginner' | 'expert'
 }
 
 export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
@@ -18,28 +19,28 @@ export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
   { elementKey: 'text.header.title', label: 'Header Titel', description: 'Haupttitel in der Top-Navigation.', value: 'Gartenplaner', valueType: 'string', category: 'text' },
   { elementKey: 'text.header.subtitle', label: 'Header Untertitel', description: 'Optionaler Untertitel unter dem Haupttitel.', value: '', valueType: 'string', category: 'text' },
   { elementKey: 'color.primary', label: 'Primärfarbe', description: 'Primäre Akzentfarbe der App.', value: '#16a34a', valueType: 'color', category: 'color' },
-  { elementKey: 'color.secondary', label: 'Sekundärfarbe', description: 'Sekundäre Akzentfarbe für unterstützende UI-Elemente.', value: '#059669', valueType: 'color', category: 'color' },
-  { elementKey: 'color.text.base', label: 'Textfarbe Basis', description: 'Standardfarbe für Fließtext.', value: '#14532d', valueType: 'color', category: 'color' },
-  { elementKey: 'color.header.iconBg', label: 'Header: Icon-Hintergrund', description: 'Hintergrundfarbe des App-Icons im Header.', value: '#16a34a', valueType: 'color', category: 'color' },
-  { elementKey: 'color.nav.active', label: 'Navigation: Aktive Farbe', description: 'Farbe des aktiven Tabs in der Navigation (Border + Text).', value: '#16a34a', valueType: 'color', category: 'color' },
+  { elementKey: 'color.secondary', label: 'Sekundärfarbe', description: 'Sekundäre Akzentfarbe für unterstützende UI-Elemente.', value: '#059669', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.text.base', label: 'Textfarbe Basis', description: 'Standardfarbe für Fließtext.', value: '#14532d', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.header.iconBg', label: 'Header: Icon-Hintergrund', description: 'Hintergrundfarbe des App-Icons im Header.', value: '#16a34a', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.nav.active', label: 'Navigation: Aktive Farbe', description: 'Farbe des aktiven Tabs in der Navigation (Border + Text).', value: '#16a34a', valueType: 'color', category: 'color', skillLevel: 'expert' },
 
   // ── Hintergrund ──────────────────────────────────────────────────────────
-  { elementKey: 'bg.app.gradientFrom', label: 'Hintergrund Verlauf Start', description: 'Startfarbe des App-Hintergrundverlaufs.', value: '#f0fdf4', valueType: 'color', category: 'background' },
-  { elementKey: 'bg.app.gradientTo', label: 'Hintergrund Verlauf Ende', description: 'Endfarbe des App-Hintergrundverlaufs.', value: '#ecfdf5', valueType: 'color', category: 'background' },
-  { elementKey: 'bg.app.imageUrl', label: 'Hintergrundbild URL', description: 'Optionales Hintergrundbild für die gesamte App.', value: '', valueType: 'url', category: 'background' },
+  { elementKey: 'bg.app.gradientFrom', label: 'Hintergrund Verlauf Start', description: 'Startfarbe des App-Hintergrundverlaufs.', value: '#f0fdf4', valueType: 'color', category: 'background', skillLevel: 'expert' },
+  { elementKey: 'bg.app.gradientTo', label: 'Hintergrund Verlauf Ende', description: 'Endfarbe des App-Hintergrundverlaufs.', value: '#ecfdf5', valueType: 'color', category: 'background', skillLevel: 'expert' },
+  { elementKey: 'bg.app.imageUrl', label: 'Hintergrundbild URL', description: 'Optionales Hintergrundbild für die gesamte App.', value: '', valueType: 'url', category: 'background', skillLevel: 'expert' },
 
   // ── Schrift ───────────────────────────────────────────────────────────────
-  { elementKey: 'font.family.base', label: 'Schriftfamilie Basis', description: 'Globale Schriftfamilie der Anwendung.', value: 'Inter, system-ui, sans-serif', valueType: 'font', category: 'font' },
-  { elementKey: 'font.size.base', label: 'Schriftgröße Basis', description: 'Globale Basis-Schriftgröße.', value: '14px', valueType: 'px', category: 'font' },
-  { elementKey: 'font.size.heading', label: 'Schriftgröße: Überschriften', description: 'Schriftgröße der Abschnitts-Überschriften (z.B. "Meine Pflanzen", "Aufgaben").', value: '1.125rem', valueType: 'string', category: 'font' },
-  { elementKey: 'font.size.label', label: 'Schriftgröße: Labels', description: 'Schriftgröße kleiner Beschriftungen, Badges und Formular-Labels.', value: '0.75rem', valueType: 'string', category: 'font' },
-  { elementKey: 'font.weight.heading', label: 'Schriftstärke: Überschriften', description: 'Schriftstärke der Abschnitts-Überschriften (z.B. 400, 600, 700).', value: '600', valueType: 'string', category: 'font' },
-  { elementKey: 'font.weight.body', label: 'Schriftstärke: Fließtext', description: 'Schriftstärke des normalen Fließtexts (z.B. 400, 500).', value: '400', valueType: 'string', category: 'font' },
-  { elementKey: 'font.style.base', label: 'Schriftstil', description: 'Globaler Schriftstil der App: "normal" oder "italic".', value: 'normal', valueType: 'string', category: 'font' },
+  { elementKey: 'font.family.base', label: 'Schriftfamilie Basis', description: 'Globale Schriftfamilie der Anwendung.', value: 'Inter, system-ui, sans-serif', valueType: 'font', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.size.base', label: 'Schriftgröße Basis', description: 'Globale Basis-Schriftgröße.', value: '14px', valueType: 'px', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.size.heading', label: 'Schriftgröße: Überschriften', description: 'Schriftgröße der Abschnitts-Überschriften (z.B. "Meine Pflanzen", "Aufgaben").', value: '1.125rem', valueType: 'string', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.size.label', label: 'Schriftgröße: Labels', description: 'Schriftgröße kleiner Beschriftungen, Badges und Formular-Labels.', value: '0.75rem', valueType: 'string', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.weight.heading', label: 'Schriftstärke: Überschriften', description: 'Schriftstärke der Abschnitts-Überschriften (z.B. 400, 600, 700).', value: '600', valueType: 'string', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.weight.body', label: 'Schriftstärke: Fließtext', description: 'Schriftstärke des normalen Fließtexts (z.B. 400, 500).', value: '400', valueType: 'string', category: 'font', skillLevel: 'expert' },
+  { elementKey: 'font.style.base', label: 'Schriftstil', description: 'Globaler Schriftstil der App: "normal" oder "italic".', value: 'normal', valueType: 'string', category: 'font', skillLevel: 'expert' },
 
   // ── Rahmen ────────────────────────────────────────────────────────────────
-  { elementKey: 'border.radius.card', label: 'Karten-Radius', description: 'Standard-Rundung für Karten/Container.', value: '16px', valueType: 'px', category: 'border' },
-  { elementKey: 'border.color.default', label: 'Standard Borderfarbe', description: 'Standardfarbe von Rahmenlinien.', value: '#bbf7d0', valueType: 'color', category: 'border' },
+  { elementKey: 'border.radius.card', label: 'Karten-Radius', description: 'Standard-Rundung für Karten/Container.', value: '16px', valueType: 'px', category: 'border', skillLevel: 'expert' },
+  { elementKey: 'border.color.default', label: 'Standard Borderfarbe', description: 'Standardfarbe von Rahmenlinien.', value: '#bbf7d0', valueType: 'color', category: 'border', skillLevel: 'expert' },
 
   // ── Navigation Tabs ───────────────────────────────────────────────────────
   { elementKey: 'text.nav.tab.plants', label: 'Tab: Pflanzen', description: 'Label für den Pflanzen-Tab in der Navigation.', value: 'Pflanzen', valueType: 'string', category: 'text' },
@@ -101,46 +102,81 @@ export const DEFAULT_UI_ELEMENTS: UiElementSeed[] = [
   { elementKey: 'icon.tasktype.other', label: 'Icon: Sonstiges', description: 'Emoji/Icon für den Aufgabentyp "Sonstiges".', value: '📝', valueType: 'string', category: 'icon' },
 
   // ── Aufgabentypen: Badge-Farben ───────────────────────────────────────────
-  { elementKey: 'color.tasktype.watering.bg', label: 'Badge-BG: Gießen', description: 'Hintergrundfarbe des Typ-Badges "Gießen".', value: '#e0f2fe', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.watering.text', label: 'Badge-Text: Gießen', description: 'Textfarbe des Typ-Badges "Gießen".', value: '#0369a1', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.fertilizing.bg', label: 'Badge-BG: Düngen', description: 'Hintergrundfarbe des Typ-Badges "Düngen".', value: '#d1fae5', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.fertilizing.text', label: 'Badge-Text: Düngen', description: 'Textfarbe des Typ-Badges "Düngen".', value: '#047857', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.pruning.bg', label: 'Badge-BG: Schneiden', description: 'Hintergrundfarbe des Typ-Badges "Schneiden".', value: '#ffedd5', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.pruning.text', label: 'Badge-Text: Schneiden', description: 'Textfarbe des Typ-Badges "Schneiden".', value: '#c2410c', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.harvesting.bg', label: 'Badge-BG: Ernten', description: 'Hintergrundfarbe des Typ-Badges "Ernten".', value: '#fef9c3', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.harvesting.text', label: 'Badge-Text: Ernten', description: 'Textfarbe des Typ-Badges "Ernten".', value: '#a16207', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.repotting.bg', label: 'Badge-BG: Umtopfen', description: 'Hintergrundfarbe des Typ-Badges "Umtopfen".', value: '#fef3c7', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.repotting.text', label: 'Badge-Text: Umtopfen', description: 'Textfarbe des Typ-Badges "Umtopfen".', value: '#b45309', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.other.bg', label: 'Badge-BG: Sonstiges', description: 'Hintergrundfarbe des Typ-Badges "Sonstiges".', value: '#f3f4f6', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.other.text', label: 'Badge-Text: Sonstiges', description: 'Textfarbe des Typ-Badges "Sonstiges".', value: '#4b5563', valueType: 'color', category: 'color' },
+  { elementKey: 'color.tasktype.watering.bg', label: 'Badge-BG: Gießen', description: 'Hintergrundfarbe des Typ-Badges "Gießen".', value: '#e0f2fe', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.watering.text', label: 'Badge-Text: Gießen', description: 'Textfarbe des Typ-Badges "Gießen".', value: '#0369a1', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.fertilizing.bg', label: 'Badge-BG: Düngen', description: 'Hintergrundfarbe des Typ-Badges "Düngen".', value: '#d1fae5', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.fertilizing.text', label: 'Badge-Text: Düngen', description: 'Textfarbe des Typ-Badges "Düngen".', value: '#047857', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.pruning.bg', label: 'Badge-BG: Schneiden', description: 'Hintergrundfarbe des Typ-Badges "Schneiden".', value: '#ffedd5', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.pruning.text', label: 'Badge-Text: Schneiden', description: 'Textfarbe des Typ-Badges "Schneiden".', value: '#c2410c', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.harvesting.bg', label: 'Badge-BG: Ernten', description: 'Hintergrundfarbe des Typ-Badges "Ernten".', value: '#fef9c3', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.harvesting.text', label: 'Badge-Text: Ernten', description: 'Textfarbe des Typ-Badges "Ernten".', value: '#a16207', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.repotting.bg', label: 'Badge-BG: Umtopfen', description: 'Hintergrundfarbe des Typ-Badges "Umtopfen".', value: '#fef3c7', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.repotting.text', label: 'Badge-Text: Umtopfen', description: 'Textfarbe des Typ-Badges "Umtopfen".', value: '#b45309', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.other.bg', label: 'Badge-BG: Sonstiges', description: 'Hintergrundfarbe des Typ-Badges "Sonstiges".', value: '#f3f4f6', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.other.text', label: 'Badge-Text: Sonstiges', description: 'Textfarbe des Typ-Badges "Sonstiges".', value: '#4b5563', valueType: 'color', category: 'color', skillLevel: 'expert' },
 
   // ── Aufgabentypen: Kalender-Punktfarben ───────────────────────────────────
-  { elementKey: 'color.tasktype.watering.dot', label: 'Kalender-Punkt: Gießen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Gießen".', value: '#38bdf8', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.fertilizing.dot', label: 'Kalender-Punkt: Düngen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Düngen".', value: '#10b981', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.pruning.dot', label: 'Kalender-Punkt: Schneiden', description: 'Farbe des Indikator-Punktes im Monatskalender für "Schneiden".', value: '#fb923c', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.harvesting.dot', label: 'Kalender-Punkt: Ernten', description: 'Farbe des Indikator-Punktes im Monatskalender für "Ernten".', value: '#facc15', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.repotting.dot', label: 'Kalender-Punkt: Umtopfen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Umtopfen".', value: '#f59e0b', valueType: 'color', category: 'color' },
-  { elementKey: 'color.tasktype.other.dot', label: 'Kalender-Punkt: Sonstiges', description: 'Farbe des Indikator-Punktes im Monatskalender für "Sonstiges".', value: '#9ca3af', valueType: 'color', category: 'color' },
+  { elementKey: 'color.tasktype.watering.dot', label: 'Kalender-Punkt: Gießen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Gießen".', value: '#38bdf8', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.fertilizing.dot', label: 'Kalender-Punkt: Düngen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Düngen".', value: '#10b981', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.pruning.dot', label: 'Kalender-Punkt: Schneiden', description: 'Farbe des Indikator-Punktes im Monatskalender für "Schneiden".', value: '#fb923c', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.harvesting.dot', label: 'Kalender-Punkt: Ernten', description: 'Farbe des Indikator-Punktes im Monatskalender für "Ernten".', value: '#facc15', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.repotting.dot', label: 'Kalender-Punkt: Umtopfen', description: 'Farbe des Indikator-Punktes im Monatskalender für "Umtopfen".', value: '#f59e0b', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.tasktype.other.dot', label: 'Kalender-Punkt: Sonstiges', description: 'Farbe des Indikator-Punktes im Monatskalender für "Sonstiges".', value: '#9ca3af', valueType: 'color', category: 'color', skillLevel: 'expert' },
 
   // ── Schaltflächen ─────────────────────────────────────────────────────────
-  { elementKey: 'color.button.primary.bg', label: 'Button Primär: Hintergrund', description: 'Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#16a34a', valueType: 'color', category: 'color' },
-  { elementKey: 'color.button.primary.hover', label: 'Button Primär: Hover', description: 'Hover-Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#15803d', valueType: 'color', category: 'color' },
+  { elementKey: 'color.button.primary.bg', label: 'Button Primär: Hintergrund', description: 'Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#16a34a', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.button.primary.hover', label: 'Button Primär: Hover', description: 'Hover-Hintergrundfarbe der primären Aktionsschaltflächen.', value: '#15803d', valueType: 'color', category: 'color', skillLevel: 'expert' },
 
   // ── Karten & Container ────────────────────────────────────────────────────
-  { elementKey: 'color.card.bg', label: 'Karten-Hintergrund', description: 'Hintergrundfarbe von Karten und Panel-Containern.', value: '#ffffff', valueType: 'color', category: 'color' },
-  { elementKey: 'color.header.bg', label: 'Header-Hintergrund', description: 'Hintergrundfarbe der oberen Navigationsleiste.', value: '#ffffff', valueType: 'color', category: 'color' },
-  { elementKey: 'color.input.border', label: 'Eingabefeld: Rahmen', description: 'Rahmenfarbe von Eingabefeldern und Dropdowns.', value: '#bbf7d0', valueType: 'color', category: 'color' },
+  { elementKey: 'color.card.bg', label: 'Karten-Hintergrund', description: 'Hintergrundfarbe von Karten und Panel-Containern.', value: '#ffffff', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.header.bg', label: 'Header-Hintergrund', description: 'Hintergrundfarbe der oberen Navigationsleiste.', value: '#ffffff', valueType: 'color', category: 'color', skillLevel: 'expert' },
+  { elementKey: 'color.input.border', label: 'Eingabefeld: Rahmen', description: 'Rahmenfarbe von Eingabefeldern und Dropdowns.', value: '#bbf7d0', valueType: 'color', category: 'color', skillLevel: 'expert' },
 
   // ── Chat-Widget ───────────────────────────────────────────────────────────
-  { elementKey: 'text.chat.botName', label: 'Chat: Bot-Name', description: 'Angezeigter Name des Chat-Assistenten im Widget-Header.', value: 'Ivy · Garten-KI', valueType: 'string', category: 'text' },
-  { elementKey: 'text.chat.botStatus', label: 'Chat: Bot-Status', description: 'Statuszeile unterhalb des Bot-Namens im Widget-Header.', value: 'Online · immer für dich da', valueType: 'string', category: 'text' },
-  { elementKey: 'text.chat.greeting', label: 'Chat: Begrüßung', description: 'Erste Bot-Nachricht beim Öffnen des Chats.', value: 'Hallo! 🌿 Wie kann ich dir heute helfen?', valueType: 'string', category: 'text' },
-  { elementKey: 'text.chat.inputPlaceholder', label: 'Chat: Eingabe-Platzhalter', description: 'Platzhaltertext im Chat-Eingabefeld.', value: 'Schreib mir etwas… 🌱', valueType: 'string', category: 'text' },
-  { elementKey: 'text.chat.tooltip', label: 'Chat: Hover-Tooltip', description: 'Tooltip-Text der beim Hovern über den Chat-Button erscheint.', value: 'Wie kann ich helfen? 🌿', valueType: 'string', category: 'text' },
+  { elementKey: 'text.chat.botName', label: 'Chat: Bot-Name', description: 'Angezeigter Name des Chat-Assistenten im Widget-Header.', value: 'Ivy · Garten-KI', valueType: 'string', category: 'text', skillLevel: 'expert' },
+  { elementKey: 'text.chat.botStatus', label: 'Chat: Bot-Status', description: 'Statuszeile unterhalb des Bot-Namens im Widget-Header.', value: 'Online · immer für dich da', valueType: 'string', category: 'text', skillLevel: 'expert' },
+  { elementKey: 'text.chat.greeting', label: 'Chat: Begrüßung', description: 'Erste Bot-Nachricht beim Öffnen des Chats.', value: 'Hallo! 🌿 Wie kann ich dir heute helfen?', valueType: 'string', category: 'text', skillLevel: 'expert' },
+  { elementKey: 'text.chat.inputPlaceholder', label: 'Chat: Eingabe-Platzhalter', description: 'Platzhaltertext im Chat-Eingabefeld.', value: 'Schreib mir etwas… 🌱', valueType: 'string', category: 'text', skillLevel: 'expert' },
+  { elementKey: 'text.chat.tooltip', label: 'Chat: Hover-Tooltip', description: 'Tooltip-Text der beim Hovern über den Chat-Button erscheint.', value: 'Wie kann ich helfen? 🌿', valueType: 'string', category: 'text', skillLevel: 'expert' },
+
+  // ── Sichtbarkeit: Tabs ────────────────────────────────────────────────────
+  { elementKey: 'visibility.tab.plants', label: 'Tab: Pflanzen anzeigen', description: 'Pflanzen-Tab in der Navigation ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.tab.tasks', label: 'Tab: Aufgaben anzeigen', description: 'Aufgaben-Tab in der Navigation ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.tab.calendar', label: 'Tab: Kalender anzeigen', description: 'Kalender-Tab in der Navigation ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.tab.settings', label: 'Tab: Einstellungen anzeigen', description: 'Einstellungen-Tab in der Navigation ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.tab.database', label: 'Tab: Datenbank anzeigen', description: 'Datenbank-Inspector-Tab ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+
+  // ── Sichtbarkeit: Header ──────────────────────────────────────────────────
+  { elementKey: 'visibility.header.subtitle', label: 'Header: Untertitel anzeigen', description: 'Untertitel/Datumsanzeige unter dem App-Titel.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.header.stats', label: 'Header: Statistiken anzeigen', description: 'Block mit Pflanzen-/Aufgaben-Zählern im Header.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.header.icon', label: 'Header: Logo-Icon anzeigen', description: 'App-Icon links im Header ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+
+  // ── Sichtbarkeit: Floating Widgets ────────────────────────────────────────
+  { elementKey: 'visibility.widget.weather', label: 'Wetter-Widget anzeigen', description: 'Wetter-Widget unten links auf jeder Seite.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.widget.chat', label: 'Chat-Widget anzeigen', description: 'Chat-Bubble unten rechts auf jeder Seite.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+
+  // ── Sichtbarkeit: Pflanzen-Tab ────────────────────────────────────────────
+  { elementKey: 'visibility.plants.heading', label: 'Pflanzen: Überschrift anzeigen', description: 'Überschrift im Pflanzen-Tab ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+  { elementKey: 'visibility.plants.addButton', label: 'Pflanzen: Hinzufügen-Button anzeigen', description: 'Button zum Hinzufügen neuer Pflanzen.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.plants.locationField', label: 'Pflanzen: Standort-Feld anzeigen', description: 'Standort-Eingabefeld im Pflanzen-Formular und auf Karten.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.plants.notesField', label: 'Pflanzen: Notizen-Feld anzeigen', description: 'Notizen-Feld im Pflanzen-Formular und auf Karten.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.plants.taskBadges', label: 'Pflanzen: Aufgaben-Badges anzeigen', description: 'Badges mit offenen Aufgaben auf Pflanzen-Karten.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+
+  // ── Sichtbarkeit: Aufgaben-Tab ────────────────────────────────────────────
+  { elementKey: 'visibility.tasks.heading', label: 'Aufgaben: Überschrift anzeigen', description: 'Überschrift im Aufgaben-Tab ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+  { elementKey: 'visibility.tasks.addButton', label: 'Aufgaben: Hinzufügen-Button anzeigen', description: 'Button zum Hinzufügen neuer Aufgaben.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.tasks.filter', label: 'Aufgaben: Pflanzen-Filter anzeigen', description: 'Dropdown zum Filtern nach Pflanze.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+  { elementKey: 'visibility.tasks.recurringField', label: 'Aufgaben: Wiederholung-Feld anzeigen', description: 'Wiederkehr-Feld im Aufgaben-Formular.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+  { elementKey: 'visibility.tasks.notesField', label: 'Aufgaben: Notiz-Feld anzeigen', description: 'Notiz-Feld im Aufgaben-Formular.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+
+  // ── Sichtbarkeit: Kalender-Tab ────────────────────────────────────────────
+  { elementKey: 'visibility.calendar.heading', label: 'Kalender: Überschrift anzeigen', description: 'Überschrift im Kalender-Tab ein-/ausblenden.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'expert' },
+  { elementKey: 'visibility.calendar.legend', label: 'Kalender: Legende anzeigen', description: 'Farb-Legende der Aufgabentypen.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
+  { elementKey: 'visibility.calendar.dayDetails', label: 'Kalender: Tagesdetails anzeigen', description: 'Detail-Panel für den ausgewählten Tag.', value: 'true', valueType: 'boolean', category: 'visibility', skillLevel: 'all' },
 ]
 
 function isTokenKey(key: string) {
-  return !key.startsWith('text.') && !key.startsWith('icon.')
+  return !key.startsWith('text.') && !key.startsWith('icon.') && !key.startsWith('visibility.')
 }
 
 export function seedUserData(userId: string) {
@@ -152,8 +188,8 @@ export function seedUserData(userId: string) {
 
   const insertElement = db.prepare(`
     INSERT OR IGNORE INTO ui_elements
-      (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, skill_level, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
   const insertToken = db.prepare(`
     INSERT OR IGNORE INTO ui_tokens
@@ -163,7 +199,7 @@ export function seedUserData(userId: string) {
 
   const seedAll = db.transaction(() => {
     for (const el of DEFAULT_UI_ELEMENTS) {
-      insertElement.run(uid(), userId, profileId, el.elementKey, el.label, el.description, el.value, el.value, el.valueType, el.category, ts)
+      insertElement.run(uid(), userId, profileId, el.elementKey, el.label, el.description, el.value, el.value, el.valueType, el.category, el.skillLevel ?? 'all', ts)
       if (isTokenKey(el.elementKey)) {
         insertToken.run(uid(), userId, profileId, el.elementKey, el.value, el.valueType, ts)
       }
@@ -199,8 +235,8 @@ export function ensureUserUiElements(userId: string) {
   const ts = now()
   const insertElement = db.prepare(`
     INSERT OR IGNORE INTO ui_elements
-      (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, updated_at)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      (id, user_id, profile_id, element_key, label, description, value, default_value, value_type, category, skill_level, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   `)
   const insertToken = db.prepare(`
     INSERT OR IGNORE INTO ui_tokens
@@ -209,7 +245,7 @@ export function ensureUserUiElements(userId: string) {
   `)
   const fill = db.transaction(() => {
     for (const el of DEFAULT_UI_ELEMENTS) {
-      insertElement.run(uid(), userId, profileId, el.elementKey, el.label, el.description, el.value, el.value, el.valueType, el.category, ts)
+      insertElement.run(uid(), userId, profileId, el.elementKey, el.label, el.description, el.value, el.value, el.valueType, el.category, el.skillLevel ?? 'all', ts)
       if (isTokenKey(el.elementKey)) {
         insertToken.run(uid(), userId, profileId, el.elementKey, el.value, el.valueType, ts)
       }

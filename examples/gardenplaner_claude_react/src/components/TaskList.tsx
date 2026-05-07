@@ -51,7 +51,12 @@ const EMPTY_TASK_FORM: TaskFormData = {
 
 export default function TaskList() {
   const { tasks, plants, toggleTask, removeTask, addTask } = useGardenStore()
-  const { elements } = useUiStore()
+  const { elements, isVisible } = useUiStore()
+  const showHeading = isVisible('tasks.heading')
+  const showAddButton = isVisible('tasks.addButton')
+  const showFilter = isVisible('tasks.filter')
+  const showRecurring = isVisible('tasks.recurringField')
+  const showNotes = isVisible('tasks.notesField')
   const [showForm, setShowForm] = useState(false)
   const [form, setForm] = useState<TaskFormData>(EMPTY_TASK_FORM)
   const [collapsedGroups, setCollapsedGroups] = useState<Set<GroupKey>>(new Set(['done']))
@@ -93,34 +98,42 @@ export default function TaskList() {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between flex-wrap gap-2">
-        <h2 className="text-heading text-green-900 flex items-center gap-2">
-          <CalendarDays className="w-5 h-5 text-green-600" />
-          {elements['text.tasks.heading'] || 'Aufgaben'}
-          <span className="text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
-            {tasks.filter((t) => !t.completed).length} {elements['text.stats.open'] || 'offen'}
-          </span>
-        </h2>
-        <div className="flex gap-2 flex-wrap">
-          <select
-            value={filterPlant}
-            onChange={(e) => setFilterPlant(e.target.value)}
-            className="text-sm border border-green-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-green-800"
-          >
-            <option value="all">{elements['text.tasks.filterAll'] || 'Alle Pflanzen'}</option>
-            {plants.map((p) => (
-              <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
-            ))}
-          </select>
-          <button
-            onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-white text-sm font-medium rounded-lg transition-colors"
-          >
-            <Plus className="w-4 h-4" />
-            {elements['text.tasks.addButton'] || 'Aufgabe'}
-          </button>
+      {(showHeading || showAddButton || showFilter) && (
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          {showHeading ? (
+            <h2 className="text-heading text-green-900 flex items-center gap-2">
+              <CalendarDays className="w-5 h-5 text-green-600" />
+              {elements['text.tasks.heading'] || 'Aufgaben'}
+              <span className="text-sm font-normal text-green-600 bg-green-100 px-2 py-0.5 rounded-full">
+                {tasks.filter((t) => !t.completed).length} {elements['text.stats.open'] || 'offen'}
+              </span>
+            </h2>
+          ) : <span />}
+          <div className="flex gap-2 flex-wrap">
+            {showFilter && (
+              <select
+                value={filterPlant}
+                onChange={(e) => setFilterPlant(e.target.value)}
+                className="text-sm border border-green-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-green-400 bg-white text-green-800"
+              >
+                <option value="all">{elements['text.tasks.filterAll'] || 'Alle Pflanzen'}</option>
+                {plants.map((p) => (
+                  <option key={p.id} value={p.id}>{p.emoji} {p.name}</option>
+                ))}
+              </select>
+            )}
+            {showAddButton && (
+              <button
+                onClick={() => setShowForm(!showForm)}
+                className="flex items-center gap-1.5 px-3 py-1.5 btn-primary text-white text-sm font-medium rounded-lg transition-colors"
+              >
+                <Plus className="w-4 h-4" />
+                {elements['text.tasks.addButton'] || 'Aufgabe'}
+              </button>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {showForm && (
         <form onSubmit={handleSubmit} className="card-bg border border-green-200 rounded-xl p-4 shadow-sm space-y-3">
@@ -177,52 +190,56 @@ export default function TaskList() {
                 className="w-full border border-green-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
               />
             </div>
-            <div>
-              <label className="block text-label-sm text-green-700 mb-1">Notiz</label>
-              <input
-                type="text"
-                value={form.notes}
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                placeholder="Optional…"
-                className="w-full border border-green-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className="flex items-center gap-2 text-sm text-green-800 cursor-pointer">
-              <input
-                type="checkbox"
-                checked={form.recurring}
-                onChange={(e) => setForm({ ...form, recurring: e.target.checked })}
-                className="accent-green-600"
-              />
-              <RefreshCw className="w-4 h-4 text-green-600" />
-              Wiederholt sich
-            </label>
-            {form.recurring && (
-              <div className="mt-2 flex gap-2 items-center pl-6">
-                <span className="text-xs text-green-600">Alle</span>
+            {showNotes && (
+              <div>
+                <label className="block text-label-sm text-green-700 mb-1">Notiz</label>
                 <input
-                  type="number"
-                  min={1}
-                  max={99}
-                  value={form.recurringInterval}
-                  onChange={(e) => setForm({ ...form, recurringInterval: Math.max(1, parseInt(e.target.value) || 1) })}
-                  className="w-14 border border-green-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 text-center"
+                  type="text"
+                  value={form.notes}
+                  onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                  placeholder="Optional…"
+                  className="w-full border border-green-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
                 />
-                <select
-                  value={form.recurringType}
-                  onChange={(e) => setForm({ ...form, recurringType: e.target.value as 'daily' | 'weekly' | 'monthly' })}
-                  className="border border-green-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
-                >
-                  <option value="daily">Tag(e)</option>
-                  <option value="weekly">Woche(n)</option>
-                  <option value="monthly">Monat(e)</option>
-                </select>
               </div>
             )}
           </div>
+
+          {showRecurring && (
+            <div>
+              <label className="flex items-center gap-2 text-sm text-green-800 cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.recurring}
+                  onChange={(e) => setForm({ ...form, recurring: e.target.checked })}
+                  className="accent-green-600"
+                />
+                <RefreshCw className="w-4 h-4 text-green-600" />
+                Wiederholt sich
+              </label>
+              {form.recurring && (
+                <div className="mt-2 flex gap-2 items-center pl-6">
+                  <span className="text-xs text-green-600">Alle</span>
+                  <input
+                    type="number"
+                    min={1}
+                    max={99}
+                    value={form.recurringInterval}
+                    onChange={(e) => setForm({ ...form, recurringInterval: Math.max(1, parseInt(e.target.value) || 1) })}
+                    className="w-14 border border-green-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400 text-center"
+                  />
+                  <select
+                    value={form.recurringType}
+                    onChange={(e) => setForm({ ...form, recurringType: e.target.value as 'daily' | 'weekly' | 'monthly' })}
+                    className="border border-green-200 rounded-lg px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-green-400"
+                  >
+                    <option value="daily">Tag(e)</option>
+                    <option value="weekly">Woche(n)</option>
+                    <option value="monthly">Monat(e)</option>
+                  </select>
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-2 pt-1">
             <button type="submit" className="flex-1 btn-primary text-white text-sm font-medium py-2 rounded-lg transition-colors">

@@ -18,9 +18,11 @@ export interface UiToken {
   profileId: string
   tokenPath: string
   value: string
-  valueType: 'color' | 'px' | 'rem' | 'number' | 'font' | 'url' | 'string'
+  valueType: 'color' | 'px' | 'rem' | 'number' | 'font' | 'url' | 'string' | 'boolean'
   updatedAt: string
 }
+
+export type SkillLevel = 'all' | 'beginner' | 'expert'
 
 export interface UiComponentOverride {
   id: string
@@ -40,7 +42,8 @@ export interface UiElementDefinition {
   description: string
   value: string
   defaultValue: string
-  valueType: 'color' | 'px' | 'rem' | 'number' | 'font' | 'url' | 'string'
-  category: 'text' | 'color' | 'background' | 'font' | 'border' | 'layout' | 'icon'
+  valueType: 'color' | 'px' | 'rem' | 'number' | 'font' | 'url' | 'string' | 'boolean'
+  category: 'text' | 'color' | 'background' | 'font' | 'border' | 'layout' | 'icon' | 'visibility'
+  skillLevel: SkillLevel
   updatedAt: string
 }
