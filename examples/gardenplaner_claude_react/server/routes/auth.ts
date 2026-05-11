@@ -1,11 +1,10 @@
 import { Router } from 'express'
 import bcrypt from 'bcryptjs'
+import { randomUUID } from 'crypto'
 import { db } from '../database.js'
 import { signToken, verifyToken, COOKIE_OPTIONS } from '../auth.js'
 import { seedUserData, ensureUserUiElements } from '../seed.js'
 import type { Request, Response } from 'express'
-
-function uid() { return Math.random().toString(36).slice(2, 10) + Math.random().toString(36).slice(2, 10) }
 
 export const authRouter = Router()
 
@@ -29,7 +28,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
     return
   }
   const hash = await bcrypt.hash(password, 12)
-  const id = uid()
+  const id = randomUUID()
   db.prepare('INSERT INTO users (id, username, password, created_at) VALUES (?, ?, ?, ?)').run(id, username.trim(), hash, new Date().toISOString())
   seedUserData(id)
   const token = signToken(id)

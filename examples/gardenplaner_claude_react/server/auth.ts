@@ -1,11 +1,11 @@
 import jwt from 'jsonwebtoken'
 import type { CookieOptions } from 'express'
 
-const JWT_SECRET = process.env.JWT_SECRET ?? 'dev-secret-change-in-production'
-
 if (!process.env.JWT_SECRET) {
-  console.warn('[auth] JWT_SECRET not set – using insecure default. Set JWT_SECRET in .env for production.')
+  throw new Error('[auth] JWT_SECRET environment variable is required. Set it in .env or the environment before starting the server.')
 }
+
+const JWT_SECRET = process.env.JWT_SECRET
 
 export function signToken(userId: string): string {
   return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' })
