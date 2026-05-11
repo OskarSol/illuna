@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import rateLimit from 'express-rate-limit'
 import bcrypt from 'bcryptjs'
 import { randomUUID } from 'crypto'
 import { db } from '../database.js'
@@ -8,7 +9,10 @@ import type { Request, Response } from 'express'
 
 export const authRouter = Router()
 
-authRouter.post('/register', async (req: Request, res: Response) => {
+const loginLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 10, standardHeaders: true, legacyHeaders: false })
+const registerLimiter = rateLimit({ windowMs: 60 * 60 * 1000, limit: 5, standardHeaders: true, legacyHeaders: false })
+
+authRouter.post('/register', registerLimiter, async (req: Request, res: Response) => {
   const { username, password } = req.body ?? {}
   if (!username || !password || typeof username !== 'string' || typeof password !== 'string') {
     res.status(400).json({ error: 'Benutzername und Passwort erforderlich' })
@@ -36,7 +40,7 @@ authRouter.post('/register', async (req: Request, res: Response) => {
   res.json({ id, username: username.trim() })
 })
 
-authRouter.post('/login', async (req: Request, res: Response) => {
+authRouter.post('/login', loginLimiter, async (req: Request, res: Response) => {
   const { username, password } = req.body ?? {}
   if (!username || !password) {
     res.status(400).json({ error: 'Benutzername und Passwort erforderlich' })
@@ -59,7 +63,7 @@ authRouter.post('/login', async (req: Request, res: Response) => {
 })
 
 authRouter.post('/logout', (_req: Request, res: Response) => {
-  res.clearCookie('auth_token', { httpOnly: true, sameSite: 'strict' })
+  res.clearCookie('auth_token', { httpOnly: true, sameSite: 'strict', secure: COOKIE_OPTIONS.secure })
   res.json({ ok: true })
 })
 

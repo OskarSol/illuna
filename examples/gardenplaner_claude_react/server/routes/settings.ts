@@ -6,6 +6,8 @@ import type { Request, Response } from 'express'
 function now() { return new Date().toISOString() }
 
 const ENCRYPTED_KEYS = new Set(['api.key'])
+const ALLOWED_KEYS = new Set(['api.key', 'api.url', 'api.system_context', 'ui.skillLevel', 'weather.location'])
+const ALLOWED_VALUE_TYPES = new Set(['string', 'json'])
 
 export const settingsRouter = Router()
 
@@ -23,9 +25,18 @@ settingsRouter.get('/', (req: Request, res: Response) => {
 settingsRouter.put('/:key', (req: Request, res: Response) => {
   const userId = (req as Request & { userId: string }).userId
   const key = req.params['key'] as string
+  if (!ALLOWED_KEYS.has(key)) {
+    res.status(400).json({ error: 'Ungültiger Einstellungsschlüssel' })
+    return
+  }
   const { value, valueType } = req.body ?? {}
   if (value === undefined) {
     res.status(400).json({ error: 'value ist erforderlich' })
+    return
+  }
+  const resolvedValueType = valueType ?? 'string'
+  if (!ALLOWED_VALUE_TYPES.has(resolvedValueType)) {
+    res.status(400).json({ error: 'Ungültiger Wertetyp' })
     return
   }
   const plainValue = String(value)
@@ -33,6 +44,6 @@ settingsRouter.put('/:key', (req: Request, res: Response) => {
   const ts = now()
   db.prepare(`INSERT INTO app_settings (user_id, key, value, value_type, updated_at) VALUES (?, ?, ?, ?, ?)
     ON CONFLICT(user_id, key) DO UPDATE SET value = excluded.value, value_type = excluded.value_type, updated_at = excluded.updated_at`)
-    .run(userId, key, storedValue, valueType ?? 'string', ts)
-  res.json({ key, value: plainValue, valueType: valueType ?? 'string', updatedAt: ts })
+    .run(userId, key, storedValue, resolvedValueType, ts)
+  res.json({ key, value: plainValue, valueType: resolvedValueType, updatedAt: ts })
 })
