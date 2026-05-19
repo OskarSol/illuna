@@ -22,13 +22,13 @@ authRouter.post('/register', registerLimiter, async (req: Request, res: Response
     res.status(400).json({ error: 'Benutzername muss mindestens 2 Zeichen lang sein' })
     return
   }
-  if (password.length < 4) {
-    res.status(400).json({ error: 'Passwort muss mindestens 4 Zeichen lang sein' })
+  if (password.length < 8) {
+    res.status(400).json({ error: 'Passwort muss mindestens 8 Zeichen lang sein' })
     return
   }
   const existing = db.prepare('SELECT id FROM users WHERE username = ?').get(username.trim())
   if (existing) {
-    res.status(409).json({ error: 'Benutzername bereits vergeben' })
+    res.status(409).json({ error: 'Registrierung fehlgeschlagen' })
     return
   }
   const hash = await bcrypt.hash(password, 12)
