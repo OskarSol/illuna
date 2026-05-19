@@ -23,8 +23,6 @@ type SystemMessage = {
 }
 
 type Settings = {
-  apiKey: string
-  apiUrl: string
   systemContext: Record<string, unknown>
 }
 
@@ -71,11 +69,7 @@ async function loadSettingsFromApi(): Promise<Settings> {
       // use default
     }
   }
-  return {
-    apiKey: s['api.key']?.value ?? '',
-    apiUrl: s['api.url']?.value ?? '',
-    systemContext,
-  }
+  return { systemContext }
 }
 
 async function loadUiElementsFromApi(): Promise<Record<string, string>> {
@@ -220,38 +214,22 @@ export default function ChatWidget() {
     setIsTyping(true)
 
     try {
-      const [{ apiUrl, apiKey, systemContext }, uiElements] = await Promise.all([
+      const [{ systemContext }, uiElements] = await Promise.all([
         loadSettingsFromApi(),
         loadUiElementsFromApi(),
       ])
 
-      if (!apiUrl || !apiKey) {
-        throw new Error('Missing API settings')
-      }
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${apiKey}`,
-          'x-api-key': apiKey,
-        },
-        body: JSON.stringify({
-          message: text,
-          chat_history: chatHistory,
-          ui_elements: uiElements,
-          system_context: systemContext,
-          user_id: user?.id ?? '',
-          app_id: appId,
-          session_id: sessionId.current,
-        }),
+      const { reply } = await api.post<{ reply: string }>('/api/chat', {
+        message: text,
+        chat_history: chatHistory,
+        ui_elements: uiElements,
+        system_context: systemContext,
+        user_id: user?.id ?? '',
+        app_id: appId,
+        session_id: sessionId.current,
       })
 
-      if (!response.ok) {
-        throw new Error(`Webhook request failed with status ${response.status}`)
-      }
-
-      const rawReply = (await response.text()).trim()
+      const rawReply = reply.trim()
       let replyText = rawReply || pick(DEFAULT_REPLIES)
 
       if (rawReply) {

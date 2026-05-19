@@ -12,6 +12,7 @@ import { authRouter } from './routes/auth.js'
 import { plantsRouter } from './routes/plants.js'
 import { tasksRouter } from './routes/tasks.js'
 import { settingsRouter } from './routes/settings.js'
+import { chatRouter } from './routes/chat.js'
 import { uiRouter } from './routes/ui.js'
 import { requireAuth } from './middleware/requireAuth.js'
 
@@ -42,6 +43,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/plants', requireAuth, plantsRouter)
 app.use('/api/tasks', requireAuth, tasksRouter)
 app.use('/api/settings', requireAuth, settingsRouter)
+app.use('/api/chat', requireAuth, chatRouter)
 app.use('/api/ui', requireAuth, uiRouter)
 
 if (process.env.NODE_ENV === 'production') {

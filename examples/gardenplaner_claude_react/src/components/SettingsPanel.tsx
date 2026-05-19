@@ -105,9 +105,11 @@ export default function SettingsPanel() {
 
   async function saveSettings() {
     const saves: Promise<unknown>[] = [
-      api.put('/api/settings/api.key', { value: settings.apiKey, valueType: 'string' }),
       api.put('/api/settings/api.url', { value: settings.apiUrl, valueType: 'string' }),
     ]
+    if (settings.apiKey.trim()) {
+      saves.push(api.put('/api/settings/api.key', { value: settings.apiKey, valueType: 'string' }))
+    }
     if (settings.systemContextJson.trim()) {
       saves.push(api.put('/api/settings/api.system_context', { value: settings.systemContextJson.trim(), valueType: 'json' }))
     }
@@ -155,7 +157,7 @@ export default function SettingsPanel() {
         <div className="space-y-4">
           <label className="block">
             <span className="text-sm font-medium text-green-800">API Key</span>
-            <input type="password" value={settings.apiKey} onChange={(e) => setSettings(prev => ({ ...prev, apiKey: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-green-200 px-3.5 py-2.5 text-sm" />
+            <input type="password" value={settings.apiKey} onChange={(e) => setSettings(prev => ({ ...prev, apiKey: e.target.value }))} placeholder="Neuen Key eingeben um zu ändern" className="mt-1.5 w-full rounded-xl border border-green-200 px-3.5 py-2.5 text-sm" />
           </label>
           <label className="block">
             <span className="text-sm font-medium text-green-800">API URL</span>
