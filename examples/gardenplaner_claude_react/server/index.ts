@@ -2,6 +2,7 @@
 try { process.loadEnvFile(new URL('../.env', import.meta.url)) } catch { /* .env optional */ }
 
 import express from 'express'
+import helmet from 'helmet'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
@@ -29,6 +30,25 @@ function getOrCreateAppId(): string {
   return id
 }
 const APP_ID = getOrCreateAppId()
+
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'"],
+      objectSrc: ["'none'"],
+      frameAncestors: ["'none'"],
+    },
+  },
+  // HSTS is meaningful only over HTTPS; keep it off in development
+  strictTransportSecurity: process.env.NODE_ENV === 'production'
+    ? { maxAge: 63072000, includeSubDomains: true }
+    : false,
+}))
 
 if (process.env.NODE_ENV !== 'production') {
   app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
