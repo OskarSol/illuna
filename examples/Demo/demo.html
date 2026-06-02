@@ -1,0 +1,199 @@
+  .spot-rail { background: var(--code-bg); border-left: 1px solid var(--border); min-height: 0; }
+  .code-panel.is-compact .code-pre code { font-size: 12.5px; }
+
+  /* ---------- CONVERSATION ---------- */
+  .lay-conversation { display: flex; flex-direction: column; }
+  .conv-hero {
+    flex: 0 0 auto; padding: 28px 24px 22px; display: flex; flex-direction: column; align-items: center;
+    background:
+      radial-gradient(90% 140% at 50% -40%, oklch(from var(--accent) 0.95 0.05 h / 0.45), transparent 55%),
+      var(--bg);
+    border-bottom: 1px solid var(--border);
+  }
+  .conv-hero-label { font-size: 13px; font-weight: 600; color: var(--accent); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 16px; }
+  .conv-hero .chat { max-width: 680px; }
+  .conv-hero .chat-input { padding: 11px 11px 11px 16px; border-radius: 15px; }
+  .conv-hero .chat-input input { font-size: 15.5px; }
+  .conv-hero .adapt-note { max-width: 680px; margin-top: 14px; margin-bottom: 0; }
+  .conv-grid { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; }
+  .conv-app { border-right: 1px solid var(--border); }
+  .conv-app .pane-scroll { padding: 30px clamp(20px, 4vw, 48px); }
+  .conv-code { background: var(--code-bg); }
+
+  @media (max-width: 860px) {
+    .topbar-mid { display: none; }
+    .lay-split, .lay-spotlight, .conv-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <!-- ── Data ── -->
+  <script>
+  (function () {
+    const TASKS = [
+      { id: "t1", title: "Finalize Q3 product roadmap",    project: "Product",  priority: "high", due: "Today",     status: "doing" },
+      { id: "t2", title: "Review design-system PR #482",   project: "Product",  priority: "med",  due: "Tomorrow",  status: "todo"  },
+      { id: "t3", title: "Send investor update",           project: "Growth",   priority: "high", due: "Today",     status: "todo"  },
+      { id: "t4", title: "Draft onboarding email series",  project: "Growth",   priority: "low",  due: "Fri",       status: "todo"  },
+      { id: "t5", title: "Fix flaky auth integration test",project: "Platform", priority: "med",  due: "Wed",       status: "doing" },
+      { id: "t6", title: "Plan the team offsite",          project: "Ops",      priority: "low",  due: "Next week", status: "todo"  },
+      { id: "t7", title: "Ship usage-based billing",       project: "Platform", priority: "high", due: "Thu",       status: "done"  },
+    ];
+
+    const STATES = {
+      base: {
+        view: "list", groupBy: "none", density: "cozy", urgency: false, focus: false,
+        note: "Default view — a simple checklist.",
+      },
+      grouped: {
+        view: "list", groupBy: "project", density: "cozy", urgency: false, focus: false,
+        note: "Grouped your tasks by project. Saved as a preference.",
+      },
+      deadlines: {
+        view: "list", groupBy: "none", density: "compact", urgency: true, focus: false,
+        note: "Added due dates and sorted by urgency. Today's items float to the top.",
+      },
+      board: {
+        view: "board", groupBy: "status", density: "compact", urgency: false, focus: false,
+        note: "Switched to a board, grouped by status.",
+      },
+      focus: {
+        view: "focus", groupBy: "none", density: "cozy", urgency: true, focus: true,
+        note: "Cleared the clutter — showing just what's next.",
+      },
+    };
+
+    const SUGGESTIONS = [
+      { id: "grouped",   label: "Group my tasks by project",               msg: "Group my tasks by project" },
+      { id: "deadlines", label: "I care about deadlines — sort by urgency", msg: "I care about deadlines. Show due dates and sort by what's urgent." },
+      { id: "board",     label: "Switch to a board view",                   msg: "Switch this to a board view" },
+      { id: "focus",     label: "Keep it minimal — just show what's next",  msg: "Keep it minimal, I get overwhelmed. Just show what's next." },
+      { id: "base",      label: "Reset to a simple list",                   msg: "Reset to a simple list" },
+    ];
+
+    const LANGUAGES = [
+      { id: "ts",    label: "TypeScript", file: "tasks.ts",  lang: "ts" },
+      { id: "py",    label: "Python",     file: "tasks.py",  lang: "py" },
+      { id: "cs",    label: "C#",         file: "Tasks.cs",  lang: "cs" },
+      { id: "react", label: "React",      file: "Tasks.tsx", lang: "ts" },
+      { id: "js",    label: "Node.js",    file: "tasks.js",  lang: "js" },
+      { id: "go",    label: "Go",         file: "main.go",   lang: "go" },
+    ];
+
+    const SNIPPETS = {
+      ts: `import { createApp, adapt } from "@illuna/core";
+
+// 1 · Describe the app Illuna will render
+const tasks = createApp({
+  name: "Tasks",
+  state: {
+    items: [] as Task[],
+  },
+
+  // 2 · Define what chat is allowed to reshape
+  boundaries: {
+    layout:  ["list", "board", "calendar"],
+    groupBy: ["none", "project", "priority", "status"],
+    density: ["cozy", "compact"],
+  },
+});
+
+// 3 · Let the interface adapt to what people say
+tasks.onMessage(async (message, ctx) => {
+  const intent = await adapt(message, ctx.boundaries);
+
+  ctx.apply(intent);          // reshape the UI, safely
+  ctx.remember(intent.prefs); // keep what matters, per user
+});
+
+tasks.mount("#app");`,
+
+      py: `from illuna import create_app, adapt
+
+# 1 · Describe the app Illuna will render
+tasks = create_app(
+    name="Tasks",
+    state={"items": []},
+
+    # 2 · Define what chat is allowed to reshape
+    boundaries={
+        "layout":   ["list", "board", "calendar"],
+        "group_by": ["none", "project", "priority", "status"],
+        "density":  ["cozy", "compact"],
+    },
+)
+
+# 3 · Let the interface adapt to what people say
+@tasks.on_message
+async def handle(message, ctx):
+    intent = await adapt(message, ctx.boundaries)
+
+    ctx.apply(intent)           # reshape the UI, safely
+    ctx.remember(intent.prefs)  # keep what matters, per user
+
+tasks.mount("#app")`,
+
+      cs: `using Illuna;
+
+// 1 · Describe the app Illuna will render
+var tasks = App.Create(new AppOptions
+{
+    Name  = "Tasks",
+    State = new TaskState(),
+
+    // 2 · Define what chat is allowed to reshape
+    Boundaries = new Boundaries
+    {
+        Layout  = ["list", "board", "calendar"],
+        GroupBy = ["none", "project", "priority", "status"],
+        Density = ["cozy", "compact"],
+    },
+});
+
+// 3 · Let the interface adapt to what people say
+tasks.OnMessage(async (message, ctx) =>
+{
+    var intent = await Adapt.From(message, ctx.Boundaries);
+
+    ctx.Apply(intent);           // reshape the UI, safely
+    ctx.Remember(intent.Prefs);  // keep what matters, per user
+});
+
+tasks.Mount("#app");`,
+
+      react: `import { useIlluna, AdaptiveView } from "@illuna/react";
+
+export function Tasks() {
+  // 1 & 2 · Describe the app and what chat may reshape
+  const app = useIlluna({
+    name: "Tasks",
+    state: { items: [] },
+    boundaries: {
+      layout:  ["list", "board", "calendar"],
+      groupBy: ["none", "project", "priority", "status"],
+      density: ["cozy", "compact"],
+    },
+  });
+
+  // 3 · Render — Illuna adapts the view to every message
+  return (
+    <AdaptiveView
+      app={app}
+      onMessage={(intent) => app.apply(intent)}
+      placeholder="Tell Tasks how you work…"
+    />
+  );
+}`,
+
+      js: `const { createApp, adapt } = require("@illuna/core");
+
+// 1 · Describe the app Illuna will render
+const tasks = createApp({
+  name: "Tasks",
+  state: { items: [] },
